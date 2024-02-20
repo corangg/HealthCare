@@ -13,4 +13,4 @@ dependencyResolutionManagement {
     }
 }
 rootProject.name = "HealthCare"
-include ':app'
+include ':HealthCare'
