@@ -79,6 +79,8 @@ dependencies {
 
     kapt 'com.google.dagger:hilt-android-compiler:2.44'
 
+    implementation "androidx.compose.runtime:runtime-livedata:<compose_version>"
+
     //implementation 'io.github.seyoungch02:filled-slider-compose:1.0.0'
 
 
