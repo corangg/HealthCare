@@ -6,17 +6,15 @@ import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
 
 class InformationInputViewModel: ViewModel() {
-
-
     var backgroundColor = mutableStateOf(Color(0xFF121212))
         private set
-    val ageValue : MutableLiveData<Int> = MutableLiveData()
+    val ageValue : MutableLiveData<Float> = MutableLiveData()
     val heightValue : MutableLiveData<Float> = MutableLiveData()
     val weightValue : MutableLiveData<Float> = MutableLiveData()
 
-    fun setAgeValue(value : Int){
-        val stringValue = String.format("%.1f",value)
-        heightValue.value = stringValue.toFloat()
+
+    fun setAgeValue(value : Float){
+        ageValue.value = value
     }
 
     fun setHeightValue(value : Float){

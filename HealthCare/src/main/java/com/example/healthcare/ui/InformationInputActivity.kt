@@ -55,9 +55,12 @@ import com.example.healthcare.R
 import androidx.compose.foundation.border
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.fillMaxWidth
+import androidx.compose.foundation.layout.offset
 import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.text.BasicTextField
 import androidx.compose.foundation.text.KeyboardActions
+import androidx.compose.material3.DropdownMenu
+import androidx.compose.material3.DropdownMenuItem
 import androidx.compose.material3.TextFieldColors
 import androidx.compose.runtime.*
 import androidx.lifecycle.viewmodel.compose.viewModel
@@ -67,6 +70,7 @@ import androidx.compose.ui.focus.focusRequester
 import androidx.compose.ui.focus.onFocusChanged
 import androidx.compose.ui.graphics.SolidColor
 import androidx.compose.ui.input.key.Key.Companion.K
+import androidx.compose.ui.platform.LocalDensity
 import androidx.compose.ui.platform.LocalFocusManager
 import androidx.compose.ui.text.input.ImeAction
 import com.example.healthcare.ui.composable.InformationInputView
@@ -85,9 +89,69 @@ class InformationInputActivity : ComponentActivity() {
                     color = MaterialTheme.colorScheme.background
                 ) {
                     InformationInputView(viewModel)
+                    //AA()
                 }
             }
         }
     }
 }
+
+@Composable
+fun AA(){
+    Column(
+        horizontalAlignment = Alignment.CenterHorizontally,
+        modifier = Modifier
+            .width(100.dp)) {
+
+        Text(
+            text = "월",
+            style = TextStyle(color = Color.White, fontSize = 20.sp, fontWeight = FontWeight.Bold),
+        )
+        var expanded by remember { mutableStateOf(false) }
+        var selectedOption by remember { mutableStateOf("선택") }
+        val options = listOf("유산소", "등", "가슴", "하체", "어깨", "팔", "허리")
+
+        Box(modifier = Modifier
+            .fillMaxWidth()
+            .padding(10.dp),
+            contentAlignment = Alignment.Center
+        ) {
+            Text(
+                text = selectedOption,
+                style = TextStyle(color = Color.White, fontSize = 16.sp),
+                modifier = Modifier
+                    .clickable { expanded = true }
+                    .background(Color(0xFF2D2D2D), RoundedCornerShape(8.dp))
+                    .padding(10.dp),
+            )
+
+            DropdownMenu(
+                expanded = expanded,
+                onDismissRequest = { expanded = false },
+                modifier = Modifier
+                    .width(64.dp)
+                    .background(Color(0xFF2D2D2D), RoundedCornerShape(8.dp))
+            ) {
+                options.forEach { option ->
+                    DropdownMenuItem(
+                        text = { Text(option) },
+                        onClick = {
+                            selectedOption = option
+                            expanded = false
+                        }
+                    )
+                }
+            }
+        }
+    }
+}
+
+@Preview(showBackground = true)
+@Composable
+fun GreetingPreview() {
+    HealthCareTheme {
+        AA()
+    }
+}
+
 

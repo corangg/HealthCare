@@ -17,11 +17,15 @@ import androidx.compose.material3.Slider
 import androidx.compose.material3.SliderDefaults
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.MutableState
+import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.remember
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.focus.FocusRequester
 import androidx.compose.ui.focus.focusRequester
+import androidx.compose.ui.focus.onFocusChanged
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.ColorFilter
 import androidx.compose.ui.graphics.SolidColor
@@ -45,6 +49,16 @@ fun SliderInputRow(
     unitText: String,
     focusRequester: FocusRequester
 ) {
+    val isFocused = remember { mutableStateOf(false) }
+    val textFieldValue = remember { mutableStateOf(textValue) }
+
+    LaunchedEffect(textValue) {
+        // 포커스가 없을 때만 기본값으로 다시 설정합니다.
+        if (!isFocused.value) {
+            textFieldValue.value = textValue
+        }
+    }
+
     Row(verticalAlignment = androidx.compose.ui.Alignment.CenterVertically) {
         Image(
             painter = painterResource(id = iconId),
@@ -70,8 +84,11 @@ fun SliderInputRow(
                 .padding(start = 10.dp)
         )
         BasicTextField(
-            value = textValue,
-            onValueChange = onTextValueChange,
+            value = textFieldValue.value,
+            onValueChange =
+            {
+                textFieldValue.value = it
+                onTextValueChange(it)},
             textStyle = TextStyle(color = Color.White, fontSize = 16.sp),
             singleLine = true,
             cursorBrush = SolidColor(Color.White),
@@ -80,12 +97,23 @@ fun SliderInputRow(
                 .background(Color(0xFF2D2D2D), RoundedCornerShape(8.dp))
                 .padding(horizontal = 10.dp, vertical = 8.dp)
                 .width(50.dp)
-                .focusRequester(focusRequester),
+                .focusRequester(focusRequester)
+                .onFocusChanged
+                {
+                    isFocused.value = it.isFocused
+                    if(it.isFocused){
+                        textFieldValue.value = ""
+                    } else if(!it.isFocused && textFieldValue.value.isEmpty()){
+                        textFieldValue.value = textValue
+                    }
+                },
             keyboardOptions = KeyboardOptions(keyboardType = KeyboardType.Decimal)
         )
         Text(
             text = unitText,
-            modifier = Modifier.padding(start = 10.dp).width(36.dp),
+            modifier = Modifier
+                .padding(start = 10.dp)
+                .width(36.dp),
             color = Color.White,
             fontSize = 22.sp
         )
