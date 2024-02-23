@@ -12,6 +12,8 @@ class InformationInputViewModel: ViewModel() {
     val heightValue : MutableLiveData<Float> = MutableLiveData()
     val weightValue : MutableLiveData<Float> = MutableLiveData()
 
+    val exerciseList : MutableLiveData<MutableList<String>> = MutableLiveData()
+
 
     fun setAgeValue(value : Float){
         ageValue.value = value
@@ -25,5 +27,20 @@ class InformationInputViewModel: ViewModel() {
     fun setWeightValue(value : Float){
         val stringValue = String.format("%.2f",value)
         weightValue.value = stringValue.toFloat()
+    }
+
+    fun addExercise(exercise : String){
+        var list = exerciseList.value
+
+        list!!.add(exercise)
+
+        exerciseList.value = list
+    }
+
+    fun deleteExercise(position: Int){
+        var list = exerciseList.value
+
+        list!!.removeAt(position)
+        exerciseList.value = list
     }
 }

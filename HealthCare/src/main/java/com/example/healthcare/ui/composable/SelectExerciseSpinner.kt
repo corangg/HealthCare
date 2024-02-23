@@ -38,10 +38,8 @@ import java.util.UUID
 
 @Composable
 fun SelectExerciseSpinner(
-    spinnerId: UUID, // 각 스피너에 대한 고유한 ID
-    expanded: MutableState<Boolean>,
-    onDeleteClicked: (UUID) -> Unit){
-    //var expanded by remember { mutableStateOf(false) }
+    onDeleteClicked: () -> Unit){
+    var expanded by remember { mutableStateOf(false) }
     var selectedOption by remember { mutableStateOf("선택") }
     val options = listOf("유산소", "등", "가슴", "하체", "어깨", "팔", "허리")
 
@@ -59,7 +57,7 @@ fun SelectExerciseSpinner(
                 text = selectedOption,
                 style = TextStyle(color = Color.White, fontSize = 16.sp),
                 modifier = Modifier
-                    .clickable { expanded.value = true }
+                    .clickable { expanded = true }
                     .padding(vertical = 10.dp)
                     .width(56.dp)
                     .wrapContentSize(Alignment.Center),
@@ -73,15 +71,14 @@ fun SelectExerciseSpinner(
                     .size(22.dp)
                     .padding(end = 4.dp)
                     .clickable {
-                        expanded.value = false
-                        onDeleteClicked(spinnerId)
+                        onDeleteClicked()
                     }
             )
         }
 
         DropdownMenu(
-            expanded = expanded.value,
-            onDismissRequest = { expanded.value = false },
+            expanded = expanded,
+            onDismissRequest = { expanded = false },
             modifier = Modifier
                 .width(76.dp)
                 .heightIn(max = 240.dp)
@@ -93,7 +90,7 @@ fun SelectExerciseSpinner(
                     text = { Text(option) },
                     onClick = {
                         selectedOption = option
-                        expanded.value = false
+                        expanded = false
                     }
                 )
             }

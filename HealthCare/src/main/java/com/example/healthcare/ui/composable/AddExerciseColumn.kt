@@ -35,8 +35,7 @@ import java.util.UUID
 
 @Composable
 fun AddExerciseColumn(day : String) {
-    var showSpinnerList by remember { mutableStateOf(listOf<UUID>()) }
-    var expandedStates by remember { mutableStateOf(mapOf<UUID, Boolean>()) }
+    var showSpinnerList by remember { mutableStateOf(listOf(false)) }
 
     Column(
         horizontalAlignment = Alignment.CenterHorizontally,
@@ -48,28 +47,14 @@ fun AddExerciseColumn(day : String) {
             style = TextStyle(color = Color.White, fontSize = 20.sp, fontWeight = FontWeight.Bold),
         )
 
-        /*showSpinnerList.forEach { (spinnerId, expandedStates) ->
-            SelectExerciseSpinner(
-                spinnerId = spinnerId,
-                expanded = remember { mutableStateOf(isExpanded) },
-                onDeleteClicked = { idToRemove ->
-                    // spinnerId와 일치하는 ID를 찾아 삭제
-                    showSpinnerList = showSpinnerList.toMutableList().also { it.remove(idToRemove) }
-                }
-            )
-        }*/
 
-        expandedStates.keys.forEach { spinnerId ->
-            val isExpanded = expandedStates[spinnerId] ?: false
-            SelectExerciseSpinner(
-                spinnerId = spinnerId,
-                expanded = remember { mutableStateOf(isExpanded) }, // expanded 상태를 전달
-                // ... 나머지 매개변수 전달 ...
-                onDeleteClicked = {
-                    // spinnerId와 일치하는 항목을 삭제
-                    expandedStates = expandedStates - spinnerId
+        showSpinnerList.forEachIndexed { index, showSpinner ->
+            if (showSpinner) {
+                SelectExerciseSpinner {
+                    // DelExercise를 클릭했을 때 해당 SelectExerciseSpinner를 삭제합니다.
+                    showSpinnerList = showSpinnerList.toMutableList().apply { removeAt(index) }
                 }
-            )
+            }
         }
 
 
@@ -81,9 +66,7 @@ fun AddExerciseColumn(day : String) {
                 .padding(8.dp)
                 .size(30.dp)
                 .clickable {
-                    //showSpinnerList = showSpinnerList.toMutableList().also { it.add(UUID.randomUUID()) }
-                    val newId = UUID.randomUUID()
-                    expandedStates = expandedStates + (newId to false)
+                    showSpinnerList = showSpinnerList.toMutableList().apply { add(true) }
                 }
         )
     }
