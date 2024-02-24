@@ -183,7 +183,7 @@ fun InformationInputView(viewModel: InformationInputViewModel) {
 
 
         Row() {
-            AddExerciseColumn(day = "월")
+            AddExerciseColumn(day = "월", viewModel)
         }
     }
 }

@@ -12,7 +12,7 @@ class InformationInputViewModel: ViewModel() {
     val heightValue : MutableLiveData<Float> = MutableLiveData()
     val weightValue : MutableLiveData<Float> = MutableLiveData()
 
-    val exerciseList : MutableLiveData<MutableList<String>> = MutableLiveData()
+    val exerciseList : MutableLiveData<MutableList<String>> = MutableLiveData(mutableListOf())
 
 
     fun setAgeValue(value : Float){
@@ -30,17 +30,28 @@ class InformationInputViewModel: ViewModel() {
     }
 
     fun addExercise(exercise : String){
-        var list = exerciseList.value
-
-        list!!.add(exercise)
-
-        exerciseList.value = list
+        val updatedList = exerciseList.value.orEmpty().toMutableList().apply {
+            add(exercise)
+        }
+        // MutableLiveData에 새로운 리스트를 할당
+        exerciseList.value = updatedList
     }
 
     fun deleteExercise(position: Int){
-        var list = exerciseList.value
+        val updatedList = exerciseList.value.orEmpty().toMutableList().apply {
+            if (position >= 0 && position < size) {
+                removeAt(position)
+            }
+        }
+        // MutableLiveData에 새로운 리스트를 할당
+        exerciseList.value = updatedList
+    }
 
-        list!!.removeAt(position)
-        exerciseList.value = list
+    fun updateExerciseAt(index: Int, selectedExercise: String) {
+        val list = exerciseList.value ?: return
+        if (index >= 0 && index < list.size) {
+            list[index] = selectedExercise
+            exerciseList.value = list
+        }
     }
 }

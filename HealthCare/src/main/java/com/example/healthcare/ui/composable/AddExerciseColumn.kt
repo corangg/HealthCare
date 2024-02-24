@@ -16,6 +16,8 @@ import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
 import androidx.compose.runtime.getValue
+import androidx.compose.runtime.key
+import androidx.compose.runtime.livedata.observeAsState
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
@@ -34,8 +36,10 @@ import com.example.healthcare.ui.theme.HealthCareTheme
 import java.util.UUID
 
 @Composable
-fun AddExerciseColumn(day : String) {
-    var showSpinnerList by remember { mutableStateOf(listOf(false)) }
+fun AddExerciseColumn(day : String, viewModel: InformationInputViewModel) {
+    //val exerciseList by viewModel.exerciseList.observeAsState(listOf())
+    val exerciseList by viewModel.exerciseList.observeAsState(initial = mutableListOf())
+
 
     Column(
         horizontalAlignment = Alignment.CenterHorizontally,
@@ -48,15 +52,24 @@ fun AddExerciseColumn(day : String) {
         )
 
 
-        showSpinnerList.forEachIndexed { index, showSpinner ->
-            if (showSpinner) {
-                SelectExerciseSpinner {
-                    // DelExercise를 클릭했을 때 해당 SelectExerciseSpinner를 삭제합니다.
-                    showSpinnerList = showSpinnerList.toMutableList().apply { removeAt(index) }
-                }
+        exerciseList.forEachIndexed { index, exercise ->
+            key(index){
+                SelectExerciseSpinner(
+                    viewModel = viewModel,
+                    exercise = exercise,
+                    onExerciseSelected = { selectedExercise ->
+                        // 운동이 선택되면 ViewModel의 목록을 업데이트
+                        viewModel.updateExerciseAt(index, selectedExercise)
+                    },
+                    onDeleteClicked = {
+                        // 삭제 버튼 클릭 시 해당 항목을 ViewModel의 목록에서 제거
+                        viewModel.deleteExercise(index)
+                    }
+                )
             }
-        }
 
+            Spacer(modifier = Modifier.height(8.dp)) // 스피너 사이의 간격
+        }
 
         Image(
             painter = painterResource(id = R.drawable.ic_add),
@@ -66,7 +79,7 @@ fun AddExerciseColumn(day : String) {
                 .padding(8.dp)
                 .size(30.dp)
                 .clickable {
-                    showSpinnerList = showSpinnerList.toMutableList().apply { add(true) }
+                    viewModel.addExercise("선택")
                 }
         )
     }
@@ -78,6 +91,6 @@ fun AddExerciseColumn(day : String) {
 @Composable
 fun  AddExerciseColumnPreview() {
     HealthCareTheme {
-        AddExerciseColumn("요일")
+        AddExerciseColumn("요일",InformationInputViewModel())
     }
 }

@@ -33,15 +33,20 @@ import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import com.example.healthcare.R
+import com.example.healthcare.VIewModel.InformationInputViewModel
 import com.example.healthcare.ui.theme.HealthCareTheme
 import java.util.UUID
 
 @Composable
 fun SelectExerciseSpinner(
+    viewModel: InformationInputViewModel, // ViewModel 인스턴스
+    exercise: String, // 현재 선택된 운동 이름
+    onExerciseSelected: (String) -> Unit, // 운동 선택 콜백
     onDeleteClicked: () -> Unit){
     var expanded by remember { mutableStateOf(false) }
-    var selectedOption by remember { mutableStateOf("선택") }
+    //var selectedOption by remember { mutableStateOf("선택") }
     val options = listOf("유산소", "등", "가슴", "하체", "어깨", "팔", "허리")
+    var selectedOption by remember { mutableStateOf(exercise) }
 
     Box(modifier = Modifier
         .width(84.dp)
@@ -70,9 +75,7 @@ fun SelectExerciseSpinner(
                 modifier = Modifier
                     .size(22.dp)
                     .padding(end = 4.dp)
-                    .clickable {
-                        onDeleteClicked()
-                    }
+                    .clickable(onClick = onDeleteClicked)
             )
         }
 
@@ -90,6 +93,7 @@ fun SelectExerciseSpinner(
                     text = { Text(option) },
                     onClick = {
                         selectedOption = option
+                        onExerciseSelected(option) // 선택된 운동을 ViewModel에 업데이트
                         expanded = false
                     }
                 )
