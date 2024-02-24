@@ -39,12 +39,11 @@ import java.util.UUID
 
 @Composable
 fun SelectExerciseSpinner(
-    viewModel: InformationInputViewModel, // ViewModel 인스턴스
-    exercise: String, // 현재 선택된 운동 이름
-    onExerciseSelected: (String) -> Unit, // 운동 선택 콜백
+    viewModel: InformationInputViewModel,
+    exercise: String,
+    onExerciseSelected: (String) -> Unit,
     onDeleteClicked: () -> Unit){
     var expanded by remember { mutableStateOf(false) }
-    //var selectedOption by remember { mutableStateOf("선택") }
     val options = listOf("유산소", "등", "가슴", "하체", "어깨", "팔", "허리")
     var selectedOption by remember { mutableStateOf(exercise) }
 

@@ -184,6 +184,12 @@ fun InformationInputView(viewModel: InformationInputViewModel) {
 
         Row() {
             AddExerciseColumn(day = "월", viewModel)
+            /*AddExerciseColumn(day = "화", viewModel)
+            AddExerciseColumn(day = "수", viewModel)
+            AddExerciseColumn(day = "목", viewModel)
+            AddExerciseColumn(day = "금", viewModel)
+            AddExerciseColumn(day = "토", viewModel)
+            AddExerciseColumn(day = "일", viewModel)*/
         }
     }
 }

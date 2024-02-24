@@ -37,9 +37,8 @@ import java.util.UUID
 
 @Composable
 fun AddExerciseColumn(day : String, viewModel: InformationInputViewModel) {
-    //val exerciseList by viewModel.exerciseList.observeAsState(listOf())
-    val exerciseList by viewModel.exerciseList.observeAsState(initial = mutableListOf())
-
+   // val exerciseList by viewModel.exerciseList.observeAsState(initial = mutableListOf())
+    val exerciseList by viewModel.exerciseList.observeAsState(initial = listOf())
 
     Column(
         horizontalAlignment = Alignment.CenterHorizontally,
@@ -52,23 +51,19 @@ fun AddExerciseColumn(day : String, viewModel: InformationInputViewModel) {
         )
 
 
-        exerciseList.forEachIndexed { index, exercise ->
-            key(index){
+        exerciseList.forEach { exercise ->
+            key(exercise.id) {
                 SelectExerciseSpinner(
                     viewModel = viewModel,
-                    exercise = exercise,
-                    onExerciseSelected = { selectedExercise ->
-                        // 운동이 선택되면 ViewModel의 목록을 업데이트
-                        viewModel.updateExerciseAt(index, selectedExercise)
+                    exercise = exercise.name,
+                    onExerciseSelected = { newName ->
+                        viewModel.updateExerciseAt(exercise.id, newName)
                     },
                     onDeleteClicked = {
-                        // 삭제 버튼 클릭 시 해당 항목을 ViewModel의 목록에서 제거
-                        viewModel.deleteExercise(index)
+                        viewModel.deleteExercise(exercise.id)
                     }
                 )
             }
-
-            Spacer(modifier = Modifier.height(8.dp)) // 스피너 사이의 간격
         }
 
         Image(
