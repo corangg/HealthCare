@@ -1,0 +1,33 @@
+package com.example.healthcare.ui.composable
+
+import androidx.compose.foundation.horizontalScroll
+import androidx.compose.foundation.rememberScrollState
+import androidx.compose.runtime.Composable
+import androidx.compose.ui.Modifier
+import androidx.compose.ui.layout.Layout
+import kotlin.math.min
+
+@Composable
+fun HorizontalScrollView(
+    modifier: Modifier = Modifier,
+    content: @Composable () -> Unit
+) {
+    Layout(
+        content = content,
+        modifier = modifier.horizontalScroll(rememberScrollState())
+    ) { measurables, constraints ->
+        val placeables = measurables.map { measurable ->
+            measurable.measure(constraints)
+        }
+
+        val width = min(constraints.maxWidth, placeables.sumBy { it.width })
+
+        layout(width, constraints.maxHeight) {
+            var xPosition = 0
+            placeables.forEach { placeable ->
+                placeable.placeRelative(x = xPosition, y = 0)
+                xPosition += placeable.width
+            }
+        }
+    }
+}

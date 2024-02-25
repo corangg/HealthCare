@@ -1,7 +1,14 @@
 package com.example.healthcare.ui.composable
 
+import android.widget.HorizontalScrollView
+import android.widget.ScrollView
+import androidx.compose.foundation.BorderStroke
+import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
+import androidx.compose.foundation.border
 import androidx.compose.foundation.clickable
+import androidx.compose.foundation.horizontalScroll
+import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
@@ -12,11 +19,17 @@ import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.heightIn
 import androidx.compose.foundation.layout.offset
 import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.width
+import androidx.compose.foundation.layout.widthIn
 import androidx.compose.foundation.layout.wrapContentSize
+import androidx.compose.foundation.layout.wrapContentWidth
 import androidx.compose.foundation.rememberScrollState
+import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.foundation.verticalScroll
+import androidx.compose.material3.Button
+import androidx.compose.material3.ButtonDefaults
 import androidx.compose.material3.DropdownMenu
 import androidx.compose.material3.DropdownMenuItem
 import androidx.compose.material3.MaterialTheme
@@ -30,10 +43,14 @@ import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.draw.clip
 import androidx.compose.ui.focus.FocusRequester
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.graphics.ColorFilter
+import androidx.compose.ui.layout.Layout
 import androidx.compose.ui.platform.LocalDensity
 import androidx.compose.ui.platform.LocalFocusManager
+import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.tooling.preview.Preview
@@ -42,6 +59,7 @@ import androidx.compose.ui.unit.sp
 import com.example.healthcare.R
 import com.example.healthcare.VIewModel.InformationInputViewModel
 import com.example.healthcare.ui.theme.HealthCareTheme
+import kotlin.math.min
 
 @Composable
 fun InformationInputView(viewModel: InformationInputViewModel) {
@@ -65,13 +83,23 @@ fun InformationInputView(viewModel: InformationInputViewModel) {
     val weightText = remember { mutableStateOf(weightSliderValue.toString()) }
     val weightSliderMaxValue = 200f
 
+    val genderInfo by viewModel.genderInfo.observeAsState()
+
+    val maleButtonBackgroundColor = if (genderInfo == true){
+        Color.LightGray
+    } else Color.Transparent
+
+    val femaleButtonBackgroundColor = if (genderInfo == false){
+        Color.LightGray
+    } else Color.Transparent
+
 
 
 
     Box(
         modifier = Modifier
             .fillMaxSize()
-            .then(backgroundClickAction) // 배경 클릭 액션을 적용합니다.
+            .then(backgroundClickAction)
             .background(MaterialTheme.colorScheme.background)
     )
 
@@ -85,18 +113,69 @@ fun InformationInputView(viewModel: InformationInputViewModel) {
 
     Column(
         modifier = Modifier
-            //.verticalScroll(rememberScrollState())
             .fillMaxSize()
             .background(color = viewModel.backgroundColor.value),
         horizontalAlignment = Alignment.CenterHorizontally,
     ) {
         Text(
-            text = "정보 입력",
+            text = "신체 정보 입력",
             style = TextStyle(color = Color.White, fontSize = 20.sp, fontWeight = FontWeight.Bold),
         modifier = Modifier.padding(top = 40.dp)
         )
 
-        Spacer(modifier = Modifier.height(10.dp))
+        Spacer(modifier = Modifier.height(24.dp))
+
+        Row(
+            verticalAlignment = Alignment.CenterVertically){
+            Image(
+                painter = painterResource(id = R.drawable.ic_gender),
+                contentDescription = "Gender",
+                modifier = Modifier
+                    .size(40.dp)
+                    .clip(CircleShape)
+                    .border(border = BorderStroke(3.dp, Color.White), shape = CircleShape)
+                    .padding(8.dp),
+                colorFilter = ColorFilter.tint(Color.White)
+            )
+
+            Spacer(modifier = Modifier.width(44.dp))
+
+            Box(
+                contentAlignment = Alignment.Center,
+                modifier = Modifier
+                    .size(70.dp, 40.dp)
+                    .clip(CircleShape)
+                    .background(maleButtonBackgroundColor)
+                    .border(3.dp, Color.White, CircleShape)
+                    .clickable { viewModel.selectGender(true) }
+            ) {
+                Text(
+                    text = "남성",
+                    color = Color.White
+                )
+            }
+
+            Spacer(modifier = Modifier.width(24.dp))
+
+            Box(
+                contentAlignment = Alignment.Center,
+                modifier = Modifier
+                    .size(70.dp, 40.dp)
+                    .clip(CircleShape)
+                    .background(femaleButtonBackgroundColor)
+                    .border(3.dp, Color.White, CircleShape)
+                    .clickable { viewModel.selectGender(false) }
+            ) {
+                Text(
+                    text = "여성",
+                    color = Color.White
+                )
+            }
+            Spacer(modifier = Modifier.width(78.dp))
+
+        }
+
+        Spacer(modifier = Modifier.height(16.dp))
 
         SliderInputRow(
             iconId = R.drawable.ic_age,
@@ -181,18 +260,20 @@ fun InformationInputView(viewModel: InformationInputViewModel) {
 
         Spacer(modifier = Modifier.height(16.dp))
 
-
-        Row() {
-            AddExerciseColumn(day = "월", viewModel)
-            /*AddExerciseColumn(day = "화", viewModel)
-            AddExerciseColumn(day = "수", viewModel)
-            AddExerciseColumn(day = "목", viewModel)
-            AddExerciseColumn(day = "금", viewModel)
-            AddExerciseColumn(day = "토", viewModel)
-            AddExerciseColumn(day = "일", viewModel)*/
+        HorizontalScrollView(modifier = Modifier.widthIn(86.dp)) {
+            AddExerciseColumn(day = 0, viewModel, viewModel.sunExerciseList)
+            AddExerciseColumn(day = 1, viewModel, viewModel.monExerciseList)
+            AddExerciseColumn(day = 2, viewModel, viewModel.tuesExerciseList)
+            AddExerciseColumn(day = 3, viewModel, viewModel.wednesExerciseList)
+            AddExerciseColumn(day = 4, viewModel, viewModel.thursExerciseList)
+            AddExerciseColumn(day = 5, viewModel, viewModel.friExerciseList)
+            AddExerciseColumn(day = 6, viewModel, viewModel.saturExerciseList)
         }
     }
 }
+
+
+
 @Preview(showBackground = true)
 @Composable
 fun GreetingPreview() {

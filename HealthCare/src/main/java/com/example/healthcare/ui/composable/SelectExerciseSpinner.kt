@@ -92,7 +92,7 @@ fun SelectExerciseSpinner(
                     text = { Text(option) },
                     onClick = {
                         selectedOption = option
-                        onExerciseSelected(option) // 선택된 운동을 ViewModel에 업데이트
+                        onExerciseSelected(option)
                         expanded = false
                     }
                 )

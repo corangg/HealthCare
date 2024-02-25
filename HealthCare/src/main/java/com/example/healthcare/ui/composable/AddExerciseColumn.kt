@@ -28,6 +28,8 @@ import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import androidx.lifecycle.MutableLiveData
+import com.example.healthcare.ExerciseItem
 
 import com.example.healthcare.R
 import com.example.healthcare.SpinnerState
@@ -36,17 +38,44 @@ import com.example.healthcare.ui.theme.HealthCareTheme
 import java.util.UUID
 
 @Composable
-fun AddExerciseColumn(day : String, viewModel: InformationInputViewModel) {
+fun AddExerciseColumn(day : Int, viewModel: InformationInputViewModel, list : MutableLiveData<MutableList<ExerciseItem>>) {
    // val exerciseList by viewModel.exerciseList.observeAsState(initial = mutableListOf())
-    val exerciseList by viewModel.exerciseList.observeAsState(initial = listOf())
+    var dayOfTheWeek : String = ""
+    when(day){
+        0 -> {
+            dayOfTheWeek = "일"
+        }
+        1 -> {
+            dayOfTheWeek = "월"
+        }
+        2 -> {
+            dayOfTheWeek = "화"
+        }
+        3 -> {
+            dayOfTheWeek = "수"
+        }
+        4 -> {
+            dayOfTheWeek = "목"
+        }
+        5 -> {
+            dayOfTheWeek = "금"
+        }
+        6 -> {
+            dayOfTheWeek = "토"
+        }
+    }
+    //viewModel.dayExerciseList.value!!.mon
+
+    //val exerciseList by viewModel.exerciseList.observeAsState(initial = listOf())
+    val exerciseList by list.observeAsState(initial = listOf())
 
     Column(
         horizontalAlignment = Alignment.CenterHorizontally,
         modifier = Modifier
             .background(Color(0xFF121212))
-            .width(116.dp)) {
+            .width(86.dp)) {
         Text(
-            text = day,
+            text = dayOfTheWeek,
             style = TextStyle(color = Color.White, fontSize = 20.sp, fontWeight = FontWeight.Bold),
         )
 
@@ -57,10 +86,10 @@ fun AddExerciseColumn(day : String, viewModel: InformationInputViewModel) {
                     viewModel = viewModel,
                     exercise = exercise.name,
                     onExerciseSelected = { newName ->
-                        viewModel.updateExerciseAt(exercise.id, newName)
+                        viewModel.updateExerciseAt(exercise.id, newName,day)
                     },
                     onDeleteClicked = {
-                        viewModel.deleteExercise(exercise.id)
+                        viewModel.deleteExercise(exercise.id,day)
                     }
                 )
             }
@@ -74,18 +103,19 @@ fun AddExerciseColumn(day : String, viewModel: InformationInputViewModel) {
                 .padding(8.dp)
                 .size(30.dp)
                 .clickable {
-                    viewModel.addExercise("선택")
+                    viewModel.addExercise("선택",day)
                 }
         )
     }
 }
 
 
+/*
 
 @Preview(showBackground = true)
 @Composable
 fun  AddExerciseColumnPreview() {
     HealthCareTheme {
-        AddExerciseColumn("요일",InformationInputViewModel())
+        AddExerciseColumn(0,InformationInputViewModel())
     }
-}
+}*/
