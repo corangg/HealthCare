@@ -32,41 +32,13 @@ import androidx.lifecycle.MutableLiveData
 import com.example.healthcare.ExerciseItem
 
 import com.example.healthcare.R
-import com.example.healthcare.SpinnerState
 import com.example.healthcare.VIewModel.InformationInputViewModel
 import com.example.healthcare.ui.theme.HealthCareTheme
 import java.util.UUID
 
 @Composable
 fun AddExerciseColumn(day : Int, viewModel: InformationInputViewModel, list : MutableLiveData<MutableList<ExerciseItem>>) {
-   // val exerciseList by viewModel.exerciseList.observeAsState(initial = mutableListOf())
-    var dayOfTheWeek : String = ""
-    when(day){
-        0 -> {
-            dayOfTheWeek = "일"
-        }
-        1 -> {
-            dayOfTheWeek = "월"
-        }
-        2 -> {
-            dayOfTheWeek = "화"
-        }
-        3 -> {
-            dayOfTheWeek = "수"
-        }
-        4 -> {
-            dayOfTheWeek = "목"
-        }
-        5 -> {
-            dayOfTheWeek = "금"
-        }
-        6 -> {
-            dayOfTheWeek = "토"
-        }
-    }
-    //viewModel.dayExerciseList.value!!.mon
-
-    //val exerciseList by viewModel.exerciseList.observeAsState(initial = listOf())
+    val dayOfTheWeek = arrayOf("일","월","화","수","목","금","토")
     val exerciseList by list.observeAsState(initial = listOf())
 
     Column(
@@ -75,7 +47,7 @@ fun AddExerciseColumn(day : Int, viewModel: InformationInputViewModel, list : Mu
             .background(Color(0xFF121212))
             .width(86.dp)) {
         Text(
-            text = dayOfTheWeek,
+            text = dayOfTheWeek[day],
             style = TextStyle(color = Color.White, fontSize = 20.sp, fontWeight = FontWeight.Bold),
         )
 

@@ -1,5 +1,6 @@
 package com.example.healthcare.ui.composable
 
+import android.content.Context
 import android.widget.HorizontalScrollView
 import android.widget.ScrollView
 import androidx.compose.foundation.BorderStroke
@@ -62,7 +63,7 @@ import com.example.healthcare.ui.theme.HealthCareTheme
 import kotlin.math.min
 
 @Composable
-fun InformationInputView(viewModel: InformationInputViewModel) {
+fun InformationInputView(viewModel: InformationInputViewModel, context: Context) {
     val focusRequester = remember { FocusRequester() }
     val focusManager = LocalFocusManager.current
     val backgroundClickAction = Modifier.clickable {
@@ -260,6 +261,7 @@ fun InformationInputView(viewModel: InformationInputViewModel) {
 
         Spacer(modifier = Modifier.height(16.dp))
 
+
         HorizontalScrollView(modifier = Modifier.widthIn(86.dp)) {
             AddExerciseColumn(day = 0, viewModel, viewModel.sunExerciseList)
             AddExerciseColumn(day = 1, viewModel, viewModel.monExerciseList)
@@ -269,15 +271,35 @@ fun InformationInputView(viewModel: InformationInputViewModel) {
             AddExerciseColumn(day = 5, viewModel, viewModel.friExerciseList)
             AddExerciseColumn(day = 6, viewModel, viewModel.saturExerciseList)
         }
+
+
+        Spacer(modifier = Modifier.height(48.dp))
+
+
+        Box(
+            contentAlignment = Alignment.Center,
+            modifier = Modifier
+                .size(120.dp, 60.dp)
+                .clip(CircleShape)
+                .background(Color.Transparent)
+                .border(3.dp, Color.White, CircleShape)
+                .clickable { viewModel.saveData(context) }
+        ) {
+            Text(
+                text = "저장",
+                color = Color.White
+            )
+        }
     }
 }
 
 
 
+/*
 @Preview(showBackground = true)
 @Composable
 fun GreetingPreview() {
     HealthCareTheme {
-        InformationInputView(InformationInputViewModel())
+        InformationInputView(InformationInputViewModel(), context = Context)
     }
-}
+}*/

@@ -1,23 +1,12 @@
 package com.example.healthcare
 
+import androidx.room.Entity
+import androidx.room.PrimaryKey
 import java.util.UUID
 
-data class SpinnerState(
-    val id: String,
-    val showSpinner: Boolean
-    )
-
-data class DayExerciseSpinner(
-    var mon : MutableList<ExerciseItem>,
-    var tues : MutableList<ExerciseItem>,
-    var wednes : MutableList<ExerciseItem>,
-    var thurs : MutableList<ExerciseItem>,
-    var fri : MutableList<ExerciseItem>,
-    var satur : MutableList<ExerciseItem>,
-    var sun : MutableList<ExerciseItem>,
-)
-
+@Entity(tableName = "exercise_items")
 data class ExerciseItem(
-    val id: UUID = UUID.randomUUID(),
-    val name: String
+    @PrimaryKey val id: String = UUID.randomUUID().toString(),
+    val name: String,
+    val dayOfWeek: Int
 )

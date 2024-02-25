@@ -17,12 +17,12 @@ fun HorizontalScrollView(
         modifier = modifier.horizontalScroll(rememberScrollState())
     ) { measurables, constraints ->
         val placeables = measurables.map { measurable ->
-            measurable.measure(constraints)
+            measurable.measure(constraints.copy(minHeight = 0, maxHeight = constraints.maxHeight))
         }
+        val width = placeables.sumOf { it.width }
+        val height = placeables.maxOf { it.height }
 
-        val width = min(constraints.maxWidth, placeables.sumBy { it.width })
-
-        layout(width, constraints.maxHeight) {
+        layout(width, height) {
             var xPosition = 0
             placeables.forEach { placeable ->
                 placeable.placeRelative(x = xPosition, y = 0)

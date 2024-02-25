@@ -83,6 +83,19 @@ dependencies {
 
     //implementation 'io.github.seyoungch02:filled-slider-compose:1.0.0'
 
+    def room_version = "2.3.0" // 현재 사용 가능한 최신 버전으로 대체
+
+    implementation "androidx.room:room-runtime:$room_version"
+    annotationProcessor "androidx.room:room-compiler:$room_version"
+    // Kotlin 사용 시 kapt를 사용하고, Java 사용 시 annotationProcessor를 사용합니다.
+    kapt "androidx.room:room-compiler:$room_version"
+
+    // Kotlin Coroutine 사용을 위한 Room 지원
+    implementation "androidx.room:room-ktx:$room_version"
+
+    // Testing
+    testImplementation "androidx.room:room-testing:$room_version"
+
 
     /*implementation 'androidx.core:core-ktx:1.8.0'
     implementation 'androidx.lifecycle:lifecycle-runtime-ktx:2.3.1'

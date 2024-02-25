@@ -2,6 +2,8 @@
 
 package com.example.healthcare.ui
 
+import android.content.ContentValues
+import android.content.Context
 import android.os.Bundle
 import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
@@ -73,85 +75,29 @@ import androidx.compose.ui.input.key.Key.Companion.K
 import androidx.compose.ui.platform.LocalDensity
 import androidx.compose.ui.platform.LocalFocusManager
 import androidx.compose.ui.text.input.ImeAction
+import com.example.healthcare.DB.ExerciseRoutineDB
 import com.example.healthcare.ui.composable.InformationInputView
+import android.database.sqlite.SQLiteDatabase
+import androidx.room.Room
 
 
 class InformationInputActivity : ComponentActivity() {
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
+        val viewModelFactory = ViewModelFactory {InformationInputViewModel()}
+        val viewModel = ViewModelProvider(this, viewModelFactory).get(InformationInputViewModel::class.java)
+
         setContent {
-            val viewModelFactory = ViewModelFactory {InformationInputViewModel()}
-            val viewModel = ViewModelProvider(this, viewModelFactory).get(InformationInputViewModel::class.java)
             HealthCareTheme {
                 Surface(
                     modifier = Modifier.fillMaxSize(),
                     color = MaterialTheme.colorScheme.background
                 ) {
-                    InformationInputView(viewModel)
-                    //AA()
+                    InformationInputView(viewModel,this)
                 }
             }
         }
     }
 }
-
-@Composable
-fun AA(){
-    Column(
-        horizontalAlignment = Alignment.CenterHorizontally,
-        modifier = Modifier
-            .width(100.dp)) {
-
-        Text(
-            text = "월",
-            style = TextStyle(color = Color.White, fontSize = 20.sp, fontWeight = FontWeight.Bold),
-        )
-        var expanded by remember { mutableStateOf(false) }
-        var selectedOption by remember { mutableStateOf("선택") }
-        val options = listOf("유산소", "등", "가슴", "하체", "어깨", "팔", "허리")
-
-        Box(modifier = Modifier
-            .fillMaxWidth()
-            .padding(10.dp),
-            contentAlignment = Alignment.Center
-        ) {
-            Text(
-                text = selectedOption,
-                style = TextStyle(color = Color.White, fontSize = 16.sp),
-                modifier = Modifier
-                    .clickable { expanded = true }
-                    .background(Color(0xFF2D2D2D), RoundedCornerShape(8.dp))
-                    .padding(10.dp),
-            )
-
-            DropdownMenu(
-                expanded = expanded,
-                onDismissRequest = { expanded = false },
-                modifier = Modifier
-                    .width(64.dp)
-                    .background(Color(0xFF2D2D2D), RoundedCornerShape(8.dp))
-            ) {
-                options.forEach { option ->
-                    DropdownMenuItem(
-                        text = { Text(option) },
-                        onClick = {
-                            selectedOption = option
-                            expanded = false
-                        }
-                    )
-                }
-            }
-        }
-    }
-}
-
-@Preview(showBackground = true)
-@Composable
-fun GreetingPreview() {
-    HealthCareTheme {
-        AA()
-    }
-}
-
 
