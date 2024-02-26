@@ -1,38 +1,25 @@
 package com.example.healthcare.ui.composable
 
 import android.content.Context
-import android.widget.HorizontalScrollView
-import android.widget.ScrollView
 import androidx.compose.foundation.BorderStroke
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
 import androidx.compose.foundation.border
 import androidx.compose.foundation.clickable
-import androidx.compose.foundation.horizontalScroll
-import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxSize
-import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
-import androidx.compose.foundation.layout.heightIn
-import androidx.compose.foundation.layout.offset
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.layout.widthIn
-import androidx.compose.foundation.layout.wrapContentSize
-import androidx.compose.foundation.layout.wrapContentWidth
-import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.shape.RoundedCornerShape
-import androidx.compose.foundation.verticalScroll
-import androidx.compose.material3.Button
-import androidx.compose.material3.ButtonDefaults
-import androidx.compose.material3.DropdownMenu
-import androidx.compose.material3.DropdownMenuItem
+import androidx.compose.foundation.text.BasicTextField
+import androidx.compose.foundation.text.KeyboardOptions
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
@@ -46,21 +33,20 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.focus.FocusRequester
+import androidx.compose.ui.focus.focusRequester
+import androidx.compose.ui.focus.onFocusChanged
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.ColorFilter
-import androidx.compose.ui.layout.Layout
-import androidx.compose.ui.platform.LocalDensity
+import androidx.compose.ui.graphics.SolidColor
 import androidx.compose.ui.platform.LocalFocusManager
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.text.font.FontWeight
-import androidx.compose.ui.tooling.preview.Preview
+import androidx.compose.ui.text.input.KeyboardType
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import com.example.healthcare.R
 import com.example.healthcare.VIewModel.InformationInputViewModel
-import com.example.healthcare.ui.theme.HealthCareTheme
-import kotlin.math.min
 
 @Composable
 fun InformationInputView(viewModel: InformationInputViewModel, context: Context) {
@@ -69,6 +55,9 @@ fun InformationInputView(viewModel: InformationInputViewModel, context: Context)
     val backgroundClickAction = Modifier.clickable {
         focusManager.clearFocus()
     }
+
+    var nameText by remember { mutableStateOf("이름") }
+    var isFocused by remember { mutableStateOf(false) }
 
     val ageSliderValue by viewModel.ageValue.observeAsState(0f)
     val ageText = remember { mutableStateOf(ageSliderValue.toString()) }
@@ -93,9 +82,6 @@ fun InformationInputView(viewModel: InformationInputViewModel, context: Context)
     val femaleButtonBackgroundColor = if (genderInfo == false){
         Color.LightGray
     } else Color.Transparent
-
-
-
 
     Box(
         modifier = Modifier
@@ -126,8 +112,51 @@ fun InformationInputView(viewModel: InformationInputViewModel, context: Context)
 
         Spacer(modifier = Modifier.height(24.dp))
 
-        Row(
-            verticalAlignment = Alignment.CenterVertically){
+
+        Row(verticalAlignment = Alignment.CenterVertically) {
+            Image(
+                painter = painterResource(id = R.drawable.ic_name),
+                contentDescription = "name",
+                modifier = Modifier
+                    .size(40.dp)
+                    .clip(CircleShape)
+                    .border(border = BorderStroke(3.dp, Color.White), shape = CircleShape)
+                    .padding(8.dp),
+                colorFilter = ColorFilter.tint(Color.White)
+            )
+            Spacer(modifier = Modifier.width(130.dp))
+
+            BasicTextField(
+                value = nameText/*if (isFocused) "" else nameText*/,
+                onValueChange = {
+                    nameText = it
+                    viewModel.name.value= it
+                },
+                textStyle = TextStyle(color = Color.White, fontSize = 16.sp),
+                singleLine = true,
+                cursorBrush = SolidColor(Color.White),
+                modifier = Modifier
+                    .padding(start = 10.dp)
+                    .background(Color(0xFF2D2D2D), RoundedCornerShape(8.dp))
+                    .padding(horizontal = 10.dp, vertical = 8.dp)
+                    .width(80.dp)
+                    .focusRequester(focusRequester)
+                    .onFocusChanged {
+                        isFocused = it.isFocused
+                        if(!it.isFocused && nameText.isEmpty()){
+                            nameText = "이름"
+                        }else if(it.isFocused && nameText == "이름"){
+                            nameText = ""
+                        }
+                    })
+
+            Spacer(modifier = Modifier.width(44.dp))
+        }
+
+        Spacer(modifier = Modifier.height(16.dp))
+
+
+        Row(verticalAlignment = Alignment.CenterVertically){
             Image(
                 painter = painterResource(id = R.drawable.ic_gender),
                 contentDescription = "Gender",

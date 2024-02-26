@@ -18,6 +18,7 @@ class InformationInputViewModel: ViewModel() {
     val heightValue : MutableLiveData<Float> = MutableLiveData()
     val weightValue : MutableLiveData<Float> = MutableLiveData()
     val genderInfo : MutableLiveData<Boolean> = MutableLiveData()
+    val name : MutableLiveData<String> = MutableLiveData("")
     val saveExerciseRoutine : MutableLiveData<Unit> = MutableLiveData()
 
     val sunExerciseList : MutableLiveData<MutableList<ExerciseItem>> = MutableLiveData(mutableListOf())

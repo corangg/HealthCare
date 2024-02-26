@@ -53,7 +53,6 @@ fun SliderInputRow(
     val textFieldValue = remember { mutableStateOf(textValue) }
 
     LaunchedEffect(textValue) {
-        // 포커스가 없을 때만 기본값으로 다시 설정합니다.
         if (!isFocused.value) {
             textFieldValue.value = textValue
         }
