@@ -7,6 +7,7 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.layout.Layout
 import kotlin.math.min
 
+
 @Composable
 fun HorizontalScrollView(
     modifier: Modifier = Modifier,
@@ -19,6 +20,7 @@ fun HorizontalScrollView(
         val placeables = measurables.map { measurable ->
             measurable.measure(constraints.copy(minHeight = 0, maxHeight = constraints.maxHeight))
         }
+
         val width = placeables.sumOf { it.width }
         val height = placeables.maxOf { it.height }
 

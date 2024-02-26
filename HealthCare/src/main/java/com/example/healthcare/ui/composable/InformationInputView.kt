@@ -1,6 +1,7 @@
 package com.example.healthcare.ui.composable
 
 import android.content.Context
+import android.widget.HorizontalScrollView
 import androidx.compose.foundation.BorderStroke
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
@@ -21,6 +22,7 @@ import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.foundation.text.BasicTextField
 import androidx.compose.foundation.text.KeyboardOptions
 import androidx.compose.material3.MaterialTheme
+import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
@@ -29,6 +31,7 @@ import androidx.compose.runtime.setValue
 import androidx.compose.runtime.livedata.observeAsState
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
+import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
@@ -47,9 +50,17 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import com.example.healthcare.R
 import com.example.healthcare.VIewModel.InformationInputViewModel
+import kotlinx.coroutines.launch
+import androidx.hilt.navigation.compose.hiltViewModel
+
+
+import androidx.compose.material.*
+
+
 
 @Composable
-fun InformationInputView(viewModel: InformationInputViewModel, context: Context) {
+fun InformationInputView(viewModel: InformationInputViewModel,context: Context) {
+    //val viewModel: InformationInputViewModel = hiltViewModel()
     val focusRequester = remember { FocusRequester() }
     val focusManager = LocalFocusManager.current
     val backgroundClickAction = Modifier.clickable {
@@ -292,13 +303,13 @@ fun InformationInputView(viewModel: InformationInputViewModel, context: Context)
 
 
         HorizontalScrollView(modifier = Modifier.widthIn(86.dp)) {
-            AddExerciseColumn(day = 0, viewModel, viewModel.sunExerciseList)
-            AddExerciseColumn(day = 1, viewModel, viewModel.monExerciseList)
-            AddExerciseColumn(day = 2, viewModel, viewModel.tuesExerciseList)
-            AddExerciseColumn(day = 3, viewModel, viewModel.wednesExerciseList)
-            AddExerciseColumn(day = 4, viewModel, viewModel.thursExerciseList)
-            AddExerciseColumn(day = 5, viewModel, viewModel.friExerciseList)
-            AddExerciseColumn(day = 6, viewModel, viewModel.saturExerciseList)
+            AddExerciseColumn(viewModel, day = 0, viewModel.sunExerciseList)
+            AddExerciseColumn(viewModel, day = 1, viewModel.monExerciseList)
+            AddExerciseColumn(viewModel, day = 2, viewModel.tuesExerciseList)
+            AddExerciseColumn(viewModel, day = 3, viewModel.wednesExerciseList)
+            AddExerciseColumn(viewModel, day = 4, viewModel.thursExerciseList)
+            AddExerciseColumn(viewModel, day = 5, viewModel.friExerciseList)
+            AddExerciseColumn(viewModel, day = 6, viewModel.saturExerciseList)
         }
 
 
@@ -319,8 +330,13 @@ fun InformationInputView(viewModel: InformationInputViewModel, context: Context)
                 color = Color.White
             )
         }
+
+
+
     }
 }
+
+
 
 
 

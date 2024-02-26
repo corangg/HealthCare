@@ -6,16 +6,17 @@ import androidx.room.Insert
 import androidx.room.OnConflictStrategy
 import androidx.room.Query
 import com.example.healthcare.ExerciseItem
+import com.example.healthcare.PhsicalInfo
 
 @Dao
 interface PhsicalInfoDao {
 
     @Insert(onConflict = OnConflictStrategy.REPLACE)
-    suspend fun insertExerciseItem(item: ExerciseItem)
+    suspend fun insertPhsicalInfo(info: PhsicalInfo)
 
-    @Query("SELECT * FROM exercise_items WHERE dayOfWeek = :dayOfWeek")
-    suspend fun getExerciseItemsByDay(dayOfWeek: Int): List<ExerciseItem>
+    @Query("SELECT * FROM phsical_info")
+    suspend fun getPhsicalInfo(): PhsicalInfo
 
     @Delete
-    suspend fun deleteExerciseItem(item: ExerciseItem)
+    suspend fun deletePhsicalInfo(info: PhsicalInfo)
 }

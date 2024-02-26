@@ -39,7 +39,6 @@ import java.util.UUID
 
 @Composable
 fun SelectExerciseSpinner(
-    viewModel: InformationInputViewModel,
     exercise: String,
     onExerciseSelected: (String) -> Unit,
     onDeleteClicked: () -> Unit){

@@ -28,6 +28,7 @@ import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.lifecycle.MutableLiveData
 import com.example.healthcare.ExerciseItem
 
@@ -37,7 +38,8 @@ import com.example.healthcare.ui.theme.HealthCareTheme
 import java.util.UUID
 
 @Composable
-fun AddExerciseColumn(day : Int, viewModel: InformationInputViewModel, list : MutableLiveData<MutableList<ExerciseItem>>) {
+fun AddExerciseColumn(viewModel: InformationInputViewModel, day : Int, list : MutableLiveData<MutableList<ExerciseItem>>) {
+    //val viewModel: InformationInputViewModel = hiltViewModel()
     val dayOfTheWeek = arrayOf("일","월","화","수","목","금","토")
     val exerciseList by list.observeAsState(initial = listOf())
 
@@ -55,7 +57,6 @@ fun AddExerciseColumn(day : Int, viewModel: InformationInputViewModel, list : Mu
         exerciseList.forEach { exercise ->
             key(exercise.id) {
                 SelectExerciseSpinner(
-                    viewModel = viewModel,
                     exercise = exercise.name,
                     onExerciseSelected = { newName ->
                         viewModel.updateExerciseAt(exercise.id, newName,day)

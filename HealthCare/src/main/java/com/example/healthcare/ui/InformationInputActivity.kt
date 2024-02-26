@@ -76,18 +76,23 @@ import androidx.compose.ui.platform.LocalDensity
 import androidx.compose.ui.platform.LocalFocusManager
 import androidx.compose.ui.text.input.ImeAction
 import com.example.healthcare.DB.ExerciseRoutineDB
-import com.example.healthcare.ui.composable.InformationInputView
+//import com.example.healthcare.ui.composable.InformationInputView
 import android.database.sqlite.SQLiteDatabase
+import android.widget.Toast
+import androidx.activity.viewModels
+import androidx.compose.material3.Button
+import androidx.hilt.navigation.compose.hiltViewModel
+import androidx.lifecycle.ViewModelStore
 import androidx.room.Room
+import com.example.healthcare.ui.composable.InformationInputView
+import dagger.hilt.android.AndroidEntryPoint
 
-
+@AndroidEntryPoint
 class InformationInputActivity : ComponentActivity() {
+    private val viewModel : InformationInputViewModel by viewModels()
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        val viewModelFactory = ViewModelFactory {InformationInputViewModel()}
-        val viewModel = ViewModelProvider(this, viewModelFactory).get(InformationInputViewModel::class.java)
-
         setContent {
             HealthCareTheme {
                 Surface(
@@ -98,6 +103,22 @@ class InformationInputActivity : ComponentActivity() {
                 }
             }
         }
+        setObserve(viewModel)
+    }
+
+    fun setObserve(viewModel: InformationInputViewModel){
+        viewModel.dataSaveFail.observe(this){
+            when(it){
+                1 ->  Toast.makeText(this,"이름을 입력해 주세요.", Toast.LENGTH_SHORT).show()
+                2 ->  Toast.makeText(this,"성별을 입력해 주세요.", Toast.LENGTH_SHORT).show()
+                3 ->  Toast.makeText(this,"나이를 입력해 주세요.", Toast.LENGTH_SHORT).show()
+                4 ->  Toast.makeText(this,"키를 입력해 주세요.", Toast.LENGTH_SHORT).show()
+                5 ->  Toast.makeText(this,"몸무게를 입력해 주세요.", Toast.LENGTH_SHORT).show()
+            }
+        }
+
+        viewModel.dataSaveSuccess.observe(this){
+            finish()
+        }
     }
 }
-

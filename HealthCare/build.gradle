@@ -96,6 +96,12 @@ dependencies {
     // Testing
     testImplementation "androidx.room:room-testing:$room_version"
 
+    implementation "androidx.compose.material:material:1.0.5"
+
+
+    implementation("androidx.navigation:navigation-compose:2.5.3")
+    implementation("androidx.hilt:hilt-navigation-compose:1.0.0")
+
 
     /*implementation 'androidx.core:core-ktx:1.8.0'
     implementation 'androidx.lifecycle:lifecycle-runtime-ktx:2.3.1'

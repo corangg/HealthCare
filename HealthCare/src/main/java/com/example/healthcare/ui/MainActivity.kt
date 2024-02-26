@@ -4,6 +4,7 @@ import android.content.Intent
 import android.os.Bundle
 import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
+import androidx.activity.viewModels
 import androidx.compose.foundation.background
 import androidx.compose.foundation.border
 import androidx.compose.foundation.layout.Arrangement
@@ -25,19 +26,20 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
+import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.lifecycle.ViewModelProvider
+import com.example.healthcare.VIewModel.InformationInputViewModel
 import com.example.healthcare.VIewModel.MainViewModel
 import com.example.healthcare.ViewModelFactory.ViewModelFactory
 import com.example.healthcare.ui.theme.HealthCareTheme
+import dagger.hilt.android.AndroidEntryPoint
 
+@AndroidEntryPoint
 class MainActivity : ComponentActivity() {
+    private val viewModel : MainViewModel by viewModels()
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContent {
-            val mainViewModelFactory = ViewModelFactory {
-                MainViewModel()
-            }
-            val mainViewModel = ViewModelProvider(this, mainViewModelFactory).get(MainViewModel::class.java)
             val a = true
             if(a==true){
                 startActivity(Intent(this, InformationInputActivity::class.java))
@@ -48,7 +50,7 @@ class MainActivity : ComponentActivity() {
                     modifier = Modifier.fillMaxSize(),
                     color = MaterialTheme.colorScheme.background
                 ) {
-                    MyAppPreview(mainViewModel)
+                    MyAppPreview()
                 }
             }
         }
@@ -56,7 +58,8 @@ class MainActivity : ComponentActivity() {
 }
 
 @Composable
-fun MyAppPreview(viewModel: MainViewModel) {
+fun MyAppPreview() {
+    val viewModel: MainViewModel = hiltViewModel()
     Column(
         modifier = Modifier
             .fillMaxSize()
@@ -88,7 +91,7 @@ fun MyAppPreview(viewModel: MainViewModel) {
 @Preview(showBackground = true)
 @Composable
 fun DefaultPreview() {
-    MyAppPreview(MainViewModel())
+    MyAppPreview()
 }
 
 

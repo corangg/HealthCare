@@ -8,18 +8,25 @@ import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import androidx.room.Room
 import com.example.healthcare.DB.ExerciseRoutineDB
+import com.example.healthcare.DB.PhsicalInfoDB
 import com.example.healthcare.ExerciseItem
+import com.example.healthcare.PhsicalInfo
+import com.example.healthcare.Repository.InformationInputRepository
+import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.launch
+import javax.inject.Inject
 
-class InformationInputViewModel: ViewModel() {
+@HiltViewModel
+class InformationInputViewModel @Inject constructor(private val informationInputRepository:InformationInputRepository): ViewModel() {
     var backgroundColor = mutableStateOf(Color(0xFF121212))
         private set
-    val ageValue : MutableLiveData<Float> = MutableLiveData()
-    val heightValue : MutableLiveData<Float> = MutableLiveData()
-    val weightValue : MutableLiveData<Float> = MutableLiveData()
+    val ageValue : MutableLiveData<Float> = MutableLiveData(0f)
+    val heightValue : MutableLiveData<Float> = MutableLiveData(0f)
+    val weightValue : MutableLiveData<Float> = MutableLiveData(0f)
     val genderInfo : MutableLiveData<Boolean> = MutableLiveData()
     val name : MutableLiveData<String> = MutableLiveData("")
-    val saveExerciseRoutine : MutableLiveData<Unit> = MutableLiveData()
+    val dataSaveFail : MutableLiveData<Int> = MutableLiveData(-1)
+    val dataSaveSuccess : MutableLiveData<Unit> = MutableLiveData()
 
     val sunExerciseList : MutableLiveData<MutableList<ExerciseItem>> = MutableLiveData(mutableListOf())
     val monExerciseList : MutableLiveData<MutableList<ExerciseItem>> = MutableLiveData(mutableListOf())
@@ -59,7 +66,7 @@ class InformationInputViewModel: ViewModel() {
     }
 
     fun deleteExercise(itemId: String, day: Int) {
-        val newList = exerciseLists[day].value.orEmpty().filterNot { it.id == itemId.toString() }
+        val newList = exerciseLists[day].value.orEmpty().filterNot { it.id == itemId }
         exerciseLists[day].value = newList.toMutableList()
 
     }
@@ -75,29 +82,57 @@ class InformationInputViewModel: ViewModel() {
         genderInfo.value = gender
     }
 
-    fun saveData(context : Context){
-        val db = Room.databaseBuilder(
-            context,
-            ExerciseRoutineDB::class.java, "exercise-database"
-        ).build()
-
-        viewModelScope.launch {
-            for(day in 0 .. 6){
-                for(i in exerciseLists[day].value.orEmpty()){
-                    db.exerciseDao().insertExerciseItem(i)
-                }
-            }
+    fun checkData(): Int{
+        return if(name.value == ""){
+            1
+        }else if(genderInfo.value == null){
+            2
+        }else if(ageValue.value == 0f){
+            3
+        }else if(heightValue.value == 0f){
+            4
+        }else if(weightValue.value == 0f){
+            5
+        }else{
+            0
         }
     }
-    /*fun testRead(context: Context){
-        val db = Room.databaseBuilder(
-            context,
-            ExerciseRoutineDB::class.java, "exercise-database"
-        ).build()
 
-        viewModelScope.launch {
-            val exercise = db.exerciseDao().getExerciseItemsByDay(2)
-            true
+    fun saveData(context : Context){
+        if(checkData() == 0){
+            val Exercisedb = Room.databaseBuilder(
+                context,
+                ExerciseRoutineDB::class.java, "exercise-database"
+            ).build()
+
+            val Phsicaldb = Room.databaseBuilder(
+                context,
+                PhsicalInfoDB::class.java, "phsical-database"
+            ).build()
+
+            val phsicalInfo = PhsicalInfo(
+                name.value!!,
+                genderInfo.value!!,
+                ageValue.value!!.toInt(),
+                heightValue.value!! ,
+                weightValue.value!!)
+
+            viewModelScope.launch {
+                for(day in 0 .. 6){
+                    for(i in exerciseLists[day].value.orEmpty()){
+                        Exercisedb.exerciseDao().insertExerciseItem(i)
+                    }
+                }
+                Phsicaldb.phsicalDao().insertPhsicalInfo(phsicalInfo)
+            }
+
+            dataSaveSuccess.value = Unit
+        }else{
+            dataSaveFail.value = checkData()
         }
-    }*/
+
+    }
+
+
+
 }
