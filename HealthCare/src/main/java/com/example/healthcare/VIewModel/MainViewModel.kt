@@ -1,6 +1,7 @@
 package com.example.healthcare.VIewModel
 
 import android.app.Application
+import androidx.compose.material.SnackbarDefaults.backgroundColor
 import androidx.compose.runtime.State
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.ui.graphics.Color
@@ -11,7 +12,7 @@ import javax.inject.Inject
 
 @HiltViewModel
 class MainViewModel @Inject constructor(): ViewModel() {
-    var backgroundColor = mutableStateOf(Color(0xFF182120))
+    var backgroundColor = mutableStateOf(Color(0xFF121212))
         private set
 
     fun onAClicked() {

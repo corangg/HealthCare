@@ -4,6 +4,7 @@ package com.example.healthcare.ui
 
 import android.content.ContentValues
 import android.content.Context
+import android.content.Intent
 import android.os.Bundle
 import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
@@ -93,6 +94,7 @@ class InformationInputActivity : ComponentActivity() {
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
+        viewModel.checkProfileData(this)
         setContent {
             HealthCareTheme {
                 Surface(
@@ -119,6 +121,12 @@ class InformationInputActivity : ComponentActivity() {
 
         viewModel.dataSaveSuccess.observe(this){
             finish()
+        }
+        viewModel.checkProfile.observe(this){
+            if(it){
+                finish()
+                startActivity(Intent(this, MainActivity::class.java))
+            }
         }
     }
 }

@@ -1,5 +1,6 @@
 package com.example.healthcare
 
+import androidx.compose.ui.graphics.vector.ImageVector
 import androidx.room.Entity
 import androidx.room.PrimaryKey
 import java.util.UUID
@@ -20,3 +21,5 @@ data class ExerciseItem(
     val name: String,
     val dayOfWeek: Int
 )
+
+data class NavigationItem(val title: String, val icon: ImageVector)

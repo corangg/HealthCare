@@ -27,6 +27,7 @@ class InformationInputViewModel @Inject constructor(private val informationInput
     val name : MutableLiveData<String> = MutableLiveData("")
     val dataSaveFail : MutableLiveData<Int> = MutableLiveData(-1)
     val dataSaveSuccess : MutableLiveData<Unit> = MutableLiveData()
+    val checkProfile : MutableLiveData<Boolean> = MutableLiveData(false)
 
     val sunExerciseList : MutableLiveData<MutableList<ExerciseItem>> = MutableLiveData(mutableListOf())
     val monExerciseList : MutableLiveData<MutableList<ExerciseItem>> = MutableLiveData(mutableListOf())
@@ -42,6 +43,18 @@ class InformationInputViewModel @Inject constructor(private val informationInput
     )
 
 
+    fun checkProfileData(context: Context){
+        val Phsicaldb = Room.databaseBuilder(
+            context,
+            PhsicalInfoDB::class.java, "phsical-database"
+        ).build()
+        viewModelScope.launch {
+            if(Phsicaldb.phsicalDao().getPhsicalInfo().name != ""){
+                checkProfile.value = true
+            }
+        }
+    }
+
     fun setAgeValue(value : Float){
         ageValue.value = value
     }
@@ -55,10 +68,6 @@ class InformationInputViewModel @Inject constructor(private val informationInput
         val stringValue = String.format("%.2f",value)
         weightValue.value = stringValue.toFloat()
     }
-
-
-
-
 
     fun addExercise(name: String, day: Int){
         val newList = exerciseLists[day].value.orEmpty() + ExerciseItem(name = name, dayOfWeek = day)
@@ -132,7 +141,4 @@ class InformationInputViewModel @Inject constructor(private val informationInput
         }
 
     }
-
-
-
 }
