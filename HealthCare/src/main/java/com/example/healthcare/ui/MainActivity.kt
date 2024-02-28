@@ -56,6 +56,7 @@ import com.example.healthcare.R
 import com.example.healthcare.VIewModel.InformationInputViewModel
 import com.example.healthcare.VIewModel.MainViewModel
 import com.example.healthcare.ViewModelFactory.ViewModelFactory
+import com.example.healthcare.ui.composable.Main.MyAppPreview
 import com.example.healthcare.ui.theme.HealthCareTheme
 import dagger.hilt.android.AndroidEntryPoint
 
@@ -65,7 +66,6 @@ class MainActivity : ComponentActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContent {
-
 
             HealthCareTheme {
                 Surface(
@@ -79,79 +79,10 @@ class MainActivity : ComponentActivity() {
     }
 }
 
-@Composable
-fun BottomNavigationBar(navController: NavController){
-    var selectedItem by remember { mutableStateOf(0) }
-    val items = listOf("운동", "기록", "프로필")
-
-    BottomNavigation(modifier = Modifier.height(60.dp), backgroundColor = Color(0xFF2D2D2D)) {
-        val currentRoute = currentRoute(navController)
-        items.forEach {
-            BottomNavigationItem(
-                icon = {
-                    when (it) {
-                        "운동" -> Icon(painterResource(id = R.drawable.ic_exercise), contentDescription = null, modifier = Modifier.size(36.dp).padding(top = 6.dp))
-                        "기록" -> Icon(painterResource(id = R.drawable.ic_graph), contentDescription = null, modifier = Modifier.size(36.dp).padding(bottom = 4.dp, top = 8.dp))
-                        "프로필" -> Icon(painterResource(id = R.drawable.ic_name), contentDescription = null, modifier = Modifier.size(36.dp).padding(bottom = 4.dp, top = 8.dp))
-                    }
-                },
-                label = { Text(it, fontSize = 12.sp)},
-                selected = currentRoute == it,
-                onClick = {navController.navigate(it){
-                    navController.graph.startDestinationRoute?.let{
-                        popUpTo(it){saveState = true}
-                    }
-                    launchSingleTop = true
-                    restoreState = true
-                } },
-                selectedContentColor = Color.Blue,
-                unselectedContentColor = Color.LightGray
-            )
-        }
-    }
-}
-
-@Composable
-fun MyAppPreview() {
-    val viewModel: MainViewModel = hiltViewModel()
-    Column(
-        modifier = Modifier
-            .fillMaxSize()
-            .background(color = viewModel.backgroundColor.value),
-        verticalArrangement = Arrangement.Center,
-        horizontalAlignment = Alignment.CenterHorizontally
-    ) {
-        val navController = rememberNavController()
-
-        androidx.compose.material.Scaffold(
-            bottomBar = {BottomNavigationBar(navController)}
-        ) {innerPadding ->
-            NavigationGraph(navController = navController,innerPadding)
-        }
-    }
-}
-
-@Composable
-fun NavigationGraph(navController: NavHostController, innerPadding: PaddingValues) {
-    NavHost(navController, startDestination = "운동") {
-        composable("운동") { Icon(painterResource(id = R.drawable.ic_exercise), contentDescription = null, modifier = Modifier.size(36.dp).padding(top = 6.dp)) }
-        composable("기록") { Icon(painterResource(id = R.drawable.ic_graph), contentDescription = null, modifier = Modifier.size(36.dp).padding(bottom = 4.dp, top = 8.dp))}
-        composable("프로필") { Icon(painterResource(id = R.drawable.ic_name), contentDescription = null, modifier = Modifier.size(36.dp).padding(bottom = 4.dp, top = 8.dp)) }
-    }
-}
-
-@Composable
-fun currentRoute(navController: NavController): String? {
-    val navBackStackEntry by navController.currentBackStackEntryAsState()
-    return navBackStackEntry?.destination?.route
-}
 
 
 
-@Preview(showBackground = true)
-@Composable
-fun DefaultPreview() {
-    MyAppPreview()
-}
+
+
 
 

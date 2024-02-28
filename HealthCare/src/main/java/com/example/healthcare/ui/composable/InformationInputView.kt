@@ -50,12 +50,6 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import com.example.healthcare.R
 import com.example.healthcare.VIewModel.InformationInputViewModel
-import kotlinx.coroutines.launch
-import androidx.hilt.navigation.compose.hiltViewModel
-
-
-import androidx.compose.material.*
-
 
 
 @Composable
