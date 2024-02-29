@@ -101,7 +101,7 @@ class InformationInputActivity : ComponentActivity() {
                     modifier = Modifier.fillMaxSize(),
                     color = MaterialTheme.colorScheme.background
                 ) {
-                    InformationInputView(viewModel,this)
+                    InformationInputView(viewModel)
                 }
             }
         }

@@ -1,6 +1,7 @@
 package com.example.healthcare.ui.composable.Main
 
 import androidx.compose.foundation.background
+import androidx.compose.foundation.border
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.PaddingValues
@@ -60,7 +61,7 @@ fun BottomNavigationBar(navController: NavController){
     var selectedItem by remember { mutableStateOf(0) }
     val items = listOf("운동", "기록", "프로필")
 
-    BottomNavigation(modifier = Modifier.height(60.dp), backgroundColor = Color(0xFF2D2D2D)) {
+    BottomNavigation(modifier = Modifier.height(60.dp).border(2.dp,Color.Black), backgroundColor = Color(0xFF2D2D2D)) {
         val currentRoute = currentRoute(navController)
         items.forEach {
             BottomNavigationItem(

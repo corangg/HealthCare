@@ -41,20 +41,24 @@ import androidx.compose.ui.focus.onFocusChanged
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.ColorFilter
 import androidx.compose.ui.graphics.SolidColor
+import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.platform.LocalFocusManager
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.input.KeyboardType
+import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import com.example.healthcare.R
 import com.example.healthcare.VIewModel.InformationInputViewModel
+import com.example.healthcare.ui.theme.HealthCareTheme
 
 
 @Composable
-fun InformationInputView(viewModel: InformationInputViewModel,context: Context) {
+fun InformationInputView(viewModel: InformationInputViewModel) {
     //val viewModel: InformationInputViewModel = hiltViewModel()
+    val context = LocalContext.current
     val focusRequester = remember { FocusRequester() }
     val focusManager = LocalFocusManager.current
     val backgroundClickAction = Modifier.clickable {
@@ -334,11 +338,10 @@ fun InformationInputView(viewModel: InformationInputViewModel,context: Context) 
 
 
 
-/*
 @Preview(showBackground = true)
 @Composable
 fun GreetingPreview() {
     HealthCareTheme {
-        InformationInputView(InformationInputViewModel(), context = Context)
+        InformationInputView(InformationInputViewModel())
     }
-}*/
+}

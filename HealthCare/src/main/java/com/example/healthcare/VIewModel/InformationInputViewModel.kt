@@ -17,7 +17,7 @@ import kotlinx.coroutines.launch
 import javax.inject.Inject
 
 @HiltViewModel
-class InformationInputViewModel @Inject constructor(private val informationInputRepository:InformationInputRepository): ViewModel() {
+class InformationInputViewModel @Inject constructor(): ViewModel() {
     var backgroundColor = mutableStateOf(Color(0xFF121212))
         private set
     val ageValue : MutableLiveData<Float> = MutableLiveData(0f)
