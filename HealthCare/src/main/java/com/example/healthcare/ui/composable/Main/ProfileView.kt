@@ -48,11 +48,10 @@ import com.example.healthcare.VIewModel.MainViewModel
 
 
 @Composable
-fun ProfileView(/*viewModel: MainViewModel*/) {
+fun ProfileView() {
     val viewModel: MainViewModel = hiltViewModel()
-    val context = LocalContext.current
     LaunchedEffect(true) {
-        viewModel.getProfile(context)
+        viewModel.getProfile()
     }
     val name = viewModel.profileData.observeAsState().value?.name ?:""
     val gender = viewModel.profileData.observeAsState().value?.gender ?:true
@@ -64,10 +63,7 @@ fun ProfileView(/*viewModel: MainViewModel*/) {
         modifier = Modifier
             .fillMaxSize()
             .background(color = viewModel.backgroundColor.value),
-        //horizontalAlignment = Alignment.CenterHorizontally,
     ){
-
-
         Box(modifier = Modifier
             .fillMaxWidth()
             .padding(20.dp)
@@ -109,7 +105,7 @@ fun ProfileView(/*viewModel: MainViewModel*/) {
         ){
 
             when(viewModel.viewEditCompsable.observeAsState().value){
-                0->editNameView("이름",name)
+                1-> editPhsicalInfoView("이름",name,{viewModel.editName()})
             }
         }
     }
@@ -174,9 +170,10 @@ fun profileRow(
 }
 
 @Composable
-fun editNameView(item : String, value : Any/*, onSave : ()->Unit, onCancel : ()-> Unit*/){
-    //val itemValue = remember { mutableStateOf(value) }
-    var itemValue by remember { mutableStateOf(/*value*/"이강현") }
+fun editPhsicalInfoView(item : String, value : Any, editClicked: () -> Unit){
+    val viewModel: MainViewModel = hiltViewModel()
+    var itemValue by remember { mutableStateOf(value.toString()) }
+
     Column(modifier = Modifier
         .fillMaxWidth()
         .padding(16.dp), horizontalAlignment = Alignment.CenterHorizontally) {
@@ -184,62 +181,62 @@ fun editNameView(item : String, value : Any/*, onSave : ()->Unit, onCancel : ()-
             text = item,
             style = TextStyle(color = Color.White, fontSize = 20.sp, fontWeight = FontWeight.Bold))
 
-        /*Row(verticalAlignment = (Alignment.CenterVertically)) {
-            Box(modifier = Modifier.align(Alignment)) {
-
-            }
-
-        }*/
-
-        /*Row(verticalAlignment = (Alignment.CenterVertically)) {
-            BasicTextField(
-                value = itemValue.toString(),
-                onValueChange = {
-                    itemValue = it},
-                singleLine = true,
-                cursorBrush = SolidColor(Color.White),
-                modifier = Modifier
-                    .fillMaxWidth()
-                    .height(60.dp)
-                    .padding(top = 20.dp)
-                    .border(2.dp, Color.White, RoundedCornerShape(6.dp))
-                    .padding(start = 10.dp)
-                    .align(Alignment.CenterVertically)
-                ,
-                textStyle = TextStyle(color = Color.White, fontSize = 16.sp)
-            )
-
-        }*/
-
         Box(
             modifier = Modifier
                 .fillMaxWidth()
                 .padding(top = 20.dp)
                 .height(48.dp)
                 .border(2.dp, Color.White, RoundedCornerShape(6.dp))
-                .padding(horizontal = 10.dp) // Box의 상하단 패딩을 조정하여 BasicTextField의 위치를 수직 중앙에 오도록 함
+                .padding(horizontal = 10.dp)
         ) {
-
             BasicTextField(
                 value = itemValue,
-                onValueChange = { itemValue = it },
+                onValueChange = {
+                    itemValue = it
+                    viewModel.profileName.value = it},
                 singleLine = true,
                 cursorBrush = SolidColor(Color.White),
                 modifier = Modifier
                     .fillMaxWidth()
-                    .align(Alignment.CenterStart), // Box 내에서 BasicTextField를 수직 중앙(정렬 시작점)에 위치시킴
+                    .align(Alignment.CenterStart),
                 textStyle = TextStyle(color = Color.White, fontSize = 16.sp)
             )
         }
 
+        Row(verticalAlignment = Alignment.CenterVertically, modifier = Modifier.fillMaxWidth().padding(top = 20.dp)) {
+            Box(
+                contentAlignment = Alignment.Center,
+                modifier = Modifier
+                    .weight(1f)
+                    .height(40.dp)
+                    .background(Color.Transparent)
+                    .border(3.dp, Color.White, RoundedCornerShape(12.dp))
+                    .clickable {viewModel.editCancel() }
+            ) {
+                Text(
+                    text = "취소",
+                    color = Color.White
+                )
+            }
 
+            Box(
+                contentAlignment = Alignment.Center,
+                modifier = Modifier
+                    .weight(1f)
+                    .height(40.dp)
+                    .background(Color.Transparent)
+                    .border(3.dp, Color.White, RoundedCornerShape(12.dp))
+                    .clickable {
+                        editClicked() }
+            ) {
+                Text(
+                    text = "저장",
+                    color = Color.White
+                )
+            }
+        }
 
-
-        Spacer(modifier = Modifier.height(200.dp))
-        //BasicTextField(value = , onValueChange = )
-
-        //Spacer(modifier = )
-        
+        Spacer(modifier = Modifier.height(80.dp))
     }
 
 }

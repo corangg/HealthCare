@@ -19,4 +19,23 @@ interface PhsicalInfoDao {
 
     @Delete
     suspend fun deletePhsicalInfo(info: PhsicalInfo)
+
+    @Query("UPDATE phsical_info SET name = :newName WHERE name = :oldName")
+    suspend fun updateName(oldName: String, newName: String)
+
+    /*@Query("UPDATE phsical_info SET gender = :new WHERE gender = :old")
+    suspend fun updateGender(old: Boolean, new: Boolean)
+
+    @Query("UPDATE phsical_info SET age = :new WHERE age = :old")
+    suspend fun updateAge(old: Int, new: Int)
+
+    @Query("UPDATE phsical_info SET height = :new WHERE height = :old")
+    suspend fun updateHeight(old: Float, new: Float)
+
+    @Query("UPDATE phsical_info SET weight = :new WHERE weight = :old")
+    suspend fun updateWeight(old: Float, new: Float)*/
+
+
+
+
 }
