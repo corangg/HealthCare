@@ -50,9 +50,20 @@ class MainViewModel @Inject constructor(private val phsicalInfoRepository: Phsic
         viewEditCompsable.value = 0
     }
 
+    fun selectGender(gender : Boolean){
+        profileGender.value = gender
+    }
+
     fun editName(){
         viewModelScope.launch {
             phsicalInfoRepository.updateName(profileName.value!!,profileData.value?.name ?:"" )
+            getProfile()
+        }
+    }
+
+    fun editGender(){
+        viewModelScope.launch {
+            phsicalInfoRepository.updateGender(profileGender.value!!,profileData.value!!.gender )
             getProfile()
         }
     }
@@ -79,12 +90,7 @@ class MainViewModel @Inject constructor(private val phsicalInfoRepository: Phsic
     }
 
 
-    /*fun editGender(){
-        viewModelScope.launch {
-            phsicalInfoRepository.updateGender(profileGender.value!!,profileData.value!!.gender )
-            getProfile()
-        }
-    }
+    /*
 
 
 

@@ -107,6 +107,7 @@ fun ProfileView() {
 
             when(viewModel.viewEditCompsable.observeAsState().value){
                 1-> editPhsicalInfoView("이름",viewModel.profileName,{viewModel.editName()})
+                2-> editGenderInfoView("성별",{viewModel.editGender()})
                 3-> editPhsicalInfoView("나이",viewModel.profileAge,{viewModel.editAge()})
                 4-> editPhsicalInfoView("키",viewModel.profileHeight,{viewModel.editHeight()})
                 5-> editPhsicalInfoView("몸무게",viewModel.profileWeight,{viewModel.editWeight()})
@@ -207,7 +208,9 @@ fun editPhsicalInfoView(item : String, value : MutableLiveData<*>, editClicked: 
             )
         }
 
-        Row(verticalAlignment = Alignment.CenterVertically, modifier = Modifier.fillMaxWidth().padding(top = 20.dp)) {
+        Row(verticalAlignment = Alignment.CenterVertically, modifier = Modifier
+            .fillMaxWidth()
+            .padding(top = 20.dp)) {
             Box(
                 contentAlignment = Alignment.Center,
                 modifier = Modifier
@@ -215,7 +218,7 @@ fun editPhsicalInfoView(item : String, value : MutableLiveData<*>, editClicked: 
                     .height(40.dp)
                     .background(Color.Transparent)
                     .border(3.dp, Color.White, RoundedCornerShape(12.dp))
-                    .clickable {viewModel.editCancel() }
+                    .clickable { viewModel.editCancel() }
             ) {
                 Text(
                     text = "취소",
@@ -231,7 +234,104 @@ fun editPhsicalInfoView(item : String, value : MutableLiveData<*>, editClicked: 
                     .background(Color.Transparent)
                     .border(3.dp, Color.White, RoundedCornerShape(12.dp))
                     .clickable {
-                        editClicked() }
+                        editClicked()
+                    }
+            ) {
+                Text(
+                    text = "저장",
+                    color = Color.White
+                )
+            }
+        }
+
+        Spacer(modifier = Modifier.height(80.dp))
+    }
+
+}
+
+
+@Composable
+fun editGenderInfoView(item : String, editClicked: () -> Unit){
+    val viewModel: MainViewModel = hiltViewModel()
+    val genderInfo by viewModel.profileGender.observeAsState()
+
+    val maleButtonBackgroundColor = if (genderInfo == true){
+        Color.LightGray
+    } else Color.Transparent
+
+    val femaleButtonBackgroundColor = if (genderInfo == false){
+        Color.LightGray
+    } else Color.Transparent
+
+    Column(modifier = Modifier
+        .fillMaxWidth()
+        .padding(16.dp), horizontalAlignment = Alignment.CenterHorizontally) {
+        Text(
+            text = item,
+            style = TextStyle(color = Color.White, fontSize = 20.sp, fontWeight = FontWeight.Bold))
+
+        Row(modifier = Modifier.padding(top = 20.dp)) {
+            Box(
+                contentAlignment = Alignment.Center,
+                modifier = Modifier
+                    .size(70.dp, 40.dp)
+                    .clip(CircleShape)
+                    .background(maleButtonBackgroundColor)
+                    .border(3.dp, Color.White, CircleShape)
+                    .clickable { viewModel.selectGender(true) }
+            ) {
+                Text(
+                    text = "남성",
+                    color = Color.White
+                )
+            }
+
+            Spacer(modifier = Modifier.width(24.dp))
+
+            Box(
+                contentAlignment = Alignment.Center,
+                modifier = Modifier
+                    .size(70.dp, 40.dp)
+                    .clip(CircleShape)
+                    .background(femaleButtonBackgroundColor)
+                    .border(3.dp, Color.White, CircleShape)
+                    .clickable { viewModel.selectGender(false) }
+            ) {
+                Text(
+                    text = "여성",
+                    color = Color.White
+                )
+            }
+        }
+
+        Row(verticalAlignment = Alignment.CenterVertically, modifier = Modifier
+            .fillMaxWidth()
+            .padding(top = 20.dp)) {
+            Box(
+                contentAlignment = Alignment.Center,
+                modifier = Modifier
+                    .weight(1f)
+                    .height(40.dp)
+                    .background(Color.Transparent)
+                    .border(3.dp, Color.White, RoundedCornerShape(12.dp))
+                    .clickable { viewModel.editCancel() }
+            ) {
+                Text(
+                    text = "취소",
+                    color = Color.White
+                )
+            }
+
+            Box(
+                contentAlignment = Alignment.Center,
+                modifier = Modifier
+                    .weight(1f)
+                    .height(40.dp)
+                    .background(Color.Transparent)
+                    .border(3.dp, Color.White, RoundedCornerShape(12.dp))
+                    .clickable {
+                        editClicked()
+                    }
             ) {
                 Text(
                     text = "저장",
