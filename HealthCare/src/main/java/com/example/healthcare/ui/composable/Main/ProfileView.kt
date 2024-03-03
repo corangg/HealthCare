@@ -43,6 +43,7 @@ import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.hilt.navigation.compose.hiltViewModel
+import androidx.lifecycle.MutableLiveData
 import com.example.healthcare.R
 import com.example.healthcare.VIewModel.MainViewModel
 
@@ -105,7 +106,10 @@ fun ProfileView() {
         ){
 
             when(viewModel.viewEditCompsable.observeAsState().value){
-                1-> editPhsicalInfoView("이름",name,{viewModel.editName()})
+                1-> editPhsicalInfoView("이름",viewModel.profileName,{viewModel.editName()})
+                3-> editPhsicalInfoView("나이",viewModel.profileAge,{viewModel.editAge()})
+                4-> editPhsicalInfoView("키",viewModel.profileHeight,{viewModel.editHeight()})
+                5-> editPhsicalInfoView("몸무게",viewModel.profileWeight,{viewModel.editWeight()})
             }
         }
     }
@@ -170,9 +174,9 @@ fun profileRow(
 }
 
 @Composable
-fun editPhsicalInfoView(item : String, value : Any, editClicked: () -> Unit){
+fun editPhsicalInfoView(item : String, value : MutableLiveData<*>, editClicked: () -> Unit){
     val viewModel: MainViewModel = hiltViewModel()
-    var itemValue by remember { mutableStateOf(value.toString()) }
+    var itemValue by remember { mutableStateOf(value.value.toString()) }
 
     Column(modifier = Modifier
         .fillMaxWidth()
@@ -193,7 +197,7 @@ fun editPhsicalInfoView(item : String, value : Any, editClicked: () -> Unit){
                 value = itemValue,
                 onValueChange = {
                     itemValue = it
-                    viewModel.profileName.value = it},
+                    value.value = it},
                 singleLine = true,
                 cursorBrush = SolidColor(Color.White),
                 modifier = Modifier

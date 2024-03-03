@@ -22,9 +22,9 @@ class MainViewModel @Inject constructor(private val phsicalInfoRepository: Phsic
 
     val profileName : MutableLiveData<String> = MutableLiveData("")
     val profileGender : MutableLiveData<Boolean> = MutableLiveData()
-    val profileAge : MutableLiveData<Int> = MutableLiveData(-1)
-    val profileHeight : MutableLiveData<Float> = MutableLiveData(0f)
-    val profileWeight : MutableLiveData<Float> = MutableLiveData(0f)
+    val profileAge : MutableLiveData<String> = MutableLiveData("")
+    val profileHeight : MutableLiveData<String> = MutableLiveData("")
+    val profileWeight : MutableLiveData<String> = MutableLiveData("")
 
     val profileData : MutableLiveData<PhsicalInfo> = MutableLiveData()
     val viewEditCompsable : MutableLiveData<Int> = MutableLiveData(0)
@@ -35,9 +35,9 @@ class MainViewModel @Inject constructor(private val phsicalInfoRepository: Phsic
             profileData.value = phsicalInfoRepository.getAllPhsicalInfos()
             profileName.value = profileData.value?.name
             profileGender.value = profileData.value?.gender
-            profileAge.value = profileData.value?.age
-            profileHeight.value = profileData.value?.height
-            profileWeight.value = profileData.value?.weight
+            profileAge.value = profileData.value?.age.toString()
+            profileHeight.value = profileData.value?.height.toString()
+            profileWeight.value = profileData.value?.weight.toString()
         }
     }
 
@@ -57,6 +57,28 @@ class MainViewModel @Inject constructor(private val phsicalInfoRepository: Phsic
         }
     }
 
+    fun editAge(){
+        viewModelScope.launch {
+            phsicalInfoRepository.updateAge(profileAge.value!!.toInt(),profileData.value?.age ?:-1 )
+            getProfile()
+        }
+    }
+
+    fun editHeight(){
+        viewModelScope.launch {
+            phsicalInfoRepository.updateHeight(profileHeight.value!!.toFloat(),profileData.value?.height ?:0f )
+            getProfile()
+        }
+    }
+
+    fun editWeight(){
+        viewModelScope.launch {
+            phsicalInfoRepository.updateWeight(profileWeight.value!!.toFloat(),profileData.value?.weight ?:0f)
+            getProfile()
+        }
+    }
+
+
     /*fun editGender(){
         viewModelScope.launch {
             phsicalInfoRepository.updateGender(profileGender.value!!,profileData.value!!.gender )
@@ -64,25 +86,9 @@ class MainViewModel @Inject constructor(private val phsicalInfoRepository: Phsic
         }
     }
 
-    fun editAge(){
-        viewModelScope.launch {
-            phsicalInfoRepository.updateAge(profileAge.value!!,profileData.value?.age ?:-1 )
-            getProfile()
-        }
-    }
 
-    fun editHeight(){
-        viewModelScope.launch {
-            phsicalInfoRepository.updateHeight(profileHeight.value!!,profileData.value?.height ?:0f )
-            getProfile()
-        }
-    }
 
-    fun editWeight(){
-        viewModelScope.launch {
-            phsicalInfoRepository.updateWeight(profileWeight.value!!,profileData.value?.weight ?:0f)
-            getProfile()
-        }
-    }*/
+
+    */
 
 }

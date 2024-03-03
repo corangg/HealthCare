@@ -25,19 +25,25 @@ class PhsicalInfoRepository @Inject constructor(private val phsicalInfoDao: Phsi
         phsicalInfoDao.updateName(newName = name, oldName = oldName)
     }
 
+    suspend fun updateAge(new: Int, old: Int){
+        phsicalInfoDao.updateAge(newAge = new, oldAge = old)
+    }
+
+    suspend fun updateHeight(new: Float, old:Float){
+        phsicalInfoDao.updateHeight(newHeight = new, oldHeight = old)
+    }
+
+    suspend fun updateWeight(new: Float, old:Float){
+        phsicalInfoDao.updateWeight(newWeight = new, oldWeight = old)
+    }
+
     /*suspend fun updateGender(new: Boolean, old:Boolean){
         phsicalInfoDao.updateGender(new = new, old = old)
     }
 
-    suspend fun updateAge(new: Int, old: Int){
-        phsicalInfoDao.updateAge(new = new, old = old)
-    }
 
-    suspend fun updateHeight(new: Float, old:Float){
-        phsicalInfoDao.updateHeight(new = new, old = old)
-    }
 
-    suspend fun updateWeight(new: Float, old:Float){
-        phsicalInfoDao.updateWeight(new = new, old = old)
-    }*/
+
+
+    */
 }
