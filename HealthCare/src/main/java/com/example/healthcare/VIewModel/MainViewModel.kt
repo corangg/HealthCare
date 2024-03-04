@@ -1,22 +1,22 @@
 package com.example.healthcare.VIewModel
 
-import android.content.Context
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.ui.graphics.Color
-import androidx.compose.ui.platform.LocalContext
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
-import com.example.healthcare.DB.PhsicalInfoDB
+import com.example.healthcare.ExerciseItem
 import com.example.healthcare.PhsicalInfo
+import com.example.healthcare.Repository.ExerciseRoutineRepository
 import com.example.healthcare.Repository.PhsicalInfoRepository
 import dagger.hilt.android.lifecycle.HiltViewModel
-import dagger.hilt.android.qualifiers.ApplicationContext
 import kotlinx.coroutines.launch
 import javax.inject.Inject
 
 @HiltViewModel
-class MainViewModel @Inject constructor(private val phsicalInfoRepository: PhsicalInfoRepository): ViewModel() {
+class MainViewModel @Inject constructor(
+    private val phsicalInfoRepository: PhsicalInfoRepository,
+    private val exerciseRoutineRepository: ExerciseRoutineRepository): ViewModel() {
     var backgroundColor = mutableStateOf(Color(0xFF121212))
         private set
 
@@ -29,16 +29,43 @@ class MainViewModel @Inject constructor(private val phsicalInfoRepository: Phsic
     val profileData : MutableLiveData<PhsicalInfo> = MutableLiveData()
     val viewEditCompsable : MutableLiveData<Int> = MutableLiveData(0)
 
+    val sunExerciseList : MutableLiveData<MutableList<ExerciseItem>> = MutableLiveData(mutableListOf())
+    val monExerciseList : MutableLiveData<MutableList<ExerciseItem>> = MutableLiveData(mutableListOf())
+    val tuesExerciseList : MutableLiveData<MutableList<ExerciseItem>> = MutableLiveData(mutableListOf())
+    val wednesExerciseList : MutableLiveData<MutableList<ExerciseItem>> = MutableLiveData(mutableListOf())
+    val thursExerciseList : MutableLiveData<MutableList<ExerciseItem>> = MutableLiveData(mutableListOf())
+    val friExerciseList : MutableLiveData<MutableList<ExerciseItem>> = MutableLiveData(mutableListOf())
+    val saturExerciseList : MutableLiveData<MutableList<ExerciseItem>> = MutableLiveData(mutableListOf())
 
-    fun getProfile(){
+    /*val exerciseLists: Array<MutableLiveData<MutableList<ExerciseItem>>> = arrayOf(
+        sunExerciseList, monExerciseList, tuesExerciseList,
+        wednesExerciseList, thursExerciseList, friExerciseList, saturExerciseList
+    )*/
+
+    val exerciseLists : MutableLiveData<MutableList<List<ExerciseItem>>> = MutableLiveData()
+
+    fun getDataBase(){
         viewModelScope.launch{
             profileData.value = phsicalInfoRepository.getAllPhsicalInfos()
+            //exerciseLists = exerciseRoutineRepository.getAllExerciseRoutine(0)
+            getAllExerciseRoutine()
             profileName.value = profileData.value?.name
             profileGender.value = profileData.value?.gender
             profileAge.value = profileData.value?.age.toString()
             profileHeight.value = profileData.value?.height.toString()
             profileWeight.value = profileData.value?.weight.toString()
         }
+    }
+
+    suspend fun getAllExerciseRoutine(){
+        var allExerciseRoutine : MutableList<List<ExerciseItem>> = mutableListOf()
+        for (i in 0 until 7){
+            allExerciseRoutine.add(exerciseRoutineRepository.getExerciseRoutine(i))
+        }
+
+        exerciseLists.value = allExerciseRoutine
+
+
     }
 
     fun editProfile(item : Int){
@@ -57,36 +84,44 @@ class MainViewModel @Inject constructor(private val phsicalInfoRepository: Phsic
     fun editName(){
         viewModelScope.launch {
             phsicalInfoRepository.updateName(profileName.value!!,profileData.value?.name ?:"" )
-            getProfile()
+            getDataBase()
         }
     }
 
     fun editGender(){
         viewModelScope.launch {
             phsicalInfoRepository.updateGender(profileGender.value!!,profileData.value!!.gender )
-            getProfile()
+            getDataBase()
         }
     }
 
     fun editAge(){
         viewModelScope.launch {
             phsicalInfoRepository.updateAge(profileAge.value!!.toInt(),profileData.value?.age ?:-1 )
-            getProfile()
+            getDataBase()
         }
     }
 
     fun editHeight(){
         viewModelScope.launch {
             phsicalInfoRepository.updateHeight(profileHeight.value!!.toFloat(),profileData.value?.height ?:0f )
-            getProfile()
+            getDataBase()
         }
     }
 
     fun editWeight(){
         viewModelScope.launch {
             phsicalInfoRepository.updateWeight(profileWeight.value!!.toFloat(),profileData.value?.weight ?:0f)
-            getProfile()
+            getDataBase()
         }
+    }
+
+    fun addExerciseRoutine(id: String, day: Int){
+
+    }
+
+    fun deleteExerciseRoutine(value: String, day: Int){
+
     }
 
 

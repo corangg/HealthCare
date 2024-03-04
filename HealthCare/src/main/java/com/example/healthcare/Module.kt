@@ -1,7 +1,9 @@
 package com.example.healthcare
 
 import android.content.Context
+import com.example.healthcare.DB.ExerciseRoutineDB
 import com.example.healthcare.DB.PhsicalInfoDB
+import com.example.healthcare.Dao.ExerciseDao
 import com.example.healthcare.Dao.PhsicalInfoDao
 import com.example.healthcare.Repository.InformationInputRepository
 import dagger.Module
@@ -29,5 +31,16 @@ object Module {
     @Provides
     fun providePhsicalInfoDao(phsicalInfoDB: PhsicalInfoDB): PhsicalInfoDao {
         return phsicalInfoDB.phsicalDao()
+    }
+
+    @Singleton
+    @Provides
+    fun provideExerciseInfoDB(@ApplicationContext context: Context): ExerciseRoutineDB{
+        return  ExerciseRoutineDB.getDatabase(context)
+    }
+
+    @Provides
+    fun provideExerciseInfoDao(exerciseRoutineDB: ExerciseRoutineDB) : ExerciseDao{
+        return exerciseRoutineDB.exerciseDao()
     }
 }

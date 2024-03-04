@@ -30,6 +30,7 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.lifecycle.MutableLiveData
+import com.example.healthcare.DB.ExerciseRoutineDB
 import com.example.healthcare.ExerciseItem
 
 import com.example.healthcare.R
@@ -38,10 +39,15 @@ import com.example.healthcare.ui.theme.HealthCareTheme
 import java.util.UUID
 
 @Composable
-fun AddExerciseColumn(viewModel: InformationInputViewModel, day : Int, list : MutableLiveData<MutableList<ExerciseItem>>) {
-    //val viewModel: InformationInputViewModel = hiltViewModel()
+fun AddExerciseColumn( day : Int/*, list : MutableLiveData<MutableList<ExerciseItem>>*/,exerciseRoutine : MutableLiveData<MutableList<List<ExerciseItem>>>,
+    onDeleteClicked : (String, Int) -> Unit, onAddClicked: (String, Int)-> Unit) {
+    val viewModel: InformationInputViewModel = hiltViewModel()
     val dayOfTheWeek = arrayOf("일","월","화","수","목","금","토")
-    val exerciseList by list.observeAsState(initial = listOf())
+    //val exerciseList by list.observeAsState(initial = listOf())
+
+    val exerciseList by exerciseRoutine.observeAsState(initial = listOf())
+    //aa[day]
+
 
     Column(
         horizontalAlignment = Alignment.CenterHorizontally,
@@ -54,7 +60,7 @@ fun AddExerciseColumn(viewModel: InformationInputViewModel, day : Int, list : Mu
         )
 
 
-        exerciseList.forEach { exercise ->
+        exerciseList[day].forEach { exercise ->
             key(exercise.id) {
                 SelectExerciseSpinner(
                     exercise = exercise.name,
@@ -76,7 +82,7 @@ fun AddExerciseColumn(viewModel: InformationInputViewModel, day : Int, list : Mu
                 .padding(8.dp)
                 .size(30.dp)
                 .clickable {
-                    viewModel.addExercise("선택",day)
+                    viewModel.addExercise("선택", day)
                 }
         )
     }

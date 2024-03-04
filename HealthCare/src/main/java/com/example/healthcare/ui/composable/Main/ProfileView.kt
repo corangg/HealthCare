@@ -15,12 +15,11 @@ import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.width
+import androidx.compose.foundation.layout.widthIn
 import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.foundation.text.BasicTextField
-import androidx.compose.foundation.verticalScroll
 import androidx.compose.material3.Text
-import androidx.compose.material3.TextField
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.livedata.observeAsState
@@ -34,7 +33,6 @@ import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.ColorFilter
 import androidx.compose.ui.graphics.SolidColor
-import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.text.font.FontWeight
@@ -46,13 +44,15 @@ import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.lifecycle.MutableLiveData
 import com.example.healthcare.R
 import com.example.healthcare.VIewModel.MainViewModel
+import com.example.healthcare.ui.composable.AddExerciseColumn
+import com.example.healthcare.ui.composable.HorizontalScrollView
 
 
 @Composable
 fun ProfileView() {
     val viewModel: MainViewModel = hiltViewModel()
     LaunchedEffect(true) {
-        viewModel.getProfile()
+        viewModel.getDataBase()
     }
     val name = viewModel.profileData.observeAsState().value?.name ?:""
     val gender = viewModel.profileData.observeAsState().value?.gender ?:true
@@ -65,37 +65,59 @@ fun ProfileView() {
             .fillMaxSize()
             .background(color = viewModel.backgroundColor.value),
     ){
-        Box(modifier = Modifier
-            .fillMaxWidth()
-            .padding(20.dp)
-            .background(Color(0xFF2D2D2D), RoundedCornerShape(24.dp))
-        ){
-            Column(modifier = Modifier.fillMaxWidth(), horizontalAlignment = Alignment.CenterHorizontally) {
-                Text(
-                    text = "신체 정보",
-                    style = TextStyle(color = Color.White, fontSize = 24.sp, fontWeight = FontWeight.Bold),
-                    modifier = Modifier
-                        .padding(top = 20.dp)
-                        .align(Alignment.CenterHorizontally),
+        Column(modifier = Modifier.fillMaxWidth(), horizontalAlignment = Alignment.CenterHorizontally) {
+            Box(modifier = Modifier
+                .fillMaxWidth()
+                .padding(20.dp)
+                .background(Color(0xFF2D2D2D), RoundedCornerShape(24.dp))
+            ){
+                Column(modifier = Modifier.fillMaxWidth(), horizontalAlignment = Alignment.CenterHorizontally) {
+                    Text(
+                        text = "신체 정보",
+                        style = TextStyle(color = Color.White, fontSize = 24.sp, fontWeight = FontWeight.Bold),
+                        modifier = Modifier
+                            .padding(top = 20.dp)
+                            .align(Alignment.CenterHorizontally),
                     )
-                Spacer(modifier = Modifier.height(8.dp))
+                    Spacer(modifier = Modifier.height(8.dp))
 
-                profileRow(itemImg = R.drawable.ic_name, itemText = "이름", itemDetail = name,"", editClicked = {viewModel.editProfile(1)})
-                if(gender){
-                    profileRow(itemImg = R.drawable.ic_gender, itemText = "성별", itemDetail = "남성","", editClicked = {viewModel.editProfile(2)})
-                }else{
-                    profileRow(itemImg = R.drawable.ic_gender, itemText = "성별", itemDetail = "여성", "", editClicked = {viewModel.editProfile(2)})
+                    profileRow(itemImg = R.drawable.ic_name, itemText = "이름", itemDetail = name,"", editClicked = {viewModel.editProfile(1)})
+                    if(gender){
+                        profileRow(itemImg = R.drawable.ic_gender, itemText = "성별", itemDetail = "남성","", editClicked = {viewModel.editProfile(2)})
+                    }else{
+                        profileRow(itemImg = R.drawable.ic_gender, itemText = "성별", itemDetail = "여성", "", editClicked = {viewModel.editProfile(2)})
+                    }
+
+                    profileRow(itemImg = R.drawable.ic_age, itemText = "나이", itemDetail = age.toString(),"세", editClicked = {viewModel.editProfile(3)})
+                    profileRow(itemImg = R.drawable.ic_height, itemText = "키", itemDetail = height.toString(), "cm", editClicked = {viewModel.editProfile(4)})
+                    profileRow(itemImg = R.drawable.ic_weight, itemText = "체중", itemDetail = weight.toString(),"kg", editClicked = {viewModel.editProfile(5)})
+                    Spacer(modifier = Modifier.height(48.dp))
                 }
 
-                profileRow(itemImg = R.drawable.ic_age, itemText = "나이", itemDetail = age.toString(),"세", editClicked = {viewModel.editProfile(3)})
-                profileRow(itemImg = R.drawable.ic_height, itemText = "키", itemDetail = height.toString(), "cm", editClicked = {viewModel.editProfile(4)})
-                profileRow(itemImg = R.drawable.ic_weight, itemText = "체중", itemDetail = weight.toString(),"kg", editClicked = {viewModel.editProfile(5)})
-                Spacer(modifier = Modifier.height(48.dp))
             }
 
+            Spacer(modifier = Modifier.height(24.dp))
+
+
+            Box(modifier = Modifier
+                .fillMaxWidth()
+                .padding(20.dp)
+                .background(Color(0xFF2D2D2D), RoundedCornerShape(24.dp))
+            ){
+
+                HorizontalScrollView(modifier = Modifier.widthIn(86.dp)) {
+                    AddExerciseColumn(day = 0, viewModel.exerciseLists,viewModel.addExerciseRoutine(),viewModel.deleteExerciseRoutine())
+                    /*AddExerciseColumn(day = 0, viewModel.sunExerciseList)
+                    AddExerciseColumn(day = 1, viewModel.monExerciseList)
+                    AddExerciseColumn(day = 2, viewModel.tuesExerciseList)
+                    AddExerciseColumn(day = 3, viewModel.wednesExerciseList)
+                    AddExerciseColumn(day = 4, viewModel.thursExerciseList)
+                    AddExerciseColumn(day = 5, viewModel.friExerciseList)
+                    AddExerciseColumn(day = 6, viewModel.saturExerciseList)*/
+                }
+            }
         }
 
-        Spacer(modifier = Modifier.height(24.dp))
 
 
         Box(modifier = Modifier

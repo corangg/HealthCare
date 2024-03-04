@@ -301,13 +301,13 @@ fun InformationInputView(viewModel: InformationInputViewModel) {
 
 
         HorizontalScrollView(modifier = Modifier.widthIn(86.dp)) {
-            AddExerciseColumn(viewModel, day = 0, viewModel.sunExerciseList)
-            AddExerciseColumn(viewModel, day = 1, viewModel.monExerciseList)
-            AddExerciseColumn(viewModel, day = 2, viewModel.tuesExerciseList)
-            AddExerciseColumn(viewModel, day = 3, viewModel.wednesExerciseList)
-            AddExerciseColumn(viewModel, day = 4, viewModel.thursExerciseList)
-            AddExerciseColumn(viewModel, day = 5, viewModel.friExerciseList)
-            AddExerciseColumn(viewModel, day = 6, viewModel.saturExerciseList)
+            /*AddExerciseColumn(day = 0, viewModel.sunExerciseList)
+            AddExerciseColumn(day = 1, viewModel.monExerciseList)
+            AddExerciseColumn(day = 2, viewModel.tuesExerciseList)
+            AddExerciseColumn(day = 3, viewModel.wednesExerciseList)
+            AddExerciseColumn(day = 4, viewModel.thursExerciseList)
+            AddExerciseColumn(day = 5, viewModel.friExerciseList)
+            AddExerciseColumn(day = 6, viewModel.saturExerciseList)*/
         }
 
 

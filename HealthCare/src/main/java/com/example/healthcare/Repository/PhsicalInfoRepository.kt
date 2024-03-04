@@ -1,7 +1,5 @@
 package com.example.healthcare.Repository
 
-import androidx.lifecycle.LiveData
-import androidx.lifecycle.MutableLiveData
 import com.example.healthcare.Dao.PhsicalInfoDao
 import com.example.healthcare.PhsicalInfo
 import javax.inject.Inject
