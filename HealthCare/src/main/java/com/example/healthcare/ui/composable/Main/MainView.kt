@@ -35,6 +35,7 @@ import androidx.navigation.compose.currentBackStackEntryAsState
 import androidx.navigation.compose.rememberNavController
 import com.example.healthcare.R
 import com.example.healthcare.VIewModel.MainViewModel
+import com.example.healthcare.ui.composable.Main.Profile.ProfileView
 
 @Composable
 fun MyAppPreview() {
@@ -48,6 +49,7 @@ fun MyAppPreview() {
     ) {
         val navController = rememberNavController()
 
+
         Scaffold(
             bottomBar = { BottomNavigationBar(navController) }
         ) {innerPadding ->
@@ -60,6 +62,7 @@ fun MyAppPreview() {
 fun BottomNavigationBar(navController: NavController){
     var selectedItem by remember { mutableStateOf(0) }
     val items = listOf("운동", "기록", "프로필")
+
 
     BottomNavigation(modifier = Modifier.height(60.dp).border(2.dp,Color.Black), backgroundColor = Color(0xFF2D2D2D)) {
         val currentRoute = currentRoute(navController)

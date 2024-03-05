@@ -2,6 +2,7 @@ package com.example.healthcare.ui.composable
 
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
+import androidx.compose.foundation.border
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
@@ -41,7 +42,8 @@ import java.util.UUID
 fun SelectExerciseSpinner(
     exercise: String,
     onExerciseSelected: (String) -> Unit,
-    onDeleteClicked: () -> Unit){
+    onDeleteClicked: () -> Unit,
+    edit: Boolean){
     var expanded by remember { mutableStateOf(false) }
     val options = listOf("유산소", "등", "가슴", "하체", "어깨", "팔", "허리")
     var selectedOption by remember { mutableStateOf(exercise) }
@@ -55,7 +57,8 @@ fun SelectExerciseSpinner(
         Row(
             verticalAlignment = Alignment.CenterVertically,
             modifier = Modifier
-                .background(Color(0xFF2D2D2D), RoundedCornerShape(8.dp))) {
+                .background(Color(0xFF2D2D2D), RoundedCornerShape(8.dp))
+                .border(1.dp, Color.White, RoundedCornerShape(8.dp))) {
             Text(
                 text = selectedOption,
                 style = TextStyle(color = Color.White, fontSize = 16.sp),
@@ -65,36 +68,38 @@ fun SelectExerciseSpinner(
                     .width(56.dp)
                     .wrapContentSize(Alignment.Center),
             )
-
-            Image(
-                painter = painterResource(id = R.drawable.ic_delete),
-                contentDescription = "DelExercise",
-                colorFilter = ColorFilter.tint(Color.White),
-                modifier = Modifier
-                    .size(22.dp)
-                    .padding(end = 4.dp)
-                    .clickable(onClick = onDeleteClicked)
-            )
-        }
-
-        DropdownMenu(
-            expanded = expanded,
-            onDismissRequest = { expanded = false },
-            modifier = Modifier
-                .width(76.dp)
-                .heightIn(max = 240.dp)
-                .background(Color(0xFF2D2D2D), RoundedCornerShape(8.dp))
-                .padding(vertical = 1.dp)
-        ) {
-            options.forEach { option ->
-                DropdownMenuItem(
-                    text = { Text(option) },
-                    onClick = {
-                        selectedOption = option
-                        onExerciseSelected(option)
-                        expanded = false
-                    }
+            if(edit){
+                Image(
+                    painter = painterResource(id = R.drawable.ic_delete),
+                    contentDescription = "DelExercise",
+                    colorFilter = ColorFilter.tint(Color.White),
+                    modifier = Modifier
+                        .size(22.dp)
+                        .padding(end = 4.dp)
+                        .clickable(onClick = onDeleteClicked)
                 )
+            }
+        }
+        if(edit){
+            DropdownMenu(
+                expanded = expanded,
+                onDismissRequest = { expanded = false },
+                modifier = Modifier
+                    .width(76.dp)
+                    .heightIn(max = 240.dp)
+                    .background(Color(0xFF2D2D2D), RoundedCornerShape(8.dp))
+                    .padding(vertical = 1.dp)
+            ) {
+                options.forEach { option ->
+                    DropdownMenuItem(
+                        text = { Text(option) },
+                        onClick = {
+                            selectedOption = option
+                            onExerciseSelected(option)
+                            expanded = false
+                        }
+                    )
+                }
             }
         }
     }

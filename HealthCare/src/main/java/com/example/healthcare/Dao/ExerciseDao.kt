@@ -5,6 +5,7 @@ import androidx.room.Delete
 import androidx.room.Insert
 import androidx.room.OnConflictStrategy
 import androidx.room.Query
+import androidx.room.Update
 import com.example.healthcare.ExerciseItem
 
 @Dao
@@ -17,4 +18,10 @@ interface ExerciseDao {
 
     @Delete
     suspend fun deleteExerciseItem(item: ExerciseItem)
+
+    @Update
+    suspend fun updateExerciseItem(item: ExerciseItem)
+
+    @Query("DELETE FROM exercise_items")
+    suspend fun deleteAllExerciseItems()
 }

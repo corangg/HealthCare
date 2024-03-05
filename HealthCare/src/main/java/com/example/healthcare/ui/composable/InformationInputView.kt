@@ -152,9 +152,9 @@ fun InformationInputView(viewModel: InformationInputViewModel) {
                     .focusRequester(focusRequester)
                     .onFocusChanged {
                         isFocused = it.isFocused
-                        if(!it.isFocused && nameText.isEmpty()){
+                        if (!it.isFocused && nameText.isEmpty()) {
                             nameText = "이름"
-                        }else if(it.isFocused && nameText == "이름"){
+                        } else if (it.isFocused && nameText == "이름") {
                             nameText = ""
                         }
                     })
@@ -297,18 +297,19 @@ fun InformationInputView(viewModel: InformationInputViewModel) {
             style = TextStyle(color = Color.White, fontSize = 20.sp, fontWeight = FontWeight.Bold),
         )
 
+
         Spacer(modifier = Modifier.height(16.dp))
 
 
-        HorizontalScrollView(modifier = Modifier.widthIn(86.dp)) {
-            /*AddExerciseColumn(day = 0, viewModel.sunExerciseList)
+        /*HorizontalScrollView(modifier = Modifier.widthIn(86.dp)) {
+            *//*AddExerciseColumn(day = 0, viewModel.sunExerciseList)
             AddExerciseColumn(day = 1, viewModel.monExerciseList)
             AddExerciseColumn(day = 2, viewModel.tuesExerciseList)
             AddExerciseColumn(day = 3, viewModel.wednesExerciseList)
             AddExerciseColumn(day = 4, viewModel.thursExerciseList)
             AddExerciseColumn(day = 5, viewModel.friExerciseList)
-            AddExerciseColumn(day = 6, viewModel.saturExerciseList)*/
-        }
+            AddExerciseColumn(day = 6, viewModel.saturExerciseList)*//*
+        }*/
 
 
         Spacer(modifier = Modifier.height(48.dp))

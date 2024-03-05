@@ -29,6 +29,8 @@ class MainViewModel @Inject constructor(
     val profileData : MutableLiveData<PhsicalInfo> = MutableLiveData()
     val viewEditCompsable : MutableLiveData<Int> = MutableLiveData(0)
 
+    val editExerciseItem : MutableLiveData<Boolean> = MutableLiveData(false)
+
     val sunExerciseList : MutableLiveData<MutableList<ExerciseItem>> = MutableLiveData(mutableListOf())
     val monExerciseList : MutableLiveData<MutableList<ExerciseItem>> = MutableLiveData(mutableListOf())
     val tuesExerciseList : MutableLiveData<MutableList<ExerciseItem>> = MutableLiveData(mutableListOf())
@@ -37,17 +39,16 @@ class MainViewModel @Inject constructor(
     val friExerciseList : MutableLiveData<MutableList<ExerciseItem>> = MutableLiveData(mutableListOf())
     val saturExerciseList : MutableLiveData<MutableList<ExerciseItem>> = MutableLiveData(mutableListOf())
 
-    /*val exerciseLists: Array<MutableLiveData<MutableList<ExerciseItem>>> = arrayOf(
+    val exerciseLists: Array<MutableLiveData<MutableList<ExerciseItem>>> = arrayOf(
         sunExerciseList, monExerciseList, tuesExerciseList,
         wednesExerciseList, thursExerciseList, friExerciseList, saturExerciseList
-    )*/
+    )
 
-    val exerciseLists : MutableLiveData<MutableList<List<ExerciseItem>>> = MutableLiveData()
+    //val exerciseLists : MutableLiveData<MutableList<List<ExerciseItem>>> = MutableLiveData(mutableListOf())
 
     fun getDataBase(){
         viewModelScope.launch{
             profileData.value = phsicalInfoRepository.getAllPhsicalInfos()
-            //exerciseLists = exerciseRoutineRepository.getAllExerciseRoutine(0)
             getAllExerciseRoutine()
             profileName.value = profileData.value?.name
             profileGender.value = profileData.value?.gender
@@ -60,10 +61,11 @@ class MainViewModel @Inject constructor(
     suspend fun getAllExerciseRoutine(){
         var allExerciseRoutine : MutableList<List<ExerciseItem>> = mutableListOf()
         for (i in 0 until 7){
-            allExerciseRoutine.add(exerciseRoutineRepository.getExerciseRoutine(i))
+            //allExerciseRoutine.add(exerciseRoutineRepository.getExerciseRoutine(i))
+            exerciseLists[i].value = exerciseRoutineRepository.getExerciseRoutine(i).toMutableList()
         }
 
-        exerciseLists.value = allExerciseRoutine
+        //.value = allExerciseRoutine
 
 
     }
@@ -116,12 +118,35 @@ class MainViewModel @Inject constructor(
         }
     }
 
-    fun addExerciseRoutine(id: String, day: Int){
+    fun addExerciseRoutine(name: String, day: Int){
+        val newList = exerciseLists[day].value.orEmpty() + ExerciseItem(name = name, dayOfWeek = day)
+        exerciseLists[day].value = newList.toMutableList()
+    }
+
+    fun deleteExerciseRoutine(itemId: String, day: Int){
+        val newList = exerciseLists[day].value.orEmpty().filterNot { it.id == itemId }
+        exerciseLists[day].value = newList.toMutableList()
+    }
+
+    fun updateExerciseRoutine(itemId: String, newName: String, day: Int){
+        val newList = exerciseLists[day].value.orEmpty().map {
+            if (it.id == itemId.toString()) it.copy(name = newName) else it
+        }
+        exerciseLists[day].value = newList.toMutableList()
 
     }
 
-    fun deleteExerciseRoutine(value: String, day: Int){
+    fun editExerciseItem(){
+        if(editExerciseItem.value == true){
+            viewModelScope.launch {
+                exerciseRoutineRepository.saveExerciseRoutine(exerciseLists)
+                editExerciseItem.value = !editExerciseItem.value!!
+            }
+        }else if(editExerciseItem.value == false){
 
+            editExerciseItem.value = !editExerciseItem.value!!
+        }
+        //editExerciseItem.value = !editExerciseItem.value!!
     }
 
 

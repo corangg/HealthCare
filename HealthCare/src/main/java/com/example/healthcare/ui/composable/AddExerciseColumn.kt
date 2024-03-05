@@ -39,20 +39,18 @@ import com.example.healthcare.ui.theme.HealthCareTheme
 import java.util.UUID
 
 @Composable
-fun AddExerciseColumn( day : Int/*, list : MutableLiveData<MutableList<ExerciseItem>>*/,exerciseRoutine : MutableLiveData<MutableList<List<ExerciseItem>>>,
-    onDeleteClicked : (String, Int) -> Unit, onAddClicked: (String, Int)-> Unit) {
-    val viewModel: InformationInputViewModel = hiltViewModel()
+fun AddExerciseColumn( day : Int, list : MutableLiveData<MutableList<ExerciseItem>>, edit : MutableLiveData<Boolean>,
+    onDeleteClicked : (String, Int) -> Unit, onAddClicked: (String, Int)-> Unit, onUpdate: (String,String,Int)->Unit) {
     val dayOfTheWeek = arrayOf("일","월","화","수","목","금","토")
-    //val exerciseList by list.observeAsState(initial = listOf())
-
-    val exerciseList by exerciseRoutine.observeAsState(initial = listOf())
-    //aa[day]
+    val exerciseList by list.observeAsState(initial = listOf())
+    val editValue by edit.observeAsState(initial = false)
 
 
     Column(
         horizontalAlignment = Alignment.CenterHorizontally,
         modifier = Modifier
-            .background(Color(0xFF121212))
+            .background(Color.Transparent)
+            //.background(Color(0xFF121212))
             .width(86.dp)) {
         Text(
             text = dayOfTheWeek[day],
@@ -60,41 +58,32 @@ fun AddExerciseColumn( day : Int/*, list : MutableLiveData<MutableList<ExerciseI
         )
 
 
-        exerciseList[day].forEach { exercise ->
+        exerciseList.forEach { exercise ->
             key(exercise.id) {
                 SelectExerciseSpinner(
                     exercise = exercise.name,
                     onExerciseSelected = { newName ->
-                        viewModel.updateExerciseAt(exercise.id, newName,day)
+                        onUpdate(exercise.id,newName,day)
                     },
                     onDeleteClicked = {
-                        viewModel.deleteExercise(exercise.id,day)
-                    }
+                        onDeleteClicked(exercise.id,day)
+                    },
+                    edit = editValue
                 )
             }
         }
-
-        Image(
-            painter = painterResource(id = R.drawable.ic_add),
-            contentDescription = "AddExercise",
-            colorFilter = ColorFilter.tint(Color.White),
-            modifier = Modifier
-                .padding(8.dp)
-                .size(30.dp)
-                .clickable {
-                    viewModel.addExercise("선택", day)
-                }
-        )
+        if(editValue){
+            Image(
+                painter = painterResource(id = R.drawable.ic_add),
+                contentDescription = "AddExercise",
+                colorFilter = ColorFilter.tint(Color.White),
+                modifier = Modifier
+                    .padding(8.dp)
+                    .size(30.dp)
+                    .clickable {
+                        onAddClicked("선택", day)
+                    }
+            )
+        }
     }
 }
-
-
-/*
-
-@Preview(showBackground = true)
-@Composable
-fun  AddExerciseColumnPreview() {
-    HealthCareTheme {
-        AddExerciseColumn(0,InformationInputViewModel())
-    }
-}*/
