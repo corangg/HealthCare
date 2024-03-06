@@ -15,6 +15,7 @@ import androidx.compose.material.Scaffold
 import androidx.compose.material3.Icon
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
@@ -35,6 +36,7 @@ import androidx.navigation.compose.currentBackStackEntryAsState
 import androidx.navigation.compose.rememberNavController
 import com.example.healthcare.R
 import com.example.healthcare.VIewModel.MainViewModel
+import com.example.healthcare.ui.composable.Main.Exercise.exerciseView
 import com.example.healthcare.ui.composable.Main.Profile.ProfileView
 
 @Composable
@@ -48,8 +50,6 @@ fun MyAppPreview() {
         horizontalAlignment = Alignment.CenterHorizontally
     ) {
         val navController = rememberNavController()
-
-
         Scaffold(
             bottomBar = { BottomNavigationBar(navController) }
         ) {innerPadding ->
@@ -96,7 +96,7 @@ fun BottomNavigationBar(navController: NavController){
 @Composable
 fun NavigationGraph(navController: NavHostController, innerPadding: PaddingValues) {
     NavHost(navController, startDestination = "운동") {
-        composable("운동") { Icon(painterResource(id = R.drawable.ic_exercise), contentDescription = null, modifier = Modifier.size(36.dp).padding(top = 6.dp)) }
+        composable("운동") { exerciseView() }
         composable("기록") { Icon(painterResource(id = R.drawable.ic_graph), contentDescription = null, modifier = Modifier.size(36.dp).padding(bottom = 4.dp, top = 8.dp)) }
         composable("프로필") { ProfileView() }
     }

@@ -11,6 +11,7 @@ import com.example.healthcare.Repository.ExerciseRoutineRepository
 import com.example.healthcare.Repository.PhsicalInfoRepository
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.launch
+import java.util.Calendar
 import javax.inject.Inject
 
 @HiltViewModel
@@ -46,6 +47,12 @@ class MainViewModel @Inject constructor(
 
     //val exerciseLists : MutableLiveData<MutableList<List<ExerciseItem>>> = MutableLiveData(mutableListOf())
 
+    fun getCurrentDayOfWeek(): Int {
+        val calendar = Calendar.getInstance()
+        val dayOfWeek = calendar.get(Calendar.DAY_OF_WEEK)
+        return dayOfWeek
+    }
+
     fun getDataBase(){
         viewModelScope.launch{
             profileData.value = phsicalInfoRepository.getAllPhsicalInfos()
@@ -59,15 +66,9 @@ class MainViewModel @Inject constructor(
     }
 
     suspend fun getAllExerciseRoutine(){
-        var allExerciseRoutine : MutableList<List<ExerciseItem>> = mutableListOf()
         for (i in 0 until 7){
-            //allExerciseRoutine.add(exerciseRoutineRepository.getExerciseRoutine(i))
             exerciseLists[i].value = exerciseRoutineRepository.getExerciseRoutine(i).toMutableList()
         }
-
-        //.value = allExerciseRoutine
-
-
     }
 
     fun editProfile(item : Int){
