@@ -1,5 +1,6 @@
 package com.example.healthcare.VIewModel
 
+import android.icu.text.SimpleDateFormat
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.ui.graphics.Color
 import androidx.lifecycle.MutableLiveData
@@ -11,7 +12,10 @@ import com.example.healthcare.Repository.ExerciseRoutineRepository
 import com.example.healthcare.Repository.PhsicalInfoRepository
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.launch
+import java.time.DayOfWeek
 import java.util.Calendar
+import java.util.Date
+import java.util.Locale
 import javax.inject.Inject
 
 @HiltViewModel
@@ -45,13 +49,49 @@ class MainViewModel @Inject constructor(
         wednesExerciseList, thursExerciseList, friExerciseList, saturExerciseList
     )
 
+    val calendarData : MutableLiveData<String> = MutableLiveData("")
+    val stringDayOfWeek : MutableLiveData<String> = MutableLiveData("")
+    var previousDate : Int = 0
+
     //val exerciseLists : MutableLiveData<MutableList<List<ExerciseItem>>> = MutableLiveData(mutableListOf())
 
-    fun getCurrentDayOfWeek(): Int {
+    fun getCurrentDayOfWeek() {
         val calendar = Calendar.getInstance()
         val dayOfWeek = calendar.get(Calendar.DAY_OF_WEEK)
-        return dayOfWeek
+        getCalendar(calendar)
+
+        stringDayOfWeek.value = getDayOfWeek(dayOfWeek)
     }
+
+    fun getDayOfWeek(dayOfWeek: Int):String{
+        val arrayDayOfTheWeek = arrayOf("일","월","화","수","목","금","토")
+        var intDayOfWeek = -1
+        if(dayOfWeek - 1 + previousDate%7 > -1){
+            intDayOfWeek = dayOfWeek - 1 + previousDate%7
+        }else{
+            intDayOfWeek = dayOfWeek + 6 + previousDate%7
+        }
+        return arrayDayOfTheWeek[intDayOfWeek]
+    }
+
+    fun minusDate(){
+        previousDate -= 1
+        getCurrentDayOfWeek()
+    }
+
+    fun plusDate(){
+        if(previousDate < 0){
+            previousDate += 1
+            getCurrentDayOfWeek()
+        }
+    }
+
+    fun getCalendar(calendar: Calendar){
+        val dateFormat = SimpleDateFormat("yyyy년 MM월 dd일")
+        calendar.add(Calendar.DAY_OF_YEAR, previousDate)
+        calendarData.value = dateFormat.format(calendar.time)
+    }
+
 
     fun getDataBase(){
         viewModelScope.launch{
