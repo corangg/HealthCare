@@ -22,4 +22,11 @@ data class ExerciseItem(
     val dayOfWeek: Int
 )
 
+@Entity(tableName = "weight_data")
+data class WeightData(
+    @PrimaryKey
+    val timeStamp : Long,
+    val weight: Float
+)
+
 data class NavigationItem(val title: String, val icon: ImageVector)

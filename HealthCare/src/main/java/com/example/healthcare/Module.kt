@@ -3,8 +3,10 @@ package com.example.healthcare
 import android.content.Context
 import com.example.healthcare.DB.ExerciseRoutineDB
 import com.example.healthcare.DB.PhsicalInfoDB
+import com.example.healthcare.DB.WeightDataDB
 import com.example.healthcare.Dao.ExerciseDao
 import com.example.healthcare.Dao.PhsicalInfoDao
+import com.example.healthcare.Dao.WeightDataDao
 import com.example.healthcare.Repository.InformationInputRepository
 import dagger.Module
 import dagger.Provides
@@ -43,4 +45,17 @@ object Module {
     fun provideExerciseInfoDao(exerciseRoutineDB: ExerciseRoutineDB) : ExerciseDao{
         return exerciseRoutineDB.exerciseDao()
     }
+
+    @Singleton
+    @Provides
+    fun provideWeightDataDB(@ApplicationContext context: Context): WeightDataDB{
+        return WeightDataDB.getDatabase(context)
+    }
+
+    @Provides
+    fun provideWeightDataDao(weightDataDB: WeightDataDB) : WeightDataDao{
+        return weightDataDB.weightDao()
+    }
+
+
 }

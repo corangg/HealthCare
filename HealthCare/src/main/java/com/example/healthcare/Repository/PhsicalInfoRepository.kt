@@ -1,19 +1,38 @@
 package com.example.healthcare.Repository
 
 import com.example.healthcare.Dao.PhsicalInfoDao
+import com.example.healthcare.Dao.WeightDataDao
 import com.example.healthcare.PhsicalInfo
+import com.example.healthcare.WeightData
 import javax.inject.Inject
 
 
-class PhsicalInfoRepository @Inject constructor(private val phsicalInfoDao: PhsicalInfoDao) {
+class PhsicalInfoRepository @Inject constructor(
+    private val phsicalInfoDao: PhsicalInfoDao,
+    private val weightDataDao: WeightDataDao) {
 
     suspend fun getAllPhsicalInfos(): PhsicalInfo {
         return phsicalInfoDao.getPhsicalInfo()
     }
 
+    suspend fun getWeightData(): WeightData{
+        return weightDataDao.getWeightData()
+    }
+    suspend fun getLastWeightData():WeightData{
+        return weightDataDao.getLastWeightValue()
+    }
+
+    suspend fun insertWeightData(weightData: WeightData){
+        weightDataDao.insertWeightData(weightData)
+    }
+
+
+
     suspend fun insertPhsicalInfo(phsicalInfo: PhsicalInfo) {
         phsicalInfoDao.insertPhsicalInfo(phsicalInfo)
     }
+
+
 
     suspend fun deletePhsicalInfo(info: PhsicalInfo) {
         phsicalInfoDao.deletePhsicalInfo(info)
