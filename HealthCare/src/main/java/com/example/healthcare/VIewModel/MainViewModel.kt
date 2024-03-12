@@ -6,6 +6,7 @@ import androidx.compose.ui.graphics.Color
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
+import com.example.healthcare.ExerciseInfo
 import com.example.healthcare.ExerciseItem
 import com.example.healthcare.PhsicalInfo
 import com.example.healthcare.Repository.ExerciseRoutineRepository
@@ -14,10 +15,7 @@ import com.example.healthcare.WeightData
 
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.launch
-import java.time.DayOfWeek
 import java.util.Calendar
-import java.util.Date
-import java.util.Locale
 import javax.inject.Inject
 
 @HiltViewModel
@@ -55,19 +53,28 @@ class MainViewModel @Inject constructor(
     val stringDayOfWeek : MutableLiveData<String> = MutableLiveData("")
     var previousDate : Int = 0
 
-    var toDayExerciseList : MutableList<ExerciseItem> = mutableListOf()
+    var todayExerciseRoutine : MutableList<ExerciseItem> = mutableListOf()
 
+
+    //var todayExerciseList = mutableStateOf<List<List<ExerciseInfo>>>(listOf())
+
+    var list : MutableList<MutableList<ExerciseInfo>> = mutableListOf()
 
     fun getCurrentDayOfWeek() {
         val calendar = Calendar.getInstance()
         val dayOfWeek = calendar.get(Calendar.DAY_OF_WEEK)
-        getCalendar(calendar)
-
         val arrayDayOfTheWeek = arrayOf("일","월","화","수","목","금","토")
         val previousDate = getDayOfWeek(dayOfWeek)
+
+        getCalendar(calendar)
         stringDayOfWeek.value = arrayDayOfTheWeek[previousDate]
 
-        toDayExerciseList = exerciseLists[previousDate].value!!
+        todayExerciseRoutine = exerciseLists[previousDate].value!!
+        for (i in 0 until todayExerciseRoutine.size){
+            //todayExerciseList.add(mutableListOf())
+            list.add(mutableListOf())
+        }
+        //todayExerciseList.value = list
     }
 
     fun getDayOfWeek(dayOfWeek: Int) : Int{
@@ -219,5 +226,46 @@ class MainViewModel @Inject constructor(
         val calendar = Calendar.getInstance()
         val formatter = SimpleDateFormat("yyyyMMddHHmmss")
         return formatter.format(calendar.time).toLong()
+    }
+
+
+    val showAddExerciseView : MutableLiveData<Boolean> = MutableLiveData(false)
+    val exerciseName : MutableLiveData<String> = MutableLiveData("")
+    var exerciseNumber : Int = -1
+
+    val todayExerciseList : MutableLiveData<MutableList<MutableList<ExerciseInfo>>> = MutableLiveData(mutableListOf())
+
+    fun addArrayExercise(){
+        val exerciseInfo = ExerciseInfo(exercise = exerciseName.value!!)
+        todayExerciseList.value = mutableListOf()
+        list[exerciseNumber].add(exerciseInfo)
+        todayExerciseList.value = list
+        showAddExerciseView.value = false
+    }
+
+
+    fun showAddExerciseView(number: Int){
+        exerciseNumber = number
+        showAddExerciseView.value = true
+    }
+
+    fun hideAddExerciseView(){
+        showAddExerciseView.value = false
+    }
+
+
+    fun updateExerciseWeight(exerciseNumber: Int, index: Int, newWeight: Int) {
+        // list가 mutable 상태이므로, 이를 복사하여 새로운 인스턴스 생성
+        val updatedList = list.toMutableList()
+        val exerciseList = updatedList[exerciseNumber].toMutableList()
+
+        // 해당 인덱스의 ExerciseInfo를 업데이트
+        val updatedExerciseInfo = exerciseList[index].copy(weight = newWeight)
+        exerciseList[index] = updatedExerciseInfo
+        updatedList[exerciseNumber] = exerciseList
+
+        // 최종적으로 업데이트된 리스트를 LiveData에 반영
+        todayExerciseList.value = updatedList
+        true
     }
 }

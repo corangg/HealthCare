@@ -50,7 +50,6 @@ fun AddExerciseColumn( day : Int, list : MutableLiveData<MutableList<ExerciseIte
         horizontalAlignment = Alignment.CenterHorizontally,
         modifier = Modifier
             .background(Color.Transparent)
-            //.background(Color(0xFF121212))
             .width(86.dp)) {
         Text(
             text = dayOfTheWeek[day],

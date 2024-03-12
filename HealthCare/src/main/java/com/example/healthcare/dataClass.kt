@@ -29,4 +29,19 @@ data class WeightData(
     val weight: Float
 )
 
+@Entity(tableName = "chest_exercise")
+data class ChestExercise(
+    @PrimaryKey
+    val timeStamp : Long,
+    val exerciseInfo : List<ExerciseInfo>
+
+)
+
+data class ExerciseInfo(
+    val exercise : String,
+    val weight : Int = 0,
+    val set : Int = 0,
+    val number : Int = 0
+)
+
 data class NavigationItem(val title: String, val icon: ImageVector)
