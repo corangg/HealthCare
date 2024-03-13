@@ -8,7 +8,9 @@ import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.example.healthcare.ExerciseInfo
 import com.example.healthcare.ExerciseItem
+import com.example.healthcare.ExerciseRecord
 import com.example.healthcare.PhsicalInfo
+import com.example.healthcare.Repository.ExerciseRecordRepository
 import com.example.healthcare.Repository.ExerciseRoutineRepository
 import com.example.healthcare.Repository.PhsicalInfoRepository
 import com.example.healthcare.WeightData
@@ -21,7 +23,8 @@ import javax.inject.Inject
 @HiltViewModel
 class MainViewModel @Inject constructor(
     private val phsicalInfoRepository: PhsicalInfoRepository,
-    private val exerciseRoutineRepository: ExerciseRoutineRepository): ViewModel() {
+    private val exerciseRoutineRepository: ExerciseRoutineRepository,
+    private val exerciseRecordRepository: ExerciseRecordRepository): ViewModel() {
     var backgroundColor = mutableStateOf(Color(0xFF121212))
         private set
 
@@ -65,6 +68,8 @@ class MainViewModel @Inject constructor(
         val dayOfWeek = calendar.get(Calendar.DAY_OF_WEEK)
         val arrayDayOfTheWeek = arrayOf("일","월","화","수","목","금","토")
         val previousDate = getDayOfWeek(dayOfWeek)
+        list = mutableListOf()
+        todayExerciseList.value = list
 
         getCalendar(calendar)
         stringDayOfWeek.value = arrayDayOfTheWeek[previousDate]
@@ -90,6 +95,7 @@ class MainViewModel @Inject constructor(
 
     fun minusDate(){
         previousDate -= 1
+
         getCurrentDayOfWeek()
     }
 
@@ -214,8 +220,53 @@ class MainViewModel @Inject constructor(
         val weightData = WeightData(timeStamp = getCurrentTimeOld(), weight = lastWeightData.value!!.toFloat())
         viewModelScope.launch {
             phsicalInfoRepository.insertWeightData(weightData)
-        }
+            //bindExerciseInfo()
 
+            for(i in 0 until todayExerciseRoutine.size) {
+                exerciseRecordRepository.insertExerciseRecord(exerciseRecord(i))
+            }
+        }
+    }
+
+
+    suspend fun bindExerciseInfo(){
+        for(i in 0 until todayExerciseRoutine.size){
+            exerciseRecordRepository.insertExerciseRecord(exerciseRecord(i))
+            /*when(todayExerciseRoutine[i].name){
+                "유산소"->{
+                    true
+                }
+                "등"->{
+                    true
+                }
+                "가슴"->{
+                    exerciseRecordRepository.insertExerciseRecord(exerciseRecord(i))
+                    true
+                }
+                "하체"->{
+                    true
+                }
+                "어깨"->{
+                    true
+                }
+                "팔"->{
+                    true
+                }
+                "허리"->{
+                    true
+                }
+
+            }*/
+        }
+        true
+    }
+
+    fun exerciseRecord(i : Int):ExerciseRecord{
+        return ExerciseRecord(
+            getCurrentTimeOld(),
+            todayExerciseRoutine[i].name,
+            todayExerciseList.value!![i]
+        )
     }
 
     fun bindTextFieldWeight(weight : String){
@@ -246,6 +297,7 @@ class MainViewModel @Inject constructor(
 
     fun showAddExerciseView(number: Int){
         exerciseNumber = number
+        exerciseName.value = ""
         showAddExerciseView.value = true
     }
 
@@ -255,17 +307,32 @@ class MainViewModel @Inject constructor(
 
 
     fun updateExerciseWeight(exerciseNumber: Int, index: Int, newWeight: Int) {
-        // list가 mutable 상태이므로, 이를 복사하여 새로운 인스턴스 생성
-        val updatedList = list.toMutableList()
-        val exerciseList = updatedList[exerciseNumber].toMutableList()
-
-        // 해당 인덱스의 ExerciseInfo를 업데이트
+        list = todayExerciseList.value!!
+        val exerciseList = list[exerciseNumber]
         val updatedExerciseInfo = exerciseList[index].copy(weight = newWeight)
         exerciseList[index] = updatedExerciseInfo
-        updatedList[exerciseNumber] = exerciseList
+        list[exerciseNumber] = exerciseList
 
-        // 최종적으로 업데이트된 리스트를 LiveData에 반영
-        todayExerciseList.value = updatedList
-        true
+        todayExerciseList.value = list
+    }
+
+    fun updateExerciseSet(exerciseNumber: Int, index: Int, newSet: Int) {
+        list = todayExerciseList.value!!
+        val exerciseList = list[exerciseNumber]
+        val updatedExerciseInfo = exerciseList[index].copy(set = newSet)
+        exerciseList[index] = updatedExerciseInfo
+        list[exerciseNumber] = exerciseList
+
+        todayExerciseList.value = list
+    }
+
+    fun updateExerciseNumber(exerciseNumber: Int, index: Int, newNumber: Int) {
+        list = todayExerciseList.value!!
+        val exerciseList = list[exerciseNumber]
+        val updatedExerciseInfo = exerciseList[index].copy(number = newNumber)
+        exerciseList[index] = updatedExerciseInfo
+        list[exerciseNumber] = exerciseList
+
+        todayExerciseList.value = list
     }
 }

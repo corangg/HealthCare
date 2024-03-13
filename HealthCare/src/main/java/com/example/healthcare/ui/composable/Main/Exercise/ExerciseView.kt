@@ -112,7 +112,7 @@ fun exerciseView(){
 
             Box(modifier = Modifier
                 .fillMaxWidth()
-                .padding(horizontal = 20.dp)
+                .padding(horizontal = 10.dp)
                 .padding(top = 20.dp)
                 .background(Color(0xFF2D2D2D), RoundedCornerShape(24.dp))
                 .align(Alignment.CenterHorizontally)
@@ -186,6 +186,8 @@ fun exerciseView(){
                         .align(Alignment.Center)
                 )
             }
+
+            Spacer(modifier = Modifier.height(80.dp))
         }
 
         Box(modifier = Modifier
@@ -210,7 +212,7 @@ fun AddExercise(exerciseItem: ExerciseItem, onAddClicked: (Int)-> Unit, exercise
     val viewModel : MainViewModel = hiltViewModel()
     val exerciseList by viewModel.todayExerciseList.observeAsState(initial = listOf())
     Box(modifier = Modifier
-        .padding(horizontal = 20.dp)
+        .padding(horizontal = 10.dp)
         .padding(top = 20.dp)
         .background(Color(0xFF2D2D2D), RoundedCornerShape(24.dp))
     ){
@@ -255,11 +257,6 @@ fun AddExerciseView(value : MutableLiveData<*>, editClicked: () -> Unit){
     Column(modifier = Modifier
         .fillMaxWidth()
         .padding(16.dp), horizontalAlignment = Alignment.CenterHorizontally) {
-       /* Text(
-            text = item,
-            style = TextStyle(color = Color.White, fontSize = 20.sp, fontWeight = FontWeight.Bold)
-        )
-*/
         Box(
             modifier = Modifier
                 .fillMaxWidth()

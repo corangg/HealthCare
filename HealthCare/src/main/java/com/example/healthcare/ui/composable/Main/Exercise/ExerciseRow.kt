@@ -4,6 +4,8 @@ import androidx.compose.foundation.background
 import androidx.compose.foundation.border
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Row
+import androidx.compose.foundation.layout.Spacer
+
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
@@ -18,40 +20,58 @@ import androidx.compose.runtime.Composable
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.ui.Alignment
+import androidx.compose.ui.Alignment.Companion.CenterVertically
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.focus.FocusRequester
+import androidx.compose.ui.focus.focusRequester
+import androidx.compose.ui.focus.onFocusChanged
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.SolidColor
 import androidx.compose.ui.text.TextStyle
+import androidx.compose.ui.text.style.TextAlign
+import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.lifecycle.MutableLiveData
-import androidx.lifecycle.ViewModel
+import com.example.healthcare.Dao.PhsicalInfoDao
+import com.example.healthcare.Dao.WeightDataDao
 import com.example.healthcare.ExerciseInfo
+import com.example.healthcare.Repository.ExerciseRoutineRepository
+import com.example.healthcare.Repository.PhsicalInfoRepository
 import com.example.healthcare.VIewModel.MainViewModel
 
 @Composable
 fun ExerciseRow(exerciseInfo: ExerciseInfo, exerciseNumber: Int, index:Int){
-    var weight by remember { mutableStateOf(exerciseInfo.weight.toString()) }
+    var weight by remember { mutableStateOf("무게") }
+    var set by remember { mutableStateOf("세트") }
+    var number by remember { mutableStateOf("횟수") }
+    val focusRequester = remember { FocusRequester() }
+    var isFocused by remember { mutableStateOf(false) }
+    //weight = "무게"
     val viewModel : MainViewModel = hiltViewModel()
 
     Row(
-        verticalAlignment = Alignment.CenterVertically,
+        verticalAlignment = CenterVertically,
         modifier = Modifier
             .fillMaxWidth()
+            .height(68.dp)
             .background(Color(0xFF2D2D2D))
-            .padding(vertical = 10.dp, horizontal = 20.dp)) {
+            .padding(vertical = 10.dp)) {
         Text(
             text = exerciseInfo.exercise,
-            style = TextStyle(color = Color.White, fontSize = 20.sp),
-            modifier = Modifier.width(60.dp)
+            style = TextStyle(color = Color.White, fontSize = 14.sp, textAlign = TextAlign.Center),
+            modifier = Modifier.width(60.dp),
+            maxLines = 2,
+            overflow = TextOverflow.Ellipsis
+
         )
 
         Box(
             modifier = Modifier
-                .padding(start = 20.dp)
-                .height(48.dp)
+                .padding(start = 10.dp)
+                .height(36.dp)
                 .border(2.dp, Color.White, RoundedCornerShape(6.dp))
                 .padding(horizontal = 10.dp)
         ) {
@@ -64,9 +84,82 @@ fun ExerciseRow(exerciseInfo: ExerciseInfo, exerciseNumber: Int, index:Int){
                 singleLine = true,
                 cursorBrush = SolidColor(Color.White),
                 modifier = Modifier
-                    .fillMaxWidth()
-                    .align(Alignment.CenterStart),
-                textStyle = TextStyle(color = Color.White, fontSize = 16.sp)
+                    .width(40.dp)
+                    .align(Alignment.CenterStart)
+                    .focusRequester(focusRequester)
+                    .onFocusChanged {
+                        isFocused = it.isFocused
+                        if (!it.isFocused && weight.isEmpty()) {
+                            weight = "무게"
+                        } else if (it.isFocused && weight == "무게") {
+                            weight = ""
+                        }
+                    },
+                textStyle = TextStyle(color = Color.White, fontSize = 16.sp, textAlign = TextAlign.Center)
+            )
+        }
+        Spacer(modifier = Modifier.width(16.dp))
+
+        Box(
+            modifier = Modifier
+                .padding(start = 10.dp)
+                .height(36.dp)
+                .border(2.dp, Color.White, RoundedCornerShape(6.dp))
+                .padding(horizontal = 10.dp)
+        ) {
+            BasicTextField(
+                value = set,
+                onValueChange = {
+                    set = it
+                    viewModel.updateExerciseSet(exerciseNumber, index, it.toIntOrNull() ?: exerciseInfo.set)
+                },
+                singleLine = true,
+                cursorBrush = SolidColor(Color.White),
+                modifier = Modifier
+                    .width(40.dp)
+                    .align(Alignment.CenterStart)
+                    .focusRequester(focusRequester)
+                    .onFocusChanged {
+                        isFocused = it.isFocused
+                        if (!it.isFocused && set.isEmpty()) {
+                            set = "세트"
+                        } else if (it.isFocused && set == "세트") {
+                            set = ""
+                        }
+                    },
+                textStyle = TextStyle(color = Color.White, fontSize = 16.sp, textAlign = TextAlign.Center)
+            )
+        }
+        Spacer(modifier = Modifier.width(16.dp))
+
+        Box(
+            modifier = Modifier
+                .padding(start = 10.dp)
+                .height(36.dp)
+                .border(2.dp, Color.White, RoundedCornerShape(6.dp))
+                .padding(horizontal = 10.dp)
+        ) {
+            BasicTextField(
+                value = number,
+                onValueChange = {
+                    number = it
+                    viewModel.updateExerciseNumber(exerciseNumber, index, it.toIntOrNull() ?: exerciseInfo.number)
+                },
+                singleLine = true,
+                cursorBrush = SolidColor(Color.White),
+                modifier = Modifier
+                    .width(40.dp)
+                    .align(Alignment.CenterStart)
+                    .focusRequester(focusRequester)
+                    .onFocusChanged {
+                        isFocused = it.isFocused
+                        if (!it.isFocused && number.isEmpty()) {
+                            number = "횟수"
+                        } else if (it.isFocused && number == "횟수") {
+                            number = ""
+                        }
+                    },
+                textStyle = TextStyle(color = Color.White, fontSize = 16.sp, textAlign = TextAlign.Center)
             )
         }
     }
@@ -76,5 +169,5 @@ fun ExerciseRow(exerciseInfo: ExerciseInfo, exerciseNumber: Int, index:Int){
 @Preview(showBackground = true)
 @Composable
 fun ExerciseRowPreview() {
-    ExerciseRow(exerciseInfo = ExerciseInfo("벤치프래스"),1,1)
+    ExerciseRow(exerciseInfo = ExerciseInfo("사이드레터럴레이즈"),1,1)
 }

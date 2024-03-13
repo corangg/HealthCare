@@ -1,10 +1,12 @@
 package com.example.healthcare
 
 import android.content.Context
+import com.example.healthcare.DB.ExerciseRecordDB
 import com.example.healthcare.DB.ExerciseRoutineDB
 import com.example.healthcare.DB.PhsicalInfoDB
 import com.example.healthcare.DB.WeightDataDB
 import com.example.healthcare.Dao.ExerciseDao
+import com.example.healthcare.Dao.ExerciseRecordDao
 import com.example.healthcare.Dao.PhsicalInfoDao
 import com.example.healthcare.Dao.WeightDataDao
 import com.example.healthcare.Repository.InformationInputRepository
@@ -57,5 +59,15 @@ object Module {
         return weightDataDB.weightDao()
     }
 
+    @Singleton
+    @Provides
+    fun provideExerciseRecordDB(@ApplicationContext context: Context): ExerciseRecordDB{
+        return ExerciseRecordDB.getDatabase(context)
+    }
+
+    @Provides
+    fun provideExerciseRecordDao(exerciseRecordDB: ExerciseRecordDB) : ExerciseRecordDao{
+        return exerciseRecordDB.exerciseRecordDao()
+    }
 
 }
