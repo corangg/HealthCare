@@ -139,7 +139,7 @@ class MainViewModel @Inject constructor(
             profileWeight.value = profileData.value?.weight.toString()
 
             viewModelScope.launch {
-                getExerciseRecord()
+                getExerciseRecord()//비동기로 돌아서 그런가?
 
             }
 
@@ -149,15 +149,30 @@ class MainViewModel @Inject constructor(
 
     suspend fun getExerciseRecord(){
         recordExerciseList.value = exerciseRecordRepository.getAllExerciseRecord().toMutableList()
-        true
         bindDateExerciseRecord()
     }
 
     fun bindDateExerciseRecord(){
         todayExerciseList//리스트
         todayExerciseRoutine//어떤 운동 종류인지
-        recordExerciseList.value
-        var dateExerciseRecordList : MutableList<MutableList<ExerciseInfo>> = mutableListOf()
+        recordExerciseList.value!![0]
+        var dateExerciseRecordList = todayExerciseList.value!!
+        recordDate()
+
+        for(i in recordExerciseList.value!!){
+            if(i.exerciseType.timeStamp == recordDate()){
+                for(j in 0 until todayExerciseRoutine.size){
+                    if(todayExerciseRoutine[j].name == i.exerciseType.exerciseType){
+                        //dateExerciseRecordList[j].add(i.exerciseInfo)
+                        i.exerciseInfo
+                        dateExerciseRecordList[j] = i.exerciseInfo.toMutableList()
+                        true
+                    }
+                }
+            }
+        }
+        todayExerciseList.value = mutableListOf()
+        todayExerciseList.value = dateExerciseRecordList
         true
 
     }
@@ -288,8 +303,11 @@ class MainViewModel @Inject constructor(
                 exerciseRecordRepository.insertExerciseRecord(exerciseRecord(i))
                 true
             }
+            checkSaveToast.value = true
         }
     }
+
+    val checkSaveToast : MutableLiveData<Boolean> = MutableLiveData(false)
 
 
 

@@ -2,6 +2,7 @@ package com.example.healthcare.ui
 
 import android.content.Intent
 import android.os.Bundle
+import android.widget.Toast
 import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
 import androidx.activity.viewModels
@@ -66,7 +67,6 @@ class MainActivity : ComponentActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContent {
-
             HealthCareTheme {
                 Surface(
                     modifier = Modifier.fillMaxSize(),
@@ -76,7 +76,16 @@ class MainActivity : ComponentActivity() {
                 }
             }
         }
+        //setObserve(viewModel)
     }
+    /*fun setObserve(viewModel: MainViewModel){
+        viewModel.checkSaveToast.observe(this){
+            if(it){
+                Toast.makeText(this,"저장 완료", Toast.LENGTH_SHORT).show()
+            }
+        }
+
+    }*/
 }
 
 

@@ -42,15 +42,47 @@ import com.example.healthcare.Repository.ExerciseRoutineRepository
 import com.example.healthcare.Repository.PhsicalInfoRepository
 import com.example.healthcare.VIewModel.MainViewModel
 
+
+/*fun a(viewModel : MainViewModel, ): String{
+    var a = ""
+    if(viewModel.todayExerciseList.value!![exerciseNumber][index].number == 0){
+        a = "횟수"
+    }else{
+        a = viewModel.todayExerciseList.value!![exerciseNumber][index].number.toString()
+    }
+    return a
+}*/
 @Composable
 fun ExerciseRow(exerciseInfo: ExerciseInfo, exerciseNumber: Int, index:Int){
-    var weight by remember { mutableStateOf("무게") }
-    var set by remember { mutableStateOf("세트") }
-    var number by remember { mutableStateOf("횟수") }
+    val viewModel : MainViewModel = hiltViewModel()
+    var weight by remember {
+        mutableStateOf(
+            if(viewModel.todayExerciseList.value!![exerciseNumber][index].weight == 0){ "무게" }
+            else{ viewModel.todayExerciseList.value!![exerciseNumber][index].weight.toString() }) }
+    var set by remember {
+        mutableStateOf(
+            if(viewModel.todayExerciseList.value!![exerciseNumber][index].set == 0){ "세트" }
+            else{ viewModel.todayExerciseList.value!![exerciseNumber][index].set.toString() }) }
+    var number by remember {
+        mutableStateOf(
+            if(viewModel.todayExerciseList.value!![exerciseNumber][index].number == 0){ "횟수" }
+            else{ viewModel.todayExerciseList.value!![exerciseNumber][index].number.toString() }) }
     val focusRequester = remember { FocusRequester() }
     var isFocused by remember { mutableStateOf(false) }
     //weight = "무게"
-    val viewModel : MainViewModel = hiltViewModel()
+
+
+
+
+    fun a(): String{
+        var a = ""
+        if(viewModel.todayExerciseList.value!![exerciseNumber][index].number == 0){
+            a = "횟수"
+        }else{
+            a = viewModel.todayExerciseList.value!![exerciseNumber][index].number.toString()
+        }
+        return a
+    }
 
     Row(
         verticalAlignment = CenterVertically,
