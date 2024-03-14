@@ -13,7 +13,7 @@ class ExerciseRoutineRepository@Inject constructor(private val exerciseDao: Exer
         return exerciseDao.getExerciseItemsByDay(day)
     }
 
-    suspend fun saveExerciseRoutine(list:Array<MutableLiveData<MutableList<ExerciseItem>>>){
+    suspend fun saveExerciseRoutine(list : Array<MutableLiveData<MutableList<ExerciseItem>>>){
         exerciseDao.deleteAllExerciseItems()
         for(day in 0 .. 6){
             for(i in list[day].value.orEmpty()){

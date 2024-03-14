@@ -108,7 +108,6 @@ fun aa(a: Int){
     val viewModel: MainViewModel = hiltViewModel()
     LaunchedEffect(true) {
         viewModel.getDataBase()
-        //viewModel.getCurrentDayOfWeek()
     }
     when(a){
         0->exerciseView()

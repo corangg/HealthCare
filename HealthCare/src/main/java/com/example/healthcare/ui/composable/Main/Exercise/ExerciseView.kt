@@ -45,7 +45,6 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.lifecycle.MutableLiveData
-import com.example.healthcare.ExerciseInfo
 import com.example.healthcare.ExerciseItem
 import com.example.healthcare.R
 import com.example.healthcare.VIewModel.MainViewModel
@@ -56,7 +55,6 @@ fun exerciseView(){
     val viewModel: MainViewModel = hiltViewModel()
     LaunchedEffect(true) {
         //viewModel.getDataBase()
-        //viewModel.getCurrentDayOfWeek()
     }
 
     val dayOfTheWeek by viewModel.stringDayOfWeek.observeAsState()
@@ -126,7 +124,7 @@ fun exerciseView(){
                             .padding(20.dp)
                     )
 
-                    val weight = viewModel.lastWeightData.observeAsState().value ?:""
+                    val weight = viewModel.lastWeight.observeAsState().value ?:""
 
                     Box(
                         modifier = Modifier

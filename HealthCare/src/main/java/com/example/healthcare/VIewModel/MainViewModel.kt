@@ -35,10 +35,32 @@ class MainViewModel @Inject constructor(
     val profileHeight : MutableLiveData<String> = MutableLiveData("")
     val profileWeight : MutableLiveData<String> = MutableLiveData("")
 
-    val profileData : MutableLiveData<PhsicalInfo> = MutableLiveData()
+
     val viewEditCompsable : MutableLiveData<Int> = MutableLiveData(0)
 
     val editExerciseItem : MutableLiveData<Boolean> = MutableLiveData(false)
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
     val sunExerciseList : MutableLiveData<MutableList<ExerciseItem>> = MutableLiveData(mutableListOf())
     val monExerciseList : MutableLiveData<MutableList<ExerciseItem>> = MutableLiveData(mutableListOf())
@@ -47,52 +69,105 @@ class MainViewModel @Inject constructor(
     val thursExerciseList : MutableLiveData<MutableList<ExerciseItem>> = MutableLiveData(mutableListOf())
     val friExerciseList : MutableLiveData<MutableList<ExerciseItem>> = MutableLiveData(mutableListOf())
     val saturExerciseList : MutableLiveData<MutableList<ExerciseItem>> = MutableLiveData(mutableListOf())
-
     val exerciseLists: Array<MutableLiveData<MutableList<ExerciseItem>>> = arrayOf(
         sunExerciseList, monExerciseList, tuesExerciseList,
         wednesExerciseList, thursExerciseList, friExerciseList, saturExerciseList
-    )
-
-    val calendarData : MutableLiveData<String> = MutableLiveData("")
+    )//이부분 어캐 줄일수 없나?
     val stringDayOfWeek : MutableLiveData<String> = MutableLiveData("")
-    var previousDate : Int = 0
 
+    val lastWeight : MutableLiveData<String> = MutableLiveData()
+    val calendarData : MutableLiveData<String> = MutableLiveData("")
+    val todayExerciseList : MutableLiveData<MutableList<MutableList<ExerciseInfo>>> = MutableLiveData(mutableListOf())
+
+    var recordExerciseList : MutableList<ExerciseRecord> = mutableListOf()
+    var list : MutableList<MutableList<ExerciseInfo>> = mutableListOf()
     var todayExerciseRoutine : MutableList<ExerciseItem> = mutableListOf()
 
+    var previousDate : Int = 0
 
-    //var todayExerciseList = mutableStateOf<List<List<ExerciseInfo>>>(listOf())
+    var lastWeightData = WeightData()
+    var profileData = PhsicalInfo()
 
-    var list : MutableList<MutableList<ExerciseInfo>> = mutableListOf()
+
+
+
+
+
+
+
+
+    fun getDataBase(){
+        viewModelScope.launch{
+            profileData = phsicalInfoRepository.getAllPhsicalInfos()
+            lastWeightData = phsicalInfoRepository.getLastWeightData()
+            recordExerciseList = exerciseRecordRepository.getAllExerciseRecord().toMutableList()
+            getAllExerciseRoutine()
+            getCurrentDayOfWeek()
+            bindDateExerciseRecord()
+            setData()
+        }
+    }
+
+    fun setData(){
+        lastWeight.value = lastWeightData.weight.toString()
+
+        profileName.value = profileData.name
+        profileGender.value = profileData.gender
+        profileAge.value = profileData.age.toString()
+        profileHeight.value = profileData.height.toString()
+        profileWeight.value = profileData.weight.toString()
+    }
+
+    suspend fun getAllExerciseRoutine(){
+        for (i in 0 until 7){
+            exerciseLists[i].value = exerciseRoutineRepository.getExerciseRoutine(i).toMutableList()
+        }
+    }
 
     fun getCurrentDayOfWeek() {
         val calendar = Calendar.getInstance()
         val dayOfWeek = calendar.get(Calendar.DAY_OF_WEEK)
         val arrayDayOfTheWeek = arrayOf("일","월","화","수","목","금","토")
         val previousDate = getDayOfWeek(dayOfWeek)
-        list = mutableListOf()
-        todayExerciseList.value = list
 
-        getCalendar(calendar)
+        list = mutableListOf()//
+        todayExerciseList.value = list//
+
+
         stringDayOfWeek.value = arrayDayOfTheWeek[previousDate]
 
-        viewModelScope.launch {
-            //exerciseRecordRepository.deleteAllExerciseReord()
-            val aa =exerciseRecordRepository.getAllExerciseRecord()
-            true
-
-        }//확인 끝나면 제거
-
+        getCalendar(calendar)//dlrjs
 
         todayExerciseRoutine = exerciseLists[previousDate].value!!
         for (i in 0 until todayExerciseRoutine.size){
-            //todayExerciseList.add(mutableListOf())
             list.add(mutableListOf())
         }
-        //todayExerciseList.value = list
+        bindDateExerciseRecord()
+    }
+
+    fun bindDateExerciseRecord(){
+        var dateExerciseRecordList = todayExerciseList.value!!
+        for(i in recordExerciseList){
+            if(i.exerciseType.timeStamp == recordDate()){
+                for(j in 0 until todayExerciseRoutine.size){
+                    if(todayExerciseRoutine[j].name == i.exerciseType.exerciseType){
+                        i.exerciseInfo
+                        dateExerciseRecordList[j] = i.exerciseInfo.toMutableList()
+                    }
+                }
+            }
+        }
+        todayExerciseList.value = mutableListOf()
+        todayExerciseList.value = dateExerciseRecordList
+    }
+
+    fun getCalendar(calendar: Calendar){
+        val dateFormat = SimpleDateFormat("yyyy년 MM월 dd일")
+        calendar.add(Calendar.DAY_OF_YEAR, previousDate)
+        calendarData.value = dateFormat.format(calendar.time)
     }
 
     fun getDayOfWeek(dayOfWeek: Int) : Int{
-
         var intDayOfWeek = -1
         if(dayOfWeek - 1 + previousDate % 7 > -1){
             intDayOfWeek = dayOfWeek - 1 + previousDate%7
@@ -104,7 +179,6 @@ class MainViewModel @Inject constructor(
 
     fun minusDate(){
         previousDate -= 1
-
         getCurrentDayOfWeek()
     }
 
@@ -115,67 +189,38 @@ class MainViewModel @Inject constructor(
         }
     }
 
-    fun getCalendar(calendar: Calendar){
-        val dateFormat = SimpleDateFormat("yyyy년 MM월 dd일")
-        calendar.add(Calendar.DAY_OF_YEAR, previousDate)
-        calendarData.value = dateFormat.format(calendar.time)
-    }
-
-    val lastWeightData : MutableLiveData<String> = MutableLiveData()
-    val recordExerciseList : MutableLiveData<MutableList<ExerciseRecord>> = MutableLiveData(mutableListOf())
 
 
-    fun getDataBase(){
-        viewModelScope.launch{
-            profileData.value = phsicalInfoRepository.getAllPhsicalInfos()
-            getAllExerciseRoutine()
-            lastWeightData.value = phsicalInfoRepository.getLastWeightData().weight.toString()
 
-            //phsicalInfoRepository.getWeightData()
-            profileName.value = profileData.value?.name
-            profileGender.value = profileData.value?.gender
-            profileAge.value = profileData.value?.age.toString()
-            profileHeight.value = profileData.value?.height.toString()
-            profileWeight.value = profileData.value?.weight.toString()
 
-            viewModelScope.launch {
-                getExerciseRecord()//비동기로 돌아서 그런가?
 
-            }
 
-            getCurrentDayOfWeek()
-        }
-    }
 
-    suspend fun getExerciseRecord(){
-        recordExerciseList.value = exerciseRecordRepository.getAllExerciseRecord().toMutableList()
-        bindDateExerciseRecord()
-    }
 
-    fun bindDateExerciseRecord(){
-        todayExerciseList//리스트
-        todayExerciseRoutine//어떤 운동 종류인지
-        recordExerciseList.value!![0]
-        var dateExerciseRecordList = todayExerciseList.value!!
-        recordDate()
 
-        for(i in recordExerciseList.value!!){
-            if(i.exerciseType.timeStamp == recordDate()){
-                for(j in 0 until todayExerciseRoutine.size){
-                    if(todayExerciseRoutine[j].name == i.exerciseType.exerciseType){
-                        //dateExerciseRecordList[j].add(i.exerciseInfo)
-                        i.exerciseInfo
-                        dateExerciseRecordList[j] = i.exerciseInfo.toMutableList()
-                        true
-                    }
-                }
-            }
-        }
-        todayExerciseList.value = mutableListOf()
-        todayExerciseList.value = dateExerciseRecordList
-        true
 
-    }
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
     suspend fun bindExerciseInfo(){
         for(i in 0 until todayExerciseRoutine.size){
@@ -209,11 +254,7 @@ class MainViewModel @Inject constructor(
         true
     }
 
-    suspend fun getAllExerciseRoutine(){
-        for (i in 0 until 7){
-            exerciseLists[i].value = exerciseRoutineRepository.getExerciseRoutine(i).toMutableList()
-        }
-    }
+
 
     fun editProfile(item : Int){
         viewEditCompsable.value = item
@@ -230,35 +271,35 @@ class MainViewModel @Inject constructor(
 
     fun editName(){
         viewModelScope.launch {
-            phsicalInfoRepository.updateName(profileName.value!!,profileData.value?.name ?:"" )
+            phsicalInfoRepository.updateName(profileName.value!!,profileData.name)
             getDataBase()
         }
     }
 
     fun editGender(){
         viewModelScope.launch {
-            phsicalInfoRepository.updateGender(profileGender.value!!,profileData.value!!.gender )
+            phsicalInfoRepository.updateGender(profileGender.value!!,profileData.gender)
             getDataBase()
         }
     }
 
     fun editAge(){
         viewModelScope.launch {
-            phsicalInfoRepository.updateAge(profileAge.value!!.toInt(),profileData.value?.age ?:-1 )
+            phsicalInfoRepository.updateAge(profileAge.value!!.toInt(),profileData.age)
             getDataBase()
         }
     }
 
     fun editHeight(){
         viewModelScope.launch {
-            phsicalInfoRepository.updateHeight(profileHeight.value!!.toFloat(),profileData.value?.height ?:0f )
+            phsicalInfoRepository.updateHeight(profileHeight.value!!.toFloat(),profileData.height)
             getDataBase()
         }
     }
 
     fun editWeight(){
         viewModelScope.launch {
-            phsicalInfoRepository.updateWeight(profileWeight.value!!.toFloat(),profileData.value?.weight ?:0f)
+            phsicalInfoRepository.updateWeight(profileWeight.value!!.toFloat(),profileData.weight)
             getDataBase()
         }
     }
@@ -275,7 +316,7 @@ class MainViewModel @Inject constructor(
 
     fun updateExerciseRoutine(itemId: String, newName: String, day: Int){
         val newList = exerciseLists[day].value.orEmpty().map {
-            if (it.id == itemId.toString()) it.copy(name = newName) else it
+            if (it.id == itemId) it.copy(name = newName) else it
         }
         exerciseLists[day].value = newList.toMutableList()
 
@@ -294,7 +335,7 @@ class MainViewModel @Inject constructor(
     }
 
     fun saveExercise(){
-        val weightData = WeightData(timeStamp = getCurrentTimeOld(), weight = lastWeightData.value!!.toFloat())
+        val weightData = WeightData(timeStamp = getCurrentTimeOld(), weight = lastWeight.value!!.toFloat())
         viewModelScope.launch {
             phsicalInfoRepository.insertWeightData(weightData)
             //bindExerciseInfo()
@@ -332,7 +373,7 @@ class MainViewModel @Inject constructor(
     }
 
     fun bindTextFieldWeight(weight : String){
-        lastWeightData.value = weight
+        lastWeight.value = weight
     }
 
     fun getCurrentTimeOld(): Long {
@@ -346,7 +387,7 @@ class MainViewModel @Inject constructor(
     val exerciseName : MutableLiveData<String> = MutableLiveData("")
     var exerciseNumber : Int = -1
 
-    val todayExerciseList : MutableLiveData<MutableList<MutableList<ExerciseInfo>>> = MutableLiveData(mutableListOf())
+
 
     fun addArrayExercise(){
         val exerciseInfo = ExerciseInfo(exercise = exerciseName.value!!)

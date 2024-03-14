@@ -53,14 +53,12 @@ import com.example.healthcare.ui.composable.HorizontalScrollView
 @Composable
 fun ProfileView() {
     val viewModel: MainViewModel = hiltViewModel()
-    LaunchedEffect(true) {
-        viewModel.getDataBase()
-    }
-    val name = viewModel.profileData.observeAsState().value?.name ?:""
-    val gender = viewModel.profileData.observeAsState().value?.gender ?:true
-    val age = viewModel.profileData.observeAsState().value?.age ?:0
-    val height = viewModel.profileData.observeAsState().value?.height ?:0f
-    val weight = viewModel.profileData.observeAsState().value?.weight ?:0f
+
+    val name = viewModel.profileName.observeAsState().value ?:""
+    val gender = viewModel.profileGender.observeAsState().value ?:true
+    val age = viewModel.profileAge.observeAsState().value ?:""
+    val height = viewModel.profileHeight.observeAsState().value ?:""
+    val weight = viewModel.profileWeight.observeAsState().value ?:""
 
     Box(
         modifier = Modifier
@@ -90,9 +88,9 @@ fun ProfileView() {
                     }else{
                         profileRow(itemImg = R.drawable.ic_gender, itemText = "성별", itemDetail = "여성", "", editClicked = {viewModel.editProfile(2)})
                     }
-                    profileRow(itemImg = R.drawable.ic_age, itemText = "나이", itemDetail = age.toString(),"세", editClicked = {viewModel.editProfile(3)})
-                    profileRow(itemImg = R.drawable.ic_height, itemText = "키", itemDetail = height.toString(), "cm", editClicked = {viewModel.editProfile(4)})
-                    profileRow(itemImg = R.drawable.ic_weight, itemText = "체중", itemDetail = weight.toString(),"kg", editClicked = {viewModel.editProfile(5)})
+                    profileRow(itemImg = R.drawable.ic_age, itemText = "나이", itemDetail = age,"세", editClicked = {viewModel.editProfile(3)})
+                    profileRow(itemImg = R.drawable.ic_height, itemText = "키", itemDetail = height, "cm", editClicked = {viewModel.editProfile(4)})
+                    profileRow(itemImg = R.drawable.ic_weight, itemText = "체중", itemDetail = weight,"kg", editClicked = {viewModel.editProfile(5)})
                     Spacer(modifier = Modifier.height(48.dp))
                 }
             }

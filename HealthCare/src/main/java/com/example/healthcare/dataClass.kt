@@ -8,11 +8,11 @@ import java.util.UUID
 @Entity(tableName = "phsical_info")
 data class PhsicalInfo(
     @PrimaryKey
-    val name: String,
-    val gender: Boolean,
-    val age : Int,
-    val height : Float,
-    val weight : Float
+    val name: String = "",
+    val gender: Boolean = true,
+    val age : Int = 0,
+    val height : Float = 0f,
+    val weight : Float = 0f
 )
 
 @Entity(tableName = "exercise_items")
@@ -25,8 +25,8 @@ data class ExerciseItem(
 @Entity(tableName = "weight_data")
 data class WeightData(
     @PrimaryKey
-    val timeStamp : Long,
-    val weight: Float
+    val timeStamp : Long = 0,
+    val weight: Float = 0f
 )
 
 /*
