@@ -7,11 +7,18 @@ import javax.inject.Inject
 
 class ExerciseRecordRepository@Inject constructor(private val exerciseRecordDao: ExerciseRecordDao)  {
 
-    suspend fun getExerciseRecord(): List<ExerciseRecord>{
+    suspend fun getAllExerciseRecord(): List<ExerciseRecord>{
         return exerciseRecordDao.getAllExerciseRecords()
+    }
+    suspend fun getExerciseRecord(): ExerciseRecord{
+        return exerciseRecordDao.getExerciseRecord()
     }
 
     suspend fun insertExerciseRecord(exerciseRecord: ExerciseRecord){
         exerciseRecordDao.insertExerciseRecord(exerciseRecord)
+    }
+
+    suspend fun deleteAllExerciseReord(){
+        exerciseRecordDao.deleteAllExerciseReord()
     }
 }

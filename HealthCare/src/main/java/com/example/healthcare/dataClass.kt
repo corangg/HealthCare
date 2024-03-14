@@ -38,12 +38,22 @@ data class ChestExercise(
 )
 */
 
-@Entity(tableName = "exercise_record")
+@Entity(tableName = "exercise_records")
 data class ExerciseRecord(
     @PrimaryKey
+    /*val timeStamp : Long,//이게 겹쳐서 그렇잖아? 2개를 하나의 데이터클래스로 묶으면?
+    val exerciseType : String,*/
+    val exerciseType: ExerciseType,
+    val exerciseInfo : List<ExerciseInfo>
+    /*val exercise : String,
+    val weight : Int = 0,
+    val set : Int = 0,
+    val number : Int = 0*/
+)
+
+data class ExerciseType(
     val timeStamp : Long,
     val exerciseType : String,
-    val exerciseInfo : List<ExerciseInfo>
 )
 
 data class ExerciseInfo(

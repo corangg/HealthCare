@@ -9,6 +9,7 @@ import androidx.lifecycle.viewModelScope
 import com.example.healthcare.ExerciseInfo
 import com.example.healthcare.ExerciseItem
 import com.example.healthcare.ExerciseRecord
+import com.example.healthcare.ExerciseType
 import com.example.healthcare.PhsicalInfo
 import com.example.healthcare.Repository.ExerciseRecordRepository
 import com.example.healthcare.Repository.ExerciseRoutineRepository
@@ -74,6 +75,14 @@ class MainViewModel @Inject constructor(
         getCalendar(calendar)
         stringDayOfWeek.value = arrayDayOfTheWeek[previousDate]
 
+        viewModelScope.launch {
+            //exerciseRecordRepository.deleteAllExerciseReord()
+            val aa =exerciseRecordRepository.getAllExerciseRecord()
+            true
+
+        }//확인 끝나면 제거
+
+
         todayExerciseRoutine = exerciseLists[previousDate].value!!
         for (i in 0 until todayExerciseRoutine.size){
             //todayExerciseList.add(mutableListOf())
@@ -85,7 +94,7 @@ class MainViewModel @Inject constructor(
     fun getDayOfWeek(dayOfWeek: Int) : Int{
 
         var intDayOfWeek = -1
-        if(dayOfWeek - 1 + previousDate%7 > -1){
+        if(dayOfWeek - 1 + previousDate % 7 > -1){
             intDayOfWeek = dayOfWeek - 1 + previousDate%7
         }else{
             intDayOfWeek = dayOfWeek + 6 + previousDate%7
@@ -113,6 +122,7 @@ class MainViewModel @Inject constructor(
     }
 
     val lastWeightData : MutableLiveData<String> = MutableLiveData()
+    val recordExerciseList : MutableLiveData<MutableList<ExerciseRecord>> = MutableLiveData(mutableListOf())
 
 
     fun getDataBase(){
@@ -128,8 +138,60 @@ class MainViewModel @Inject constructor(
             profileHeight.value = profileData.value?.height.toString()
             profileWeight.value = profileData.value?.weight.toString()
 
+            viewModelScope.launch {
+                getExerciseRecord()
+
+            }
+
             getCurrentDayOfWeek()
         }
+    }
+
+    suspend fun getExerciseRecord(){
+        recordExerciseList.value = exerciseRecordRepository.getAllExerciseRecord().toMutableList()
+        true
+        bindDateExerciseRecord()
+    }
+
+    fun bindDateExerciseRecord(){
+        todayExerciseList//리스트
+        todayExerciseRoutine//어떤 운동 종류인지
+        recordExerciseList.value
+        var dateExerciseRecordList : MutableList<MutableList<ExerciseInfo>> = mutableListOf()
+        true
+
+    }
+
+    suspend fun bindExerciseInfo(){
+        for(i in 0 until todayExerciseRoutine.size){
+            exerciseRecordRepository.insertExerciseRecord(exerciseRecord(i))
+            /*when(todayExerciseRoutine[i].name){
+                "유산소"->{
+                    true
+                }
+                "등"->{
+                    true
+                }
+                "가슴"->{
+                    exerciseRecordRepository.insertExerciseRecord(exerciseRecord(i))
+                    true
+                }
+                "하체"->{
+                    true
+                }
+                "어깨"->{
+                    true
+                }
+                "팔"->{
+                    true
+                }
+                "허리"->{
+                    true
+                }
+
+            }*/
+        }
+        true
     }
 
     suspend fun getAllExerciseRoutine(){
@@ -224,49 +286,31 @@ class MainViewModel @Inject constructor(
 
             for(i in 0 until todayExerciseRoutine.size) {
                 exerciseRecordRepository.insertExerciseRecord(exerciseRecord(i))
+                true
             }
         }
     }
 
 
-    suspend fun bindExerciseInfo(){
-        for(i in 0 until todayExerciseRoutine.size){
-            exerciseRecordRepository.insertExerciseRecord(exerciseRecord(i))
-            /*when(todayExerciseRoutine[i].name){
-                "유산소"->{
-                    true
-                }
-                "등"->{
-                    true
-                }
-                "가슴"->{
-                    exerciseRecordRepository.insertExerciseRecord(exerciseRecord(i))
-                    true
-                }
-                "하체"->{
-                    true
-                }
-                "어깨"->{
-                    true
-                }
-                "팔"->{
-                    true
-                }
-                "허리"->{
-                    true
-                }
-
-            }*/
-        }
-        true
-    }
 
     fun exerciseRecord(i : Int):ExerciseRecord{
         return ExerciseRecord(
-            getCurrentTimeOld(),
-            todayExerciseRoutine[i].name,
-            todayExerciseList.value!![i]
+            exerciesType(i),
+           /* recordDate(),
+            todayExerciseRoutine[i].name,*/
+            todayExerciseList.value!![i]//이건 뭐랄까 그날 운동부위 리스트를 한번에 저장한달까?
         )
+    }
+
+    fun exerciesType(i : Int): ExerciseType {
+        return ExerciseType(recordDate(),
+            todayExerciseRoutine[i].name)
+    }
+
+    fun recordDate():Long{
+        val regex = "[년월일 ]".toRegex()
+        val date = calendarData.value!!.replace(regex,"")
+        return date.toLong()
     }
 
     fun bindTextFieldWeight(weight : String){

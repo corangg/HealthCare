@@ -14,12 +14,15 @@ interface ExerciseRecordDao {
     @Insert(onConflict = OnConflictStrategy.REPLACE)
     suspend fun insertExerciseRecord(record: ExerciseRecord)
 
-    @Query("SELECT * FROM exercise_record")
+    @Query("SELECT * FROM exercise_records")
     suspend fun getExerciseRecord(): ExerciseRecord
 
-    @Query("SELECT * FROM exercise_record")
+    @Query("SELECT * FROM exercise_records")
     suspend fun getAllExerciseRecords(): List<ExerciseRecord>
 
     @Delete
     suspend fun deleteExerciseRecord(record: ExerciseRecord)
+
+    @Query("DELETE FROM exercise_records")
+    suspend fun deleteAllExerciseReord()
 }
