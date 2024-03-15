@@ -107,7 +107,7 @@ fun NavigationGraph(navController: NavHostController, innerPadding: PaddingValue
 fun aa(a: Int){
     val viewModel: MainViewModel = hiltViewModel()
     LaunchedEffect(true) {
-        viewModel.getDataBase()
+        viewModel.initDataSet()
     }
     when(a){
         0->exerciseView()

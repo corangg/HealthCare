@@ -4,6 +4,7 @@ import android.icu.text.SimpleDateFormat
 import androidx.lifecycle.MutableLiveData
 import com.example.healthcare.Dao.ExerciseDao
 import com.example.healthcare.Dao.ExerciseRecordDao
+import com.example.healthcare.ExerciseInfo
 import com.example.healthcare.ExerciseRecord
 import java.util.Calendar
 import javax.inject.Inject
@@ -31,9 +32,9 @@ class ExerciseRecordRepository@Inject constructor(private val exerciseRecordDao:
         val calendar = Calendar.getInstance()
         val dayOfWeek = calendar.get(Calendar.DAY_OF_WEEK)
         val arrayDayOfTheWeek = arrayOf("일","월","화","수","목","금","토")
-        val previousDate = getDayOfWeek(dayOfWeek, previousDate)
+        val dayOfWeekNum = getDayOfWeek(dayOfWeek, previousDate)
 
-        return arrayDayOfTheWeek[previousDate]
+        return arrayDayOfTheWeek[dayOfWeekNum]
     }
 
     fun getDayOfWeek(dayOfWeek: Int, previousDate: Int) : Int{
@@ -52,6 +53,7 @@ class ExerciseRecordRepository@Inject constructor(private val exerciseRecordDao:
         calendar.add(Calendar.DAY_OF_YEAR, previousDate)
         return dateFormat.format(calendar.time)
     }
+
 
 
 
