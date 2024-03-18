@@ -5,24 +5,23 @@ import androidx.room.Delete
 import androidx.room.Insert
 import androidx.room.OnConflictStrategy
 import androidx.room.Query
-import com.example.healthcare.ExerciseRecord
+import com.example.healthcare.ExerciseDataRecord
 import com.example.healthcare.PhsicalInfo
 
 @Dao
 interface ExerciseRecordDao {
-
     @Insert(onConflict = OnConflictStrategy.REPLACE)
-    suspend fun insertExerciseRecord(record: ExerciseRecord)
+    suspend fun insertExerciseRecord(record: ExerciseDataRecord)
 
-    @Query("SELECT * FROM exercise_records")
-    suspend fun getExerciseRecord(): ExerciseRecord
+    @Query("SELECT * FROM exercisedata_records")
+    suspend fun getExerciseRecord(): ExerciseDataRecord
 
-    @Query("SELECT * FROM exercise_records")
-    suspend fun getAllExerciseRecords(): List<ExerciseRecord>
+    @Query("SELECT * FROM exercisedata_records")
+    suspend fun getAllExerciseRecords(): List<ExerciseDataRecord>
 
     @Delete
-    suspend fun deleteExerciseRecord(record: ExerciseRecord)
+    suspend fun deleteExerciseRecord(record: ExerciseDataRecord)
 
-    @Query("DELETE FROM exercise_records")
+    @Query("DELETE FROM exercisedata_records")
     suspend fun deleteAllExerciseReord()
 }

@@ -19,6 +19,19 @@ class ExerciseInfoTypeConverter {
     }
 
     @TypeConverter
+    fun fromExerciseTypeList(exerciseTypeList: List<ExerciseType>?): String {
+        if (exerciseTypeList == null) return ""
+        return Gson().toJson(exerciseTypeList)
+    }
+
+    @TypeConverter
+    fun toExerciseTypeList(exerciseTypeString: String): List<ExerciseType>? {
+        if (exerciseTypeString.isBlank()) return emptyList()
+        val type = object : TypeToken<List<ExerciseType>>() {}.type
+        return Gson().fromJson(exerciseTypeString, type)
+    }
+
+    @TypeConverter
     fun fromExerciseType(exerciseType: ExerciseType): String {
         return Gson().toJson(exerciseType)
     }
@@ -27,5 +40,19 @@ class ExerciseInfoTypeConverter {
     fun toExerciseType(exerciseTypeString: String): ExerciseType {
         val objectType = object : TypeToken<ExerciseType>() {}.type
         return Gson().fromJson(exerciseTypeString, objectType)
+    }
+
+    @TypeConverter
+    fun fromStringList(value: List<String>?): String {
+        if (value == null) return ""
+        val type = object : TypeToken<List<String>>() {}.type
+        return Gson().toJson(value, type)
+    }
+
+    @TypeConverter
+    fun toStringList(value: String): List<String>? {
+        if (value == "") return null
+        val type = object : TypeToken<List<String>>() {}.type
+        return Gson().fromJson(value, type)
     }
 }

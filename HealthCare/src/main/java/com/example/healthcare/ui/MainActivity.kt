@@ -52,7 +52,7 @@ import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import androidx.navigation.compose.currentBackStackEntryAsState
 import androidx.navigation.compose.rememberNavController
-import com.example.healthcare.NavigationItem
+
 import com.example.healthcare.R
 import com.example.healthcare.VIewModel.InformationInputViewModel
 import com.example.healthcare.VIewModel.MainViewModel

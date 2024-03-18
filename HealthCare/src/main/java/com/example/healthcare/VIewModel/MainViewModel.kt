@@ -6,9 +6,9 @@ import androidx.compose.ui.graphics.Color
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
+import com.example.healthcare.ExerciseDataRecord
 import com.example.healthcare.ExerciseInfo
 import com.example.healthcare.ExerciseItem
-import com.example.healthcare.ExerciseRecord
 import com.example.healthcare.ExerciseType
 import com.example.healthcare.PhsicalInfo
 import com.example.healthcare.Repository.ExerciseRecordRepository
@@ -59,7 +59,8 @@ class MainViewModel @Inject constructor(
 
     val todayExerciseList : MutableLiveData<MutableList<MutableList<ExerciseInfo>>> = MutableLiveData(mutableListOf())
 
-    var recordExerciseList : MutableList<ExerciseRecord> = mutableListOf()
+    //var recordExerciseList : MutableList<ExerciseRecord> = mutableListOf()
+    var recordExerciseList : MutableList<ExerciseDataRecord> = mutableListOf()
     var list : MutableList<MutableList<ExerciseInfo>> = mutableListOf()
     var todayExerciseRoutine : MutableList<ExerciseItem> = mutableListOf()
 
@@ -126,36 +127,40 @@ class MainViewModel @Inject constructor(
     fun bindDateExerciseRecord(list : MutableList<MutableList<ExerciseInfo>>){
         var dateExerciseRecordList = list
         for(i in recordExerciseList){
-            if(i.exerciseType.timeStamp == recordDate(calendarData.value!!)){
+            if(i.timeStamp == recordDate(calendarData.value!!)){
                 for(j in 0 until todayExerciseRoutine.size){
-                    if(todayExerciseRoutine[j].name == i.exerciseType.exerciseType){
-                        i.exerciseInfo
-                        dateExerciseRecordList[j] = i.exerciseInfo.toMutableList()
+                    for(k in i.exerciseType){
+                        if(todayExerciseRoutine[j].name == k.exerciseType){
+                            dateExerciseRecordList[j] = k.exerciseInfo.toMutableList()//i.exerciseInfo.toMutableList()
+                        }
                     }
                 }
             }
         }
-        todayExerciseList.value = dateExerciseRecordList//이걸 읽어와서 만약 오늘 내용이 비어져 있으면 일주일전 운동 목록만 불러오기
-        for(i in 0 until  todayExerciseList.value!!.size){
-            if(todayExerciseList.value!![i].size == 0){
-                testAAA(i)
+        for(i in 0 until  dateExerciseRecordList.size){
+            if(dateExerciseRecordList[i].size == 0){
+                dateExerciseRecordList[i] = getExerciseRoutine(i)
             }
         }
+        todayExerciseList.value = dateExerciseRecordList
     }
 
-    fun testAAA(routineNumber : Int){
-        val lastWeekDate = recordDate(exerciseRecordRepository.getCalendar(-7))
+    fun getExerciseRoutine(routineNumber : Int) : MutableList<ExerciseInfo>{
+        val lastWeekDate = recordDate(exerciseRecordRepository.getCalendar(-7 + previousDate))
+        var exerciseInfoList : MutableList<ExerciseInfo> = mutableListOf()
 
         for(i in recordExerciseList){
-            true
-            if(i.exerciseType.timeStamp == lastWeekDate){
-
+            if(i.timeStamp == lastWeekDate){
+                for (j in i.exerciseType){
+                    if(todayExerciseRoutine[routineNumber].name == j.exerciseType){
+                        for(k in j.exerciseInfo){
+                            exerciseInfoList.add(ExerciseInfo(exercise = k.exercise))
+                        }
+                    }
+                }
             }
         }
-
-
-
-        setExerciseList()
+        return exerciseInfoList
     }
 
     fun editProfile(item : Int){
@@ -234,7 +239,7 @@ class MainViewModel @Inject constructor(
         }
     }
 
-    fun minusDate(){
+    fun minusDate(){//넘어갈떄 마다 데이터 리셋 안됨 확인해야함
         previousDate -= 1
         setDayOfWeekData()
     }
@@ -308,22 +313,27 @@ class MainViewModel @Inject constructor(
         val weightData = WeightData(timeStamp = getCurrentTimeOld(), weight = lastWeight.value!!.toFloat())
         viewModelScope.launch {
             phsicalInfoRepository.insertWeightData(weightData)
-            for(i in 0 until todayExerciseRoutine.size) {
-                exerciseRecordRepository.insertExerciseRecord(exerciseRecord(i))
-            }
+            exerciseRecordRepository.insertExerciseRecord(exerciseRecord())
         }
     }
 
-    fun exerciseRecord(i : Int):ExerciseRecord{
-        return ExerciseRecord(
-            exerciesType(i),
-            todayExerciseList.value!![i]
+    fun exerciseRecord():ExerciseDataRecord{
+        return ExerciseDataRecord(
+            timeStamp = recordDate(calendarData.value!!),
+            exerciseType = exerciesType(),
         )
     }
 
-    fun exerciesType(i : Int): ExerciseType {
-        return ExerciseType(recordDate(calendarData.value!!),
-            todayExerciseRoutine[i].name)
+    fun exerciesType(): List<ExerciseType> {
+        var list : MutableList<ExerciseType> = mutableListOf()
+        for(i in 0 until todayExerciseRoutine.size ){
+            val exerciseType = ExerciseType(
+                exerciseType = todayExerciseRoutine[i].name,
+                exerciseInfo = todayExerciseList.value!![i]
+            )
+            list.add(exerciseType)
+        }
+        return list
     }
 
     fun recordDate(calenderDate : String):Long{
@@ -343,10 +353,10 @@ class MainViewModel @Inject constructor(
 
 
 
-    suspend fun bindExerciseInfo(){
+   /* suspend fun bindExerciseInfo(){
         for(i in 0 until todayExerciseRoutine.size){
             exerciseRecordRepository.insertExerciseRecord(exerciseRecord(i))
-            /*when(todayExerciseRoutine[i].name){
+            *//*when(todayExerciseRoutine[i].name){
                 "유산소"->{
                     true
                 }
@@ -370,36 +380,10 @@ class MainViewModel @Inject constructor(
                     true
                 }
 
-            }*/
+            }*//*
         }
         true
-    }
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
+    }*/
 
 
 }

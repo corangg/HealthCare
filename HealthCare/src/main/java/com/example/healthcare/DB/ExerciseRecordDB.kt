@@ -7,11 +7,12 @@ import androidx.room.RoomDatabase
 import androidx.room.TypeConverters
 import com.example.healthcare.Dao.ExerciseRecordDao
 import com.example.healthcare.Dao.PhsicalInfoDao
+import com.example.healthcare.ExerciseDataRecord
 import com.example.healthcare.ExerciseInfoTypeConverter
-import com.example.healthcare.ExerciseRecord
 import com.example.healthcare.PhsicalInfo
 
-@Database(entities = [ExerciseRecord::class], version = 2, exportSchema = false)
+//@Database(entities = [ExerciseRecord::class], version = 2, exportSchema = false)
+@Database(entities = [ExerciseDataRecord::class], version = 1, exportSchema = false)
 @TypeConverters(ExerciseInfoTypeConverter::class)
 abstract class ExerciseRecordDB : RoomDatabase() {
 
@@ -27,7 +28,7 @@ abstract class ExerciseRecordDB : RoomDatabase() {
                     context.applicationContext,
                     ExerciseRecordDB::class.java,
                     "exercise-records-database"
-                ).build()
+                )/*.fallbackToDestructiveMigration()*/.build()
                 INSTANCE = instance
                 instance
             }

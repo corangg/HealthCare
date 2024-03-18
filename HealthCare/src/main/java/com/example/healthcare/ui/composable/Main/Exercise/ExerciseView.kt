@@ -13,6 +13,7 @@ import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
+import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.shape.RoundedCornerShape
@@ -40,6 +41,7 @@ import androidx.compose.ui.graphics.SolidColor
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.input.KeyboardType
 import androidx.compose.ui.text.style.TextAlign
+import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
@@ -53,10 +55,6 @@ import com.example.healthcare.VIewModel.MainViewModel
 fun exerciseView(){
 
     val viewModel: MainViewModel = hiltViewModel()
-    LaunchedEffect(true) {
-        //viewModel.getDataBase()
-    }
-
     val dayOfTheWeek by viewModel.stringDayOfWeek.observeAsState()
     val scrollState = rememberScrollState()
     val getDate by viewModel.calendarData.observeAsState()
@@ -205,45 +203,7 @@ fun exerciseView(){
 
 }
 
-@Composable
-fun AddExercise(exerciseItem: ExerciseItem, onAddClicked: (Int)-> Unit, exerciseNumber: Int){
-    val viewModel : MainViewModel = hiltViewModel()
-    val exerciseList by viewModel.todayExerciseList.observeAsState(initial = listOf())
-    Box(modifier = Modifier
-        .padding(horizontal = 10.dp)
-        .padding(top = 20.dp)
-        .background(Color(0xFF2D2D2D), RoundedCornerShape(24.dp))
-    ){
-        Column(
-            modifier = Modifier
-                .padding(20.dp)
-                .fillMaxWidth(),
-            horizontalAlignment = Alignment.CenterHorizontally
-        ) {
-            Text(
-                text = exerciseItem.name,
-                style = TextStyle(color = Color.White, fontSize = 20.sp),
-                modifier = Modifier
-            )
-            exerciseList.getOrNull(exerciseNumber)?.forEachIndexed { index, exerciseInfo ->
-                ExerciseRow(exerciseInfo,exerciseNumber,index)
-            }
 
-            Image(
-                painter = painterResource(id = R.drawable.ic_add),
-                contentDescription = "AddExercise",
-                colorFilter = ColorFilter.tint(Color.White),
-                modifier = Modifier
-                    .padding(8.dp)
-                    .size(30.dp)
-                    .clickable {
-                        onAddClicked(exerciseNumber)
-                    }
-            )
-
-        }
-    }
-}
 
 
 

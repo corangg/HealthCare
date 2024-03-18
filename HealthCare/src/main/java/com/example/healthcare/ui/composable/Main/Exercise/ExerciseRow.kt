@@ -42,55 +42,42 @@ import com.example.healthcare.Repository.ExerciseRoutineRepository
 import com.example.healthcare.Repository.PhsicalInfoRepository
 import com.example.healthcare.VIewModel.MainViewModel
 
-
-/*fun a(viewModel : MainViewModel, ): String{
-    var a = ""
-    if(viewModel.todayExerciseList.value!![exerciseNumber][index].number == 0){
-        a = "횟수"
-    }else{
-        a = viewModel.todayExerciseList.value!![exerciseNumber][index].number.toString()
-    }
-    return a
-}*/
 @Composable
 fun ExerciseRow(exerciseInfo: ExerciseInfo, exerciseNumber: Int, index:Int){
     val viewModel : MainViewModel = hiltViewModel()
     var weight by remember {
         mutableStateOf(
-            if(viewModel.todayExerciseList.value!![exerciseNumber][index].weight == 0){ "무게" }
+            if(viewModel.todayExerciseList.value!![exerciseNumber][index].weight == 0){ "0" }
             else{ viewModel.todayExerciseList.value!![exerciseNumber][index].weight.toString() }) }
     var set by remember {
         mutableStateOf(
-            if(viewModel.todayExerciseList.value!![exerciseNumber][index].set == 0){ "세트" }
+            if(viewModel.todayExerciseList.value!![exerciseNumber][index].set == 0){ "0" }
             else{ viewModel.todayExerciseList.value!![exerciseNumber][index].set.toString() }) }
     var number by remember {
         mutableStateOf(
-            if(viewModel.todayExerciseList.value!![exerciseNumber][index].number == 0){ "횟수" }
+            if(viewModel.todayExerciseList.value!![exerciseNumber][index].number == 0){ "0" }
             else{ viewModel.todayExerciseList.value!![exerciseNumber][index].number.toString() }) }
     val focusRequester = remember { FocusRequester() }
     var isFocused by remember { mutableStateOf(false) }
-    //weight = "무게"
 
-
-
-
-    fun a(): String{
-        var a = ""
-        if(viewModel.todayExerciseList.value!![exerciseNumber][index].number == 0){
-            a = "횟수"
-        }else{
-            a = viewModel.todayExerciseList.value!![exerciseNumber][index].number.toString()
-        }
-        return a
+    if(exerciseInfo.weight != 0){
+        weight = exerciseInfo.weight.toString()
     }
+    if(exerciseInfo.set != 0){
+        set = exerciseInfo.set.toString()
+    }
+    if(exerciseInfo.number != 0){
+        number = exerciseInfo.number.toString()
+    }
+
 
     Row(
         verticalAlignment = CenterVertically,
         modifier = Modifier
             .fillMaxWidth()
-            .height(68.dp)
+            .height(60.dp)
             .background(Color(0xFF2D2D2D))
-            .padding(vertical = 10.dp)) {
+            .padding(vertical = 6.dp)) {
         Text(
             text = exerciseInfo.exercise,
             style = TextStyle(color = Color.White, fontSize = 14.sp, textAlign = TextAlign.Center),

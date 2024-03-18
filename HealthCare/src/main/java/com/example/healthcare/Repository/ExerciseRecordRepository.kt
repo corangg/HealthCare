@@ -4,23 +4,21 @@ import android.icu.text.SimpleDateFormat
 import androidx.lifecycle.MutableLiveData
 import com.example.healthcare.Dao.ExerciseDao
 import com.example.healthcare.Dao.ExerciseRecordDao
+import com.example.healthcare.ExerciseDataRecord
 import com.example.healthcare.ExerciseInfo
-import com.example.healthcare.ExerciseRecord
 import java.util.Calendar
 import javax.inject.Inject
 
 class ExerciseRecordRepository@Inject constructor(private val exerciseRecordDao: ExerciseRecordDao)  {
 
-    //val calendarData : MutableLiveData<String> = MutableLiveData("")
-
-    suspend fun getAllExerciseRecord(): List<ExerciseRecord>{
+    suspend fun getAllExerciseRecord(): List<ExerciseDataRecord>{
         return exerciseRecordDao.getAllExerciseRecords()
     }
-    suspend fun getExerciseRecord(): ExerciseRecord{
+    suspend fun getExerciseRecord(): ExerciseDataRecord{
         return exerciseRecordDao.getExerciseRecord()
     }
 
-    suspend fun insertExerciseRecord(exerciseRecord: ExerciseRecord){
+    suspend fun insertExerciseRecord(exerciseRecord: ExerciseDataRecord){
         exerciseRecordDao.insertExerciseRecord(exerciseRecord)
     }
 
@@ -53,10 +51,4 @@ class ExerciseRecordRepository@Inject constructor(private val exerciseRecordDao:
         calendar.add(Calendar.DAY_OF_YEAR, previousDate)
         return dateFormat.format(calendar.time)
     }
-
-
-
-
-
-
 }
