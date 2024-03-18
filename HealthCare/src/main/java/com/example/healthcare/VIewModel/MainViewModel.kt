@@ -126,7 +126,7 @@ class MainViewModel @Inject constructor(
     fun bindDateExerciseRecord(list : MutableList<MutableList<ExerciseInfo>>){
         var dateExerciseRecordList = list
         for(i in recordExerciseList){
-            if(i.exerciseType.timeStamp == recordDate()){
+            if(i.exerciseType.timeStamp == recordDate(calendarData.value!!)){
                 for(j in 0 until todayExerciseRoutine.size){
                     if(todayExerciseRoutine[j].name == i.exerciseType.exerciseType){
                         i.exerciseInfo
@@ -135,7 +135,27 @@ class MainViewModel @Inject constructor(
                 }
             }
         }
-        todayExerciseList.value = dateExerciseRecordList
+        todayExerciseList.value = dateExerciseRecordList//이걸 읽어와서 만약 오늘 내용이 비어져 있으면 일주일전 운동 목록만 불러오기
+        for(i in 0 until  todayExerciseList.value!!.size){
+            if(todayExerciseList.value!![i].size == 0){
+                testAAA(i)
+            }
+        }
+    }
+
+    fun testAAA(routineNumber : Int){
+        val lastWeekDate = recordDate(exerciseRecordRepository.getCalendar(-7))
+
+        for(i in recordExerciseList){
+            true
+            if(i.exerciseType.timeStamp == lastWeekDate){
+
+            }
+        }
+
+
+
+        setExerciseList()
     }
 
     fun editProfile(item : Int){
@@ -302,13 +322,13 @@ class MainViewModel @Inject constructor(
     }
 
     fun exerciesType(i : Int): ExerciseType {
-        return ExerciseType(recordDate(),
+        return ExerciseType(recordDate(calendarData.value!!),
             todayExerciseRoutine[i].name)
     }
 
-    fun recordDate():Long{
+    fun recordDate(calenderDate : String):Long{
         val regex = "[년월일 ]".toRegex()
-        val date = calendarData.value!!.replace(regex,"")
+        val date = calenderDate.replace(regex,"")
         return date.toLong()
     }
 
