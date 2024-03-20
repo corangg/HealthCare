@@ -43,14 +43,26 @@ fun SelectExerciseSpinner(
     exercise: String,
     onExerciseSelected: (String) -> Unit,
     onDeleteClicked: () -> Unit,
-    edit: Boolean){
+    modifier: Modifier = Modifier
+        .width(84.dp)
+        .padding(horizontal = 4.dp),
+    textModifier: Modifier = Modifier
+        .padding(vertical = 10.dp)
+        .width(56.dp)
+        .wrapContentSize(Alignment.Center),
+    dropDownModifier: Modifier = Modifier
+        .width(76.dp)
+        .heightIn(max = 240.dp)
+        .background(Color(0xFF2D2D2D), RoundedCornerShape(8.dp))
+        .padding(vertical = 1.dp),
+    list: List<String>,
+    edit: Boolean,
+    select : Boolean){
     var expanded by remember { mutableStateOf(false) }
-    val options = listOf("유산소", "등", "가슴", "하체", "어깨", "팔", "허리")
+    val options = list
     var selectedOption by remember { mutableStateOf(exercise) }
 
-    Box(modifier = Modifier
-        .width(84.dp)
-        .padding(4.dp),
+    Box(modifier = modifier,
         contentAlignment = Alignment.Center,
     ) {
 
@@ -62,11 +74,12 @@ fun SelectExerciseSpinner(
             Text(
                 text = selectedOption,
                 style = TextStyle(color = Color.White, fontSize = 16.sp),
-                modifier = Modifier
+                modifier = textModifier
+                    .clickable { expanded = true }/*Modifier
                     .clickable { expanded = true }
                     .padding(vertical = 10.dp)
                     .width(56.dp)
-                    .wrapContentSize(Alignment.Center),
+                    .wrapContentSize(Alignment.Center)*/,
             )
             if(edit){
                 Image(
@@ -80,15 +93,15 @@ fun SelectExerciseSpinner(
                 )
             }
         }
-        if(edit){
+        if(select){
             DropdownMenu(
                 expanded = expanded,
                 onDismissRequest = { expanded = false },
-                modifier = Modifier
+                modifier = dropDownModifier/*Modifier
                     .width(76.dp)
                     .heightIn(max = 240.dp)
                     .background(Color(0xFF2D2D2D), RoundedCornerShape(8.dp))
-                    .padding(vertical = 1.dp)
+                    .padding(vertical = 1.dp)*/
             ) {
                 options.forEach { option ->
                     DropdownMenuItem(

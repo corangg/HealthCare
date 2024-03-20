@@ -38,6 +38,7 @@ import com.example.healthcare.R
 import com.example.healthcare.VIewModel.MainViewModel
 import com.example.healthcare.ui.composable.Main.Exercise.exerciseView
 import com.example.healthcare.ui.composable.Main.Profile.ProfileView
+import com.example.healthcare.ui.composable.Main.Record.RecordView
 
 @Composable
 fun MyAppPreview() {
@@ -64,15 +65,23 @@ fun BottomNavigationBar(navController: NavController){
     val items = listOf("운동", "기록", "프로필")
 
 
-    BottomNavigation(modifier = Modifier.height(60.dp).border(2.dp,Color.Black), backgroundColor = Color(0xFF2D2D2D)) {
+    BottomNavigation(modifier = Modifier
+        .height(60.dp)
+        .border(2.dp, Color.Black), backgroundColor = Color(0xFF2D2D2D)) {
         val currentRoute = currentRoute(navController)
         items.forEach {
             BottomNavigationItem(
                 icon = {
                     when (it) {
-                        "운동" -> Icon(painterResource(id = R.drawable.ic_exercise), contentDescription = null, modifier = Modifier.size(36.dp).padding(top = 6.dp))
-                        "기록" -> Icon(painterResource(id = R.drawable.ic_graph), contentDescription = null, modifier = Modifier.size(36.dp).padding(bottom = 4.dp, top = 8.dp))
-                        "프로필" -> Icon(painterResource(id = R.drawable.ic_name), contentDescription = null, modifier = Modifier.size(36.dp).padding(bottom = 4.dp, top = 8.dp))
+                        "운동" -> Icon(painterResource(id = R.drawable.ic_exercise), contentDescription = null, modifier = Modifier
+                            .size(36.dp)
+                            .padding(top = 6.dp))
+                        "기록" -> Icon(painterResource(id = R.drawable.ic_graph), contentDescription = null, modifier = Modifier
+                            .size(36.dp)
+                            .padding(bottom = 4.dp, top = 8.dp))
+                        "프로필" -> Icon(painterResource(id = R.drawable.ic_name), contentDescription = null, modifier = Modifier
+                            .size(36.dp)
+                            .padding(bottom = 4.dp, top = 8.dp))
                     }
                 },
                 label = { Text(it, fontSize = 12.sp) },
@@ -111,7 +120,7 @@ fun aa(a: Int){
     }
     when(a){
         0->exerciseView()
-        1->Icon(painterResource(id = R.drawable.ic_graph), contentDescription = null, modifier = Modifier.size(36.dp).padding(bottom = 4.dp, top = 8.dp))
+        1-> RecordView()
         2->ProfileView()
     }
 }

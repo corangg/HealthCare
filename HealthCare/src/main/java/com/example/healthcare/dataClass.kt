@@ -47,3 +47,8 @@ data class ExerciseInfo(
     val number : Int = 0
 )
 
+data class ExerciseTypeList(
+    val exerciseType : String,
+    val exerciseList : MutableList<String>
+)
+

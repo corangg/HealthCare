@@ -9,6 +9,7 @@ import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.width
+import androidx.compose.foundation.layout.wrapContentSize
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.MutableState
@@ -55,6 +56,7 @@ fun AddExerciseColumn( day : Int, list : MutableLiveData<MutableList<ExerciseIte
             text = dayOfTheWeek[day],
             style = TextStyle(color = Color.White, fontSize = 20.sp, fontWeight = FontWeight.Bold),
         )
+        Spacer(modifier = Modifier.height(12.dp))
 
 
         exerciseList.forEach { exercise ->
@@ -67,8 +69,11 @@ fun AddExerciseColumn( day : Int, list : MutableLiveData<MutableList<ExerciseIte
                     onDeleteClicked = {
                         onDeleteClicked(exercise.id,day)
                     },
-                    edit = editValue
+                    list = listOf("유산소", "등", "가슴", "하체", "어깨", "팔", "허리"),
+                    edit = editValue,
+                    select = editValue
                 )
+                Spacer(modifier = Modifier.height(4.dp))
             }
         }
         if(editValue){

@@ -10,6 +10,7 @@ import com.example.healthcare.ExerciseDataRecord
 import com.example.healthcare.ExerciseInfo
 import com.example.healthcare.ExerciseItem
 import com.example.healthcare.ExerciseType
+import com.example.healthcare.ExerciseTypeList
 import com.example.healthcare.PhsicalInfo
 import com.example.healthcare.Repository.ExerciseRecordRepository
 import com.example.healthcare.Repository.ExerciseRoutineRepository
@@ -78,6 +79,7 @@ class MainViewModel @Inject constructor(
             getAllExerciseRoutine()
             setDayOfWeekData()
             setData()
+            setExerciseTypeList()
         }
     }
 
@@ -342,6 +344,39 @@ class MainViewModel @Inject constructor(
         return date.toLong()
     }
 
+
+    val selectExerciseTypeList : MutableLiveData<MutableList<String>> = MutableLiveData(mutableListOf())//이름으로 충분한가? 더 추가해야할거같은데
+
+
+    val exerciseTypeList : MutableList<ExerciseTypeList> = mutableListOf()
+
+    val selectExerciseTypeBoolean : MutableLiveData<Boolean> = MutableLiveData(false)
+    fun setExerciseTypeList(){//코루틴으로 해야할거같은데?
+        for(i in recordExerciseList){
+            for(j in i.exerciseType){
+                if(!exerciseTypeList.any{it.exerciseType == j.exerciseType}){
+                    val typeList = ExerciseTypeList(
+                        exerciseType = j.exerciseType,
+                        exerciseList = j.exerciseInfo.map { it.exercise }.toMutableList()
+                    )
+                    exerciseTypeList.add(typeList)
+                }else if(exerciseTypeList.any{it.exerciseType == j.exerciseType}){//종류가 있더라도 항목이 같은지 체크해야함
+                    val targetList = exerciseTypeList.find{it.exerciseType == j.exerciseType}
+                    targetList!!.exerciseList.addAll(j.exerciseInfo.map { it.exercise }.filterNot { targetList!!.exerciseList.contains(it) })
+                }
+            }
+        }
+    }
+
+
+    fun selectExerciseType(type : String){
+        val typeList = exerciseTypeList.find { it.exerciseType == type }
+        selectExerciseTypeList.value = typeList?.exerciseList ?: mutableListOf()
+        selectExerciseTypeBoolean.value = true
+
+        true
+        //for(in )
+    }
 
 
 
