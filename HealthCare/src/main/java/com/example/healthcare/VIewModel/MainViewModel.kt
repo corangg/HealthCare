@@ -351,6 +351,7 @@ class MainViewModel @Inject constructor(
     val exerciseTypeList : MutableList<ExerciseTypeList> = mutableListOf()
 
     val selectExerciseTypeBoolean : MutableLiveData<Boolean> = MutableLiveData(false)
+    val selectExerciseBoolean : MutableLiveData<Boolean> = MutableLiveData(false)
     fun setExerciseTypeList(){//코루틴으로 해야할거같은데?
         for(i in recordExerciseList){
             for(j in i.exerciseType){
@@ -373,9 +374,15 @@ class MainViewModel @Inject constructor(
         val typeList = exerciseTypeList.find { it.exerciseType == type }
         selectExerciseTypeList.value = typeList?.exerciseList ?: mutableListOf()
         selectExerciseTypeBoolean.value = true
+    }
 
+    fun selectExercise(exercise : String){
+        selectExerciseBoolean.value = true
+    }
+
+    fun selectExerciseInfoRadio(info : String){
+        info
         true
-        //for(in )
     }
 
 

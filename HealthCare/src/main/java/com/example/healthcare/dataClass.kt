@@ -52,3 +52,13 @@ data class ExerciseTypeList(
     val exerciseList : MutableList<String>
 )
 
+
+data class ChartData(val point: Float)
+
+val chartDataList = listOf(
+    ChartData(10f),
+    ChartData(50f),
+    ChartData(30f),
+    ChartData(70f),
+    ChartData(40f)
+)
