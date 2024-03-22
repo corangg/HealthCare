@@ -1,5 +1,6 @@
 package com.example.healthcare.ui.composable.Main.Record
 
+import androidx.compose.foundation.Canvas
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
@@ -16,7 +17,9 @@ import androidx.compose.foundation.layout.wrapContentSize
 import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.foundation.verticalScroll
+import androidx.compose.material.MaterialTheme
 import androidx.compose.material.Shapes
+import androidx.compose.material.Surface
 import androidx.compose.material3.RadioButton
 import androidx.compose.material3.RadioButtonDefaults
 import androidx.compose.material3.Text
@@ -28,25 +31,28 @@ import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.geometry.Offset
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.graphics.drawscope.Stroke
+import androidx.compose.ui.graphics.toArgb
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.hilt.navigation.compose.hiltViewModel
-import com.example.healthcare.ChartData
+import com.example.healthcare.GraghColor
 import com.example.healthcare.VIewModel.MainViewModel
-import com.example.healthcare.chartDataList
 import com.example.healthcare.ui.composable.AddExerciseColumn
+import com.example.healthcare.ui.composable.DrawLineGraph
 import com.example.healthcare.ui.composable.HorizontalScrollView
 import com.example.healthcare.ui.composable.SelectExerciseSpinner
-/*import com.patrykandpatrick.vico.compose.chart.Chart
-import com.patrykandpatrick.vico.compose.chart.column.columnChart
-import com.patrykandpatrick.vico.compose.chart.line.lineChart
-import com.patrykandpatrick.vico.compose.component.lineComponent
-import com.patrykandpatrick.vico.compose.style.ChartStyle
-import com.patrykandpatrick.vico.core.chart.values.AxisValuesOverrider
-import com.patrykandpatrick.vico.core.component.text.TextComponent
-import com.patrykandpatrick.vico.core.entry.ChartEntryModelProducer
-import com.patrykandpatrick.vico.core.entry.entryOf*/
+import com.github.tehras.charts.line.LineChart
+import com.github.tehras.charts.line.LineChartData
+import com.github.tehras.charts.line.renderer.line.LineDrawer
+import com.github.tehras.charts.line.renderer.line.SolidLineDrawer
+import com.github.tehras.charts.line.renderer.point.FilledCircularPointDrawer
+import com.github.tehras.charts.piechart.animation.simpleChartAnimation
+import kotlin.random.Random
+
+
 
 @Composable
 fun RecordView(){
@@ -119,41 +125,16 @@ fun RecordView(){
             {
                 Box(modifier = Modifier
                     .fillMaxWidth()
-                    .padding(top = 10.dp)
+                    .padding(20.dp)
+
                 ){
-                    /*HorizontalScrollView(
-                        modifier = Modifier
-                            .padding(20.dp)
-                            .widthIn(86.dp)) {
-                        exerciseRecordGraph()
-                    }*/
-                    /*ChartStyle.LineChart(
-                        lineChartData = List<ChartData>
-                        // 차트 구성에 필요한 추가적인 설정들
-                    )*/
-                    /*Chart( modifier = Modifier
-                        .fillMaxWidth(),
-                        chart = columnChart(
-                            columns = listOf(
-                                lineComponent(
-                                    color = Color.White,
-                                    thickness = 5.dp
-                                )
-                            ),
-                            dataLabel = TextComponent.Builder().build(),
-                            axisValuesOverrider = AxisValuesOverrider.fixed(minY = 0f, maxY = 100f)
-                        )
-                        , chartModelProducer = ChartEntryModelProducer(
-                            listOf(
-                                entryOf(x = 0f, y = 60f),
-                                entryOf(x = 1f, y = 100f)
-                            )
-                        ))
-*/
+                    val dataPoints = listOf(50f, 100f, 150f, 200f, 150f, 202f, 194f, 80f, 100f, 150f, 200f, 150f, 202f, 194f, 80f) // 데이터 포인트
+                    //val graghColor = GraghColor(Color.Black,Color.Black,Color.Black,Color.Black)
+
+                    DrawLineGraph(dataPoints, exerciseInfoNum = 0)
 
 
                 }
-
 
 
                 if(selectExerciseBoolean){
@@ -172,6 +153,27 @@ fun RecordView(){
         }
     }
 }
+
+
+
+
+
+
+
+/*@Composable
+fun SimpleLineChart() {
+    // 임의의 데이터 생성
+    val data = mutableListOf<Float>()
+    repeat(10) {
+        data.add(java.util.Random().nextFloat() * 100)
+    }
+
+    Surface(color = MaterialTheme.colors.background) {
+        Column(modifier = Modifier.fillMaxSize()) {
+            LineChart(linesChartData = listOf(LineChartData(points = listOf(LineChartData.Point(1f,"Label 1")),lineDrawer = SimpleLineDrawer(color = MaterialTheme.colors.primary, strokeWidth = 2.dp))))
+        }
+    }
+}*/
 @Composable
 fun exerciseRecordGraph(){
 

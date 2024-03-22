@@ -1,5 +1,6 @@
 package com.example.healthcare
 
+import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.vector.ImageVector
 import androidx.room.Entity
 import androidx.room.PrimaryKey
@@ -52,13 +53,11 @@ data class ExerciseTypeList(
     val exerciseList : MutableList<String>
 )
 
-
-data class ChartData(val point: Float)
-
-val chartDataList = listOf(
-    ChartData(10f),
-    ChartData(50f),
-    ChartData(30f),
-    ChartData(70f),
-    ChartData(40f)
+data class GraghColor(
+    val lineColor : Color = Color.White,
+    val pointColor : Color = Color.White,
+    val indicatorColor : Color = Color.White,
+    val indicatorLineColor : Color = Color.White
 )
+
+
