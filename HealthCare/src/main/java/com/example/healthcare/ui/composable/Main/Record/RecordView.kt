@@ -61,6 +61,9 @@ fun RecordView(){
     val selectExerciseTypeBoolean by viewModel.selectExerciseTypeBoolean.observeAsState(initial = false)
     val selectExerciseBoolean by viewModel.selectExerciseBoolean.observeAsState(initial = false)
     val selectExerciseRadioInt by viewModel.selectExerciseRadioInt.observeAsState(initial = 0)
+    val selectExerciseDateList by viewModel.selectExerciseDate.observeAsState(initial = listOf())
+    val selectExerciseGraphList by viewModel.selectExerciseGraphList.observeAsState(initial = listOf())
+    val selectExerciseType by viewModel.exerciseType.observeAsState(initial = -1)
 
     Box(
         modifier = Modifier
@@ -123,33 +126,26 @@ fun RecordView(){
                     .background(Color(0xFF2D2D2D), RoundedCornerShape(24.dp))
                 , horizontalAlignment = Alignment.CenterHorizontally)
             {
-                Box(modifier = Modifier
-                    .fillMaxWidth()
-                    .padding(20.dp)
-
-                ){
-                    val dataPoints = listOf(50f, 100f, 150f, 200f, 150f, 202f, 194f, 80f, 100f, 150f, 200f, 150f, 202f, 194f, 80f) // 데이터 포인트
-                    //val graghColor = GraghColor(Color.Black,Color.Black,Color.Black,Color.Black)
-                    val dateList = listOf("2020","2027","2028","2021","2022","2023","2024",) // 데이터 포인트
-                    DrawLineGraph(dataPoints, exerciseInfoNum = selectExerciseRadioInt, dateList = dateList)
-
-
-                }
-
 
                 if(selectExerciseBoolean){
-                    val selectedOption = remember { mutableStateOf("무게") }
-                    val options = listOf("무게", "세트", "횟수")
-                    exerciseRadioButtonRow(selectedOption = selectedOption, options = options, onSelect = viewModel::selectExerciseInfoRadio)
+
+
+                    Box(modifier = Modifier
+                        .fillMaxWidth()
+                        .padding(20.dp)
+
+                    ){
+                        DrawLineGraph(
+                            infoList = selectExerciseGraphList,
+                            exerciseInfoNum = selectExerciseRadioInt,
+                            dateList = selectExerciseDateList,
+                            type = selectExerciseType)
+                    }
+
+                    exerciseRadioButtonRow(onSelect = viewModel::selectExerciseInfoRadio, type = selectExerciseType)
                     Spacer(modifier = Modifier.height(20.dp))
                 }
-
-
-
             }
-
-
-
         }
     }
 }
@@ -160,43 +156,36 @@ fun RecordView(){
 
 
 
-/*@Composable
-fun SimpleLineChart() {
-    // 임의의 데이터 생성
-    val data = mutableListOf<Float>()
-    repeat(10) {
-        data.add(java.util.Random().nextFloat() * 100)
-    }
-
-    Surface(color = MaterialTheme.colors.background) {
-        Column(modifier = Modifier.fillMaxSize()) {
-            LineChart(linesChartData = listOf(LineChartData(points = listOf(LineChartData.Point(1f,"Label 1")),lineDrawer = SimpleLineDrawer(color = MaterialTheme.colors.primary, strokeWidth = 2.dp))))
-        }
-    }
-}*/
 @Composable
 fun exerciseRecordGraph(){
 
 }
 
 @Composable
-fun exerciseRadioButtonRow(selectedOption : MutableState<String>, options : List<String>, onSelect: (String) -> Unit){
+fun exerciseRadioButtonRow(onSelect: (String) -> Unit, type : Int = 0){
+    var selectedOption = remember { mutableStateOf("") }
+    var options = listOf("")
+    when(type){
+        0->{
+            selectedOption = remember { mutableStateOf("무게") }
+            options = listOf("무게", "세트", "횟수")
+        }
+        1->{
+            selectedOption = remember { mutableStateOf("인클라인") }
+            options = listOf("인클라인", "시간", "거리")
+        }
+    }
     Row() {
         options.forEach { option ->
             exerciseRadioButton(
                 label = option,
                 isSelected = option == selectedOption.value,
-
             ){
                 selectedOption.value = option
                 onSelect(option)
             }
-
         }
-
-
     }
-
 }
 
 @Composable

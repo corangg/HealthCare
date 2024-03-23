@@ -9,6 +9,8 @@ import androidx.lifecycle.viewModelScope
 import com.example.healthcare.ExerciseDataRecord
 import com.example.healthcare.ExerciseInfo
 import com.example.healthcare.ExerciseItem
+import com.example.healthcare.ExerciseRecord
+import com.example.healthcare.ExerciseTimeRecord
 import com.example.healthcare.ExerciseType
 import com.example.healthcare.ExerciseTypeList
 import com.example.healthcare.PhsicalInfo
@@ -60,7 +62,6 @@ class MainViewModel @Inject constructor(
 
     val todayExerciseList : MutableLiveData<MutableList<MutableList<ExerciseInfo>>> = MutableLiveData(mutableListOf())
 
-    //var recordExerciseList : MutableList<ExerciseRecord> = mutableListOf()
     var recordExerciseList : MutableList<ExerciseDataRecord> = mutableListOf()
     var list : MutableList<MutableList<ExerciseInfo>> = mutableListOf()
     var todayExerciseRoutine : MutableList<ExerciseItem> = mutableListOf()
@@ -80,6 +81,7 @@ class MainViewModel @Inject constructor(
             setDayOfWeekData()
             setData()
             setExerciseTypeList()
+            exerciseRecordOrganize()
         }
     }
 
@@ -350,9 +352,16 @@ class MainViewModel @Inject constructor(
 
     val exerciseTypeList : MutableList<ExerciseTypeList> = mutableListOf()
 
+
+
     val selectExerciseTypeBoolean : MutableLiveData<Boolean> = MutableLiveData(false)
     val selectExerciseBoolean : MutableLiveData<Boolean> = MutableLiveData(false)
     val selectExerciseRadioInt : MutableLiveData<Int> = MutableLiveData(0)
+    val exerciseRecordInfo : MutableList<ExerciseRecord> = mutableListOf()
+    var selectExerciseInfo : MutableList<ExerciseTimeRecord> = mutableListOf()
+    val selectExerciseDate : MutableLiveData<MutableList<String>> = MutableLiveData(mutableListOf())
+    val selectExerciseGraphList : MutableLiveData<MutableList<Float>> = MutableLiveData(mutableListOf())
+    val exerciseType : MutableLiveData<Int> = MutableLiveData(-1)
     fun setExerciseTypeList(){//코루틴으로 해야할거같은데?
         for(i in recordExerciseList){
             for(j in i.exerciseType){
@@ -371,71 +380,134 @@ class MainViewModel @Inject constructor(
     }
 
 
+
+    fun exerciseRecordOrganize(){
+        val exerciseTimeRecordList : MutableList<ExerciseTimeRecord> = mutableListOf()
+
+        for( i in recordExerciseList){
+            for(j in i.exerciseType){
+                for(k in j.exerciseInfo){
+                    val a = ExerciseTimeRecord(
+                        i.timeStamp,
+                        k
+                    )
+                    exerciseTimeRecordList.add(a)
+                }
+            }
+        }
+
+        for(i in exerciseTimeRecordList){
+            if(!exerciseRecordInfo.any { it.exerciseName == i.info.exercise }){
+                val list : MutableList<ExerciseTimeRecord> = mutableListOf()
+                for(j in exerciseTimeRecordList){
+                    if(j.info.exercise == i.info.exercise){
+                        list.add(j)
+                    }
+                }
+                val exerciseRecord = ExerciseRecord(
+                    i.info.exercise,
+                    list
+                )
+                exerciseRecordInfo.add(exerciseRecord)
+            }
+        }
+    }
+
     fun selectExerciseType(type : String){
         val typeList = exerciseTypeList.find { it.exerciseType == type }
         selectExerciseTypeList.value = typeList?.exerciseList ?: mutableListOf()
+        if(type == "유산소"){
+            exerciseType.value = 1
+        }else{
+            exerciseType.value = 0
+        }
         selectExerciseTypeBoolean.value = true
     }
 
     fun selectExercise(exercise : String){
+        for(i in exerciseRecordInfo){
+            if(i.exerciseName == exercise){
+                selectExerciseInfo = i.exerciseList.toMutableList()
+            }
+        }
+        selectExerciseDateSet()
+        when(exerciseType.value){
+            0->selectExerciseInfoRadio("무게")
+            1->selectExerciseInfoRadio("인클라인")
+        }
+
         selectExerciseBoolean.value = true
     }
 
-    fun selectExerciseInfoRadio(info : String){
-        info
-        when(info){
-            "무게" -> selectExerciseRadioInt.value = 0
-            "세트" -> selectExerciseRadioInt.value = 1
-            "횟수" -> selectExerciseRadioInt.value = 2
+    fun selectExerciseDateSet(){
+        val list : MutableList<String> = mutableListOf()
+        for(i in selectExerciseInfo){
+            val year = i.timeStamp.toString().substring(0,4)
+            val month = i.timeStamp.toString().substring(4,6)
+            val day = i.timeStamp.toString().substring(6,8)
+            val date = year + "년 " + month + "월 " + day + "일"
+            list.add(date)
         }
-        selectExerciseTypeList.value
-        exerciseTypeList//이거에
-
-
-        true
+        selectExerciseDate.value = list
     }
 
+    fun selectExerciseInfoRadio(info : String){
+        when(info){
+            "무게" -> {
+                selectExerciseRadioInt.value = 0
+                val list : MutableList<Float> = mutableListOf()
+                for(i in selectExerciseInfo){
 
-
-
-
-
-
-
-
-
-
-   /* suspend fun bindExerciseInfo(){
-        for(i in 0 until todayExerciseRoutine.size){
-            exerciseRecordRepository.insertExerciseRecord(exerciseRecord(i))
-            *//*when(todayExerciseRoutine[i].name){
-                "유산소"->{
-                    true
+                    list.add(i.info.weight.toFloat())
                 }
-                "등"->{
-                    true
-                }
-                "가슴"->{
-                    exerciseRecordRepository.insertExerciseRecord(exerciseRecord(i))
-                    true
-                }
-                "하체"->{
-                    true
-                }
-                "어깨"->{
-                    true
-                }
-                "팔"->{
-                    true
-                }
-                "허리"->{
-                    true
-                }
+                selectExerciseGraphList.value = list
+            }
+            "세트" -> {
+                selectExerciseRadioInt.value = 1
+                val list : MutableList<Float> = mutableListOf()
+                for(i in selectExerciseInfo){
 
-            }*//*
+                    list.add(i.info.set.toFloat())
+                }
+                selectExerciseGraphList.value = list
+            }
+            "횟수" -> {
+                selectExerciseRadioInt.value = 2
+                val list : MutableList<Float> = mutableListOf()
+                for(i in selectExerciseInfo){
+
+                    list.add(i.info.number.toFloat())
+                }
+                selectExerciseGraphList.value = list
+            }
+
+            "인클라인" -> {
+                selectExerciseRadioInt.value = 0
+                val list : MutableList<Float> = mutableListOf()
+                for(i in selectExerciseInfo){
+
+                    list.add(i.info.weight.toFloat())
+                }
+                selectExerciseGraphList.value = list
+            }
+            "시간" -> {
+                selectExerciseRadioInt.value = 1
+                val list : MutableList<Float> = mutableListOf()
+                for(i in selectExerciseInfo){
+
+                    list.add(i.info.set.toFloat())
+                }
+                selectExerciseGraphList.value = list
+            }
+            "거리" -> {
+                selectExerciseRadioInt.value = 2
+                val list : MutableList<Float> = mutableListOf()
+                for(i in selectExerciseInfo){
+
+                    list.add(i.info.number.toFloat())
+                }
+                selectExerciseGraphList.value = list
+            }
         }
-        true
-    }*/
-
-
+    }
 }

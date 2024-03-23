@@ -50,7 +50,7 @@ data class ExerciseInfo(
 
 data class ExerciseTypeList(
     val exerciseType : String,
-    val exerciseList : MutableList<String>//여기를 스트링이 아니라 ExerciseRecord로 바꿔야함
+    val exerciseList : MutableList<String>
 )
 
 data class ExerciseRecord(

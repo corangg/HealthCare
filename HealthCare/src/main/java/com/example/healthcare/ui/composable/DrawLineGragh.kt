@@ -30,6 +30,7 @@ import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import com.example.healthcare.ExerciseType
 import com.example.healthcare.GraphColor
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.launch
@@ -37,23 +38,36 @@ import kotlin.math.roundToInt
 
 
 @Composable
-fun DrawLineGraph(infoList: List<Float>, dateList : List<String>, graphColor: GraphColor = GraphColor(), exerciseInfoNum: Int) {
+fun DrawLineGraph(
+    infoList: List<Float>,
+    dateList : List<String>,
+    graphColor: GraphColor = GraphColor(),
+    exerciseInfoNum: Int,
+    type: Int = 0) {
     val scrollState = rememberScrollState()
     val coroutineScope = rememberCoroutineScope()
     val density = LocalDensity.current
     val stepX = with(density) { 100.dp.toPx() }
-    //val recordDate = "2024년 3월 22일"
-    val exerciseInfoList = listOf("무게", "세트", "횟수")
-    val exerciseUnitList = listOf("kg", "세트", "회")
+    var exerciseInfoList = listOf("")
+    var exerciseUnitList = listOf("")
+    when(type){
+        0->{
+            exerciseInfoList = listOf("무게", "세트", "횟수")
+            exerciseUnitList = listOf("kg", "세트", "회")
+        }
+        1->{
+            exerciseInfoList = listOf("인클라인", "시간", "거리")
+            exerciseUnitList = listOf("º", "분", "km")
+        }
+    }
 
-    // 가장 가까운 포인트의 인덱스와 그 포인트까지의 스크롤 위치
+
     val nearestPointIndex = remember { mutableStateOf(0) }
     val scrollToPosition = remember { mutableStateOf(0f) }
 
-    // 스크롤이 멈췄을 때 가장 가까운 포인트를 찾아 그 위치로 스크롤
     LaunchedEffect(scrollState.value) {
         coroutineScope.launch {
-            delay(50) // 사용자가 스크롤을 멈춘 것으로 간주하기 전에 잠시 대기
+            delay(50)
             val currentIndex = (scrollState.value / stepX).roundToInt().coerceIn(infoList.indices)
             nearestPointIndex.value = currentIndex
             scrollToPosition.value = (currentIndex * stepX)
@@ -61,7 +75,7 @@ fun DrawLineGraph(infoList: List<Float>, dateList : List<String>, graphColor: Gr
         }
     }
 
-    val value = infoList.getOrNull(nearestPointIndex.value) ?: 0f
+    val value = infoList.getOrNull(nearestPointIndex.value)?.toInt() ?: 0f
     val date = dateList.getOrNull(nearestPointIndex.value) ?: ""
 
     Column {
@@ -81,6 +95,7 @@ fun DrawLineGraph(infoList: List<Float>, dateList : List<String>, graphColor: Gr
                 .background(Color.Black, RoundedCornerShape(bottomStart = 16.dp, bottomEnd = 16.dp))
                 .padding(16.dp),
             text = "${exerciseInfoList[exerciseInfoNum]} : $value ${exerciseUnitList[exerciseInfoNum]}",
+            //text = "${option[exerciseInfoNum]} : $value ${unit[exerciseInfoNum]}",
             style = TextStyle(color = Color.White, textAlign = TextAlign.Center, fontSize = 16.sp)
         )
 
@@ -154,121 +169,10 @@ fun DrawLineGraph(infoList: List<Float>, dateList : List<String>, graphColor: Gr
     }
 }
 
-/*
-@Composable
-fun DrawLineGraph(list : List<Float>, graghColor: GraphColor = GraphColor(), exerciseInfoNum: Int) {
-
-    val scrollState = rememberScrollState()
-    val density = LocalDensity.current
-    val recordDate = "2024년 3월 22일"
-    val exerciseInfoList = listOf("무게", "세트", "횟수")
-    val exerciseUnitList = listOf("kg", "세트", "회")
-    val stepX = 100.dp
-    val selectedValueIndex = remember { mutableStateOf(0) }
-
-    LaunchedEffect(scrollState.value) {
-        with(density) {
-            val currentIndex = (scrollState.value / stepX.toPx()).toInt()
-            selectedValueIndex.value = currentIndex.coerceIn(list.indices)
-        }
-    }
-
-
-    val value : Float = list.getOrNull(selectedValueIndex.value) ?: 0f
-    Column {
-        Text(modifier = Modifier
-            .fillMaxWidth()
-            .background(Color.Black, RoundedCornerShape(topStart = 16.dp, topEnd = 16.dp))
-            .padding(16.dp),
-            text = recordDate,
-            style = TextStyle(color = Color.White, textAlign = TextAlign.Center, fontSize = 16.sp)
-        )
-
-        Text(modifier = Modifier
-            .fillMaxWidth()
-            .padding(bottom = 20.dp)
-            .background(Color.Black, RoundedCornerShape(bottomStart = 16.dp, bottomEnd = 16.dp))
-            .padding(16.dp),
-            text = exerciseInfoList[exerciseInfoNum] + " : " + value.toString() + " " + exerciseUnitList[exerciseInfoNum],
-            style = TextStyle(color = Color.White, textAlign = TextAlign.Center, fontSize = 16.sp)
-        )
-
-        BoxWithConstraints { // 화면 크기를 얻기 위해 BoxWithConstraints 사용
-            val screenWidth = maxWidth // 현재 화면의 너비
-            val stepX = with(LocalDensity.current) { 100.dp.toPx() }
-            val halfScreenWidth = screenWidth / 2 // 화면 너비의 절반
-            Box(modifier = Modifier.background(Color.Black, RoundedCornerShape(topStart = 12.dp, topEnd = 12.dp))){
-                Row(modifier = Modifier.horizontalScroll(scrollState)) {
-                    val canvasWidth = 100.dp * (list.size - 1)
-                    Spacer(modifier = Modifier.width(halfScreenWidth - 16.dp))
-                    Canvas(
-                        modifier = Modifier
-                            .height(160.dp)
-                            .width(canvasWidth)
-                            .padding(horizontal = 16.dp)
-                            .padding(top = 20.dp),
-                        onDraw = {
-                            val maxYValue = list.maxOrNull() ?: 0f
-                            val stepX = 100.dp.toPx() // 포인트 간격을 100dp로 고정
-                            val stepY = size.height / maxYValue
-
-                            list.forEachIndexed { index, y ->
-                                val x = index * stepX
-                                val yPos = size.height - (y / maxYValue) * size.height
-                                drawCircle(
-                                    color = graghColor.pointColor,
-                                    radius = 4.dp.toPx(),
-                                    center = Offset(x, yPos)
-                                )
-                                if (index < list.size - 1) {
-                                    val nextY = list[index + 1]
-                                    val nextX = (index + 1) * stepX
-                                    val nextYPos = size.height - (nextY / maxYValue) * size.height
-                                    drawLine(
-                                        start = Offset(x, yPos),
-                                        end = Offset(nextX, nextYPos),
-                                        color = graghColor.lineColor,
-                                        strokeWidth = 2f
-                                    )
-                                }
-                            }
-                        }
-                    )
-                    Spacer(modifier = Modifier.width(halfScreenWidth + 18.dp))
-                }
-            }
-        }
-
-        Canvas(
-            modifier = Modifier.fillMaxWidth()
-            ,onDraw = {drawLine(
-                start = Offset(0f, size.height),
-                end = Offset(size.width, size.height),
-                color = graghColor.indicatorLineColor,
-                strokeWidth = 2f)
-
-                val trianglePath = Path().apply {
-                    moveTo(x = size.width / 2, size.height - 16.dp.toPx())
-                    lineTo(x = size.width / 2 - 10.dp.toPx(), size.height)
-                    lineTo(x = size.width / 2 + 10.dp.toPx(), size.height)
-                    close()
-                }
-
-                drawPath(
-                    path = trianglePath,
-                    color = graghColor.indicatorColor
-                )
-            })
-    }
-
-}*/
-
-
 @Preview
 @Composable
 fun PreviewSimpleLineChart() {
     val dataPoints = listOf(50f, 100f, 150f, 200f, 150f, 202f, 194f, 80f, 100f, 150f, 200f, 150f, 202f, 194f, 80f) // 데이터 포인트
     val dateList = listOf("2020","2027","2028","2021","2022","2023","2024",) // 데이터 포인트
-    DrawLineGraph(dataPoints, exerciseInfoNum = 0, dateList = dateList)
-
+    DrawLineGraph(dataPoints, exerciseInfoNum = 0, dateList = dateList, type = 0)
 }
