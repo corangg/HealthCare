@@ -38,7 +38,6 @@ import androidx.compose.ui.graphics.toArgb
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.hilt.navigation.compose.hiltViewModel
-import com.example.healthcare.GraghColor
 import com.example.healthcare.VIewModel.MainViewModel
 import com.example.healthcare.ui.composable.AddExerciseColumn
 import com.example.healthcare.ui.composable.DrawLineGraph
@@ -61,6 +60,7 @@ fun RecordView(){
     val selectExerciseTypeList by viewModel.selectExerciseTypeList.observeAsState(initial = listOf())
     val selectExerciseTypeBoolean by viewModel.selectExerciseTypeBoolean.observeAsState(initial = false)
     val selectExerciseBoolean by viewModel.selectExerciseBoolean.observeAsState(initial = false)
+    val selectExerciseRadioInt by viewModel.selectExerciseRadioInt.observeAsState(initial = 0)
 
     Box(
         modifier = Modifier
@@ -130,8 +130,8 @@ fun RecordView(){
                 ){
                     val dataPoints = listOf(50f, 100f, 150f, 200f, 150f, 202f, 194f, 80f, 100f, 150f, 200f, 150f, 202f, 194f, 80f) // 데이터 포인트
                     //val graghColor = GraghColor(Color.Black,Color.Black,Color.Black,Color.Black)
-
-                    DrawLineGraph(dataPoints, exerciseInfoNum = 0)
+                    val dateList = listOf("2020","2027","2028","2021","2022","2023","2024",) // 데이터 포인트
+                    DrawLineGraph(dataPoints, exerciseInfoNum = selectExerciseRadioInt, dateList = dateList)
 
 
                 }

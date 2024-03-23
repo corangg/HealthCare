@@ -50,10 +50,20 @@ data class ExerciseInfo(
 
 data class ExerciseTypeList(
     val exerciseType : String,
-    val exerciseList : MutableList<String>
+    val exerciseList : MutableList<String>//여기를 스트링이 아니라 ExerciseRecord로 바꿔야함
 )
 
-data class GraghColor(
+data class ExerciseRecord(
+    val exerciseName : String,
+    val exerciseList : List<ExerciseTimeRecord>
+)
+
+data class ExerciseTimeRecord(
+    val timeStamp : Long,
+    val info : ExerciseInfo
+)
+
+data class GraphColor(
     val lineColor : Color = Color.White,
     val pointColor : Color = Color.White,
     val indicatorColor : Color = Color.White,

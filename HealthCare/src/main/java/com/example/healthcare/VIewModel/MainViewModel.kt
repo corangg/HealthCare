@@ -352,6 +352,7 @@ class MainViewModel @Inject constructor(
 
     val selectExerciseTypeBoolean : MutableLiveData<Boolean> = MutableLiveData(false)
     val selectExerciseBoolean : MutableLiveData<Boolean> = MutableLiveData(false)
+    val selectExerciseRadioInt : MutableLiveData<Int> = MutableLiveData(0)
     fun setExerciseTypeList(){//코루틴으로 해야할거같은데?
         for(i in recordExerciseList){
             for(j in i.exerciseType){
@@ -382,6 +383,15 @@ class MainViewModel @Inject constructor(
 
     fun selectExerciseInfoRadio(info : String){
         info
+        when(info){
+            "무게" -> selectExerciseRadioInt.value = 0
+            "세트" -> selectExerciseRadioInt.value = 1
+            "횟수" -> selectExerciseRadioInt.value = 2
+        }
+        selectExerciseTypeList.value
+        exerciseTypeList//이거에
+
+
         true
     }
 
