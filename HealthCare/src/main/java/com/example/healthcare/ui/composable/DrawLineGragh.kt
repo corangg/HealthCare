@@ -32,6 +32,7 @@ import androidx.compose.ui.graphics.Path
 import androidx.compose.ui.graphics.drawscope.Stroke
 import androidx.compose.ui.input.pointer.consumeAllChanges
 import androidx.compose.ui.input.pointer.pointerInput
+import androidx.compose.ui.layout.onGloballyPositioned
 import androidx.compose.ui.platform.LocalDensity
 import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.text.style.TextAlign
@@ -47,10 +48,22 @@ import com.example.healthcare.GraghColor
 fun DrawLineGraph(list : List<Float>, graghColor: GraghColor = GraghColor(),exerciseInfoNum: Int) {
 
     val scrollState = rememberScrollState()
+    val density = LocalDensity.current
     val recordDate = "2024년 3월 22일"
     val exerciseInfoList = listOf("무게", "세트", "횟수")
     val exerciseUnitList = listOf("kg", "세트", "회")
-    val value : Float = 100f
+    val stepX = 100.dp
+    val selectedValueIndex = remember { mutableStateOf(0) }
+
+    LaunchedEffect(scrollState.value) {
+        with(density) {
+            val currentIndex = (scrollState.value / stepX.toPx()).toInt()
+            selectedValueIndex.value = currentIndex.coerceIn(list.indices)
+        }
+    }
+
+
+    val value : Float = list.getOrNull(selectedValueIndex.value) ?: 0f
     Column {
         Text(modifier = Modifier
             .fillMaxWidth()
@@ -71,6 +84,7 @@ fun DrawLineGraph(list : List<Float>, graghColor: GraghColor = GraghColor(),exer
 
         BoxWithConstraints { // 화면 크기를 얻기 위해 BoxWithConstraints 사용
             val screenWidth = maxWidth // 현재 화면의 너비
+            val stepX = with(LocalDensity.current) { 100.dp.toPx() }
             val halfScreenWidth = screenWidth / 2 // 화면 너비의 절반
             Box(modifier = Modifier.background(Color.Black, RoundedCornerShape(topStart = 12.dp, topEnd = 12.dp))){
                 Row(modifier = Modifier.horizontalScroll(scrollState)) {
