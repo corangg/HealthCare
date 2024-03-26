@@ -13,6 +13,7 @@ import com.example.healthcare.ExerciseRecord
 import com.example.healthcare.ExerciseTimeRecord
 import com.example.healthcare.ExerciseType
 import com.example.healthcare.ExerciseTypeList
+import com.example.healthcare.Object
 import com.example.healthcare.PhsicalInfo
 import com.example.healthcare.Repository.ExerciseRecordRepository
 import com.example.healthcare.Repository.ExerciseRoutineRepository
@@ -243,7 +244,7 @@ class MainViewModel @Inject constructor(
         }
     }
 
-    fun minusDate(){//넘어갈떄 마다 데이터 리셋 안됨 확인해야함
+    fun minusDate(){
         previousDate -= 1
         setDayOfWeekData()
     }
@@ -362,18 +363,22 @@ class MainViewModel @Inject constructor(
     val selectExerciseDate : MutableLiveData<MutableList<String>> = MutableLiveData(mutableListOf())
     val selectExerciseGraphList : MutableLiveData<MutableList<Float>> = MutableLiveData(mutableListOf())
     val exerciseType : MutableLiveData<Int> = MutableLiveData(-1)
-    fun setExerciseTypeList(){//코루틴으로 해야할거같은데?
-        for(i in recordExerciseList){
-            for(j in i.exerciseType){
-                if(!exerciseTypeList.any{it.exerciseType == j.exerciseType}){
-                    val typeList = ExerciseTypeList(
-                        exerciseType = j.exerciseType,
-                        exerciseList = j.exerciseInfo.map { it.exercise }.toMutableList()
-                    )
-                    exerciseTypeList.add(typeList)
-                }else if(exerciseTypeList.any{it.exerciseType == j.exerciseType}){//종류가 있더라도 항목이 같은지 체크해야함
-                    val targetList = exerciseTypeList.find{it.exerciseType == j.exerciseType}
-                    targetList!!.exerciseList.addAll(j.exerciseInfo.map { it.exercise }.filterNot { targetList!!.exerciseList.contains(it) })
+
+
+    fun setExerciseTypeList() {
+        viewModelScope.launch {
+            for (i in recordExerciseList) {
+                for (j in i.exerciseType) {
+                    if (!exerciseTypeList.any { it.exerciseType == j.exerciseType }) {
+                        val typeList = ExerciseTypeList(
+                            exerciseType = j.exerciseType,
+                            exerciseList = j.exerciseInfo.map { it.exercise }.toMutableList()
+                        )
+                        exerciseTypeList.add(typeList)
+                    } else {
+                        val targetList = exerciseTypeList.find { it.exerciseType == j.exerciseType }
+                        targetList?.exerciseList?.addAll(j.exerciseInfo.map { it.exercise }.filterNot { targetList.exerciseList.contains(it) })
+                    }
                 }
             }
         }
@@ -432,10 +437,9 @@ class MainViewModel @Inject constructor(
         }
         selectExerciseDateSet()
         when(exerciseType.value){
-            0->selectExerciseInfoRadio("무게")
-            1->selectExerciseInfoRadio("인클라인")
+            0->selectExerciseInfoRadio(Object.anaerobicExerciseTypeList[0],0)
+            1->selectExerciseInfoRadio(Object.cardioExerciseTypeList[0],1)
         }
-
         selectExerciseBoolean.value = true
     }
 
@@ -451,63 +455,21 @@ class MainViewModel @Inject constructor(
         selectExerciseDate.value = list
     }
 
-    fun selectExerciseInfoRadio(info : String){
-        when(info){
-            "무게" -> {
-                selectExerciseRadioInt.value = 0
-                val list : MutableList<Float> = mutableListOf()
-                for(i in selectExerciseInfo){
-
-                    list.add(i.info.weight.toFloat())
-                }
-                selectExerciseGraphList.value = list
-            }
-            "세트" -> {
-                selectExerciseRadioInt.value = 1
-                val list : MutableList<Float> = mutableListOf()
-                for(i in selectExerciseInfo){
-
-                    list.add(i.info.set.toFloat())
-                }
-                selectExerciseGraphList.value = list
-            }
-            "횟수" -> {
-                selectExerciseRadioInt.value = 2
-                val list : MutableList<Float> = mutableListOf()
-                for(i in selectExerciseInfo){
-
-                    list.add(i.info.number.toFloat())
-                }
-                selectExerciseGraphList.value = list
-            }
-
-            "인클라인" -> {
-                selectExerciseRadioInt.value = 0
-                val list : MutableList<Float> = mutableListOf()
-                for(i in selectExerciseInfo){
-
-                    list.add(i.info.weight.toFloat())
-                }
-                selectExerciseGraphList.value = list
-            }
-            "시간" -> {
-                selectExerciseRadioInt.value = 1
-                val list : MutableList<Float> = mutableListOf()
-                for(i in selectExerciseInfo){
-
-                    list.add(i.info.set.toFloat())
-                }
-                selectExerciseGraphList.value = list
-            }
-            "거리" -> {
-                selectExerciseRadioInt.value = 2
-                val list : MutableList<Float> = mutableListOf()
-                for(i in selectExerciseInfo){
-
-                    list.add(i.info.number.toFloat())
-                }
-                selectExerciseGraphList.value = list
+    fun selectExerciseInfoRadio(info : String, type: Int){
+        var index : Int = -1
+        val list : MutableList<Float> = mutableListOf()
+        when(type){
+            0 -> index = Object.anaerobicExerciseTypeList.indexOf(info)
+            1 -> index = Object.cardioExerciseTypeList.indexOf(info)
+        }
+        selectExerciseRadioInt.value = index
+        for(i in selectExerciseInfo){
+            when(index){
+                0 -> list.add(i.info.weight.toFloat())
+                1 -> list.add(i.info.set.toFloat())
+                2 -> list.add(i.info.number.toFloat())
             }
         }
+        selectExerciseGraphList.value = list
     }
 }

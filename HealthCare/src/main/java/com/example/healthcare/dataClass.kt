@@ -70,4 +70,9 @@ data class GraphColor(
     val indicatorLineColor : Color = Color.White
 )
 
+data class UnitList(
+    val info : List<String>,
+    val unit : List<String>
+)
+
 

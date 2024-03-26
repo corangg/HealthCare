@@ -32,6 +32,7 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import com.example.healthcare.ExerciseType
 import com.example.healthcare.GraphColor
+import com.example.healthcare.UnitList
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.launch
 import kotlin.math.roundToInt
@@ -43,27 +44,15 @@ fun DrawLineGraph(
     dateList : List<String>,
     graphColor: GraphColor = GraphColor(),
     exerciseInfoNum: Int,
-    type: Int = 0) {
+    unitList: UnitList) {
     val scrollState = rememberScrollState()
     val coroutineScope = rememberCoroutineScope()
     val density = LocalDensity.current
     val stepX = with(density) { 100.dp.toPx() }
-    var exerciseInfoList = listOf("")
-    var exerciseUnitList = listOf("")
-    when(type){
-        0->{
-            exerciseInfoList = listOf("무게", "세트", "횟수")
-            exerciseUnitList = listOf("kg", "세트", "회")
-        }
-        1->{
-            exerciseInfoList = listOf("인클라인", "시간", "거리")
-            exerciseUnitList = listOf("º", "분", "km")
-        }
-    }
-
-
     val nearestPointIndex = remember { mutableStateOf(0) }
     val scrollToPosition = remember { mutableStateOf(0f) }
+    val value = infoList.getOrNull(nearestPointIndex.value)?.toInt() ?: 0f
+    val date = dateList.getOrNull(nearestPointIndex.value) ?: ""
 
     LaunchedEffect(scrollState.value) {
         coroutineScope.launch {
@@ -74,9 +63,6 @@ fun DrawLineGraph(
             scrollState.animateScrollTo(scrollToPosition.value.toInt())
         }
     }
-
-    val value = infoList.getOrNull(nearestPointIndex.value)?.toInt() ?: 0f
-    val date = dateList.getOrNull(nearestPointIndex.value) ?: ""
 
     Column {
         Text(
@@ -94,8 +80,7 @@ fun DrawLineGraph(
                 .padding(bottom = 20.dp)
                 .background(Color.Black, RoundedCornerShape(bottomStart = 16.dp, bottomEnd = 16.dp))
                 .padding(16.dp),
-            text = "${exerciseInfoList[exerciseInfoNum]} : $value ${exerciseUnitList[exerciseInfoNum]}",
-            //text = "${option[exerciseInfoNum]} : $value ${unit[exerciseInfoNum]}",
+            text = "${unitList.info[exerciseInfoNum]} : $value ${unitList.unit[exerciseInfoNum]}",
             style = TextStyle(color = Color.White, textAlign = TextAlign.Center, fontSize = 16.sp)
         )
 
@@ -167,12 +152,4 @@ fun DrawLineGraph(
             }
         )
     }
-}
-
-@Preview
-@Composable
-fun PreviewSimpleLineChart() {
-    val dataPoints = listOf(50f, 100f, 150f, 200f, 150f, 202f, 194f, 80f, 100f, 150f, 200f, 150f, 202f, 194f, 80f) // 데이터 포인트
-    val dateList = listOf("2020","2027","2028","2021","2022","2023","2024",) // 데이터 포인트
-    DrawLineGraph(dataPoints, exerciseInfoNum = 0, dateList = dateList, type = 0)
 }
