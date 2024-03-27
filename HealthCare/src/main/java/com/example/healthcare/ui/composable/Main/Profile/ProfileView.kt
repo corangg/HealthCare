@@ -65,6 +65,8 @@ fun ProfileView(viewModel: MainViewModel) {
     ){
         val scrollState = rememberScrollState()
         Column(modifier = Modifier.fillMaxWidth().verticalScroll(scrollState), horizontalAlignment = Alignment.CenterHorizontally) {
+            Spacer(modifier = Modifier.height(20.dp))
+
             Box(modifier = Modifier
                 .fillMaxWidth()
                 .padding(20.dp)

@@ -64,6 +64,7 @@ fun RecordView(viewModel: MainViewModel){
             .verticalScroll(scrollState)
             .background(color = viewModel.backgroundColor.value), horizontalAlignment = Alignment.CenterHorizontally)
         {
+            Spacer(modifier = Modifier.height(20.dp))
 
             Column(
                 modifier = Modifier

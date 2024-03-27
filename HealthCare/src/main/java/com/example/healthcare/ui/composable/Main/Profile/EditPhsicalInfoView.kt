@@ -101,5 +101,4 @@ fun editPhsicalInfoView(viewModel: MainViewModel,item : String, value : MutableL
         }
         Spacer(modifier = Modifier.height(80.dp))
     }
-
 }

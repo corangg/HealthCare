@@ -43,25 +43,31 @@ class MainViewModel @Inject constructor(
     val exerciseLists: Array<MutableLiveData<MutableList<ExerciseItem>>> = arrayOf(
         sunExerciseList, monExerciseList, tuesExerciseList,
         wednesExerciseList, thursExerciseList, friExerciseList, saturExerciseList
-    )//이부분 어캐 줄일수 없나?
+    )
 
     val profileName : MutableLiveData<String> = MutableLiveData("")
-
     val profileAge : MutableLiveData<String> = MutableLiveData("")
     val profileHeight : MutableLiveData<String> = MutableLiveData("")
     val profileWeight : MutableLiveData<String> = MutableLiveData("")
     val stringDayOfWeek : MutableLiveData<String> = MutableLiveData("")
     val exerciseName : MutableLiveData<String> = MutableLiveData("")
     val lastWeight : MutableLiveData<String> = MutableLiveData()
-    val calendarData : MutableLiveData<String> = MutableLiveData("")
+    val calenderData : MutableLiveData<String> = MutableLiveData("")
 
     val viewEditCompsable : MutableLiveData<Int> = MutableLiveData(0)
+    val selectExerciseRadioInt : MutableLiveData<Int> = MutableLiveData(0)
+    val exerciseType : MutableLiveData<Int> = MutableLiveData(-1)
 
     val profileGender : MutableLiveData<Boolean> = MutableLiveData()
     val editExerciseItem : MutableLiveData<Boolean> = MutableLiveData(false)
     val showAddExerciseView : MutableLiveData<Boolean> = MutableLiveData(false)
+    val selectExerciseTypeBoolean : MutableLiveData<Boolean> = MutableLiveData(false)
+    val selectExerciseBoolean : MutableLiveData<Boolean> = MutableLiveData(false)
 
     val todayExerciseList : MutableLiveData<MutableList<MutableList<ExerciseInfo>>> = MutableLiveData(mutableListOf())
+    val selectExerciseTypeList : MutableLiveData<MutableList<String>> = MutableLiveData(mutableListOf())
+    val selectExerciseDate : MutableLiveData<MutableList<String>> = MutableLiveData(mutableListOf())
+    val selectExerciseGraphList : MutableLiveData<MutableList<Float>> = MutableLiveData(mutableListOf())
 
     var recordExerciseList : MutableList<ExerciseDataRecord> = mutableListOf()
     var list : MutableList<MutableList<ExerciseInfo>> = mutableListOf()
@@ -69,16 +75,20 @@ class MainViewModel @Inject constructor(
     var allWeightDataList : MutableList<WeightData> = mutableListOf()
     var arrayWeightDateList : MutableList<String> = mutableListOf()
     var arrayWeightList : MutableList<Float> = mutableListOf()
+    var exerciseTypeList : MutableList<ExerciseTypeList> = mutableListOf()
+    var exerciseRecordInfo : MutableList<ExerciseRecord> = mutableListOf()
+    var selectExerciseInfo : MutableList<ExerciseTimeRecord> = mutableListOf()
 
     var previousDate : Int = 0
     var exerciseNumber : Int = -1
 
     var lastWeightData = WeightData()
     var profileData = PhsicalInfo()
+
+
     init {
         initDataSet()
     }
-
 
     fun initDataSet(){
         setProfileData()
@@ -87,8 +97,8 @@ class MainViewModel @Inject constructor(
             getAllExerciseRoutine()
             setDayOfWeekData()
             setData()
-            setExerciseTypeList()
-            exerciseRecordOrganize()
+            exerciseTypeList = exerciseRecordRepository.setExerciseTypeList(recordExerciseList)
+            exerciseRecordInfo = exerciseRecordRepository.exerciseRecordOrganize(recordExerciseList)
         }
     }
 
@@ -99,9 +109,7 @@ class MainViewModel @Inject constructor(
             allWeightDataList = phsicalInfoRepository.getAllWeightData().toMutableList()
             arrayWeightDateList = exerciseRecordRepository.arrayWeightDateList(allWeightDataList)
             arrayWeightList = exerciseRecordRepository.arrayWeightList(allWeightDataList)
-            true
         }
-        true
     }
 
     fun setData(){
@@ -122,61 +130,15 @@ class MainViewModel @Inject constructor(
 
     fun setDayOfWeekData(){
         stringDayOfWeek.value = exerciseRecordRepository.getCurrentDayOfWeek(previousDate)
-        calendarData.value = exerciseRecordRepository.getCalendar(previousDate)
+        calenderData.value = exerciseRecordRepository.getCalendar(previousDate)
         setExerciseList()
     }
 
     fun setExerciseList() {
-        val calendar = Calendar.getInstance()
-        val dayOfWeek = calendar.get(Calendar.DAY_OF_WEEK)
-        val dayOfWeekNum = exerciseRecordRepository.getDayOfWeek(dayOfWeek, previousDate)
-
         todayExerciseList.value = mutableListOf()
         list = mutableListOf()
-        todayExerciseRoutine = exerciseLists[dayOfWeekNum].value!!
-        for (i in 0 until todayExerciseRoutine.size){
-            list.add(mutableListOf())
-        }
-        bindDateExerciseRecord(list)
-    }
-
-    fun bindDateExerciseRecord(list : MutableList<MutableList<ExerciseInfo>>){
-        var dateExerciseRecordList = list
-        for(i in recordExerciseList){
-            if(i.timeStamp == recordDate(calendarData.value!!)){
-                for(j in 0 until todayExerciseRoutine.size){
-                    for(k in i.exerciseType){
-                        if(todayExerciseRoutine[j].name == k.exerciseType){
-                            dateExerciseRecordList[j] = k.exerciseInfo.toMutableList()//i.exerciseInfo.toMutableList()
-                        }
-                    }
-                }
-            }
-        }
-        for(i in 0 until  dateExerciseRecordList.size){
-            if(dateExerciseRecordList[i].size == 0){
-                dateExerciseRecordList[i] = getExerciseRoutine(i)
-            }
-        }
-        todayExerciseList.value = dateExerciseRecordList
-    }
-
-    fun getExerciseRoutine(routineNumber : Int) : MutableList<ExerciseInfo>{
-        val lastWeekDate = recordDate(exerciseRecordRepository.getCalendar(-7 + previousDate))
-        var exerciseInfoList : MutableList<ExerciseInfo> = mutableListOf()
-
-        for(i in recordExerciseList){
-            if(i.timeStamp == lastWeekDate){
-                for (j in i.exerciseType){
-                    if(todayExerciseRoutine[routineNumber].name == j.exerciseType){
-                        for(k in j.exerciseInfo){
-                            exerciseInfoList.add(ExerciseInfo(exercise = k.exercise))
-                        }
-                    }
-                }
-            }
-        }
-        return exerciseInfoList
+        todayExerciseRoutine = exerciseLists[exerciseRecordRepository.getDayOfWeekNum(previousDate)].value!!
+        todayExerciseList.value = exerciseRecordRepository.bindDateExerciseRecord(calenderData.value ?:"", previousDate, recordExerciseList, todayExerciseRoutine)
     }
 
     fun editProfile(item : Int){
@@ -335,7 +297,7 @@ class MainViewModel @Inject constructor(
 
     fun exerciseRecord():ExerciseDataRecord{
         return ExerciseDataRecord(
-            timeStamp = recordDate(calendarData.value!!),
+            timeStamp = recordDate(calenderData.value!!),
             exerciseType = exerciesType(),
         )
     }
@@ -358,77 +320,6 @@ class MainViewModel @Inject constructor(
         return date.toLong()
     }
 
-
-    val selectExerciseTypeList : MutableLiveData<MutableList<String>> = MutableLiveData(mutableListOf())//이름으로 충분한가? 더 추가해야할거같은데
-
-
-    val exerciseTypeList : MutableList<ExerciseTypeList> = mutableListOf()
-
-
-
-    val selectExerciseTypeBoolean : MutableLiveData<Boolean> = MutableLiveData(false)
-    val selectExerciseBoolean : MutableLiveData<Boolean> = MutableLiveData(false)
-    val selectExerciseRadioInt : MutableLiveData<Int> = MutableLiveData(0)
-    val exerciseRecordInfo : MutableList<ExerciseRecord> = mutableListOf()
-    var selectExerciseInfo : MutableList<ExerciseTimeRecord> = mutableListOf()
-    val selectExerciseDate : MutableLiveData<MutableList<String>> = MutableLiveData(mutableListOf())
-    val selectExerciseGraphList : MutableLiveData<MutableList<Float>> = MutableLiveData(mutableListOf())
-    val exerciseType : MutableLiveData<Int> = MutableLiveData(-1)
-
-
-    fun setExerciseTypeList() {
-        viewModelScope.launch {
-            for (i in recordExerciseList) {
-                for (j in i.exerciseType) {
-                    if (!exerciseTypeList.any { it.exerciseType == j.exerciseType }) {
-                        val typeList = ExerciseTypeList(
-                            exerciseType = j.exerciseType,
-                            exerciseList = j.exerciseInfo.map { it.exercise }.toMutableList()
-                        )
-                        exerciseTypeList.add(typeList)
-                    } else {
-                        val targetList = exerciseTypeList.find { it.exerciseType == j.exerciseType }
-                        targetList?.exerciseList?.addAll(j.exerciseInfo.map { it.exercise }.filterNot { targetList.exerciseList.contains(it) })
-                    }
-                }
-            }
-        }
-    }
-
-
-
-    fun exerciseRecordOrganize(){
-        val exerciseTimeRecordList : MutableList<ExerciseTimeRecord> = mutableListOf()
-
-        for( i in recordExerciseList){
-            for(j in i.exerciseType){
-                for(k in j.exerciseInfo){
-                    val a = ExerciseTimeRecord(
-                        i.timeStamp,
-                        k
-                    )
-                    exerciseTimeRecordList.add(a)
-                }
-            }
-        }
-
-        for(i in exerciseTimeRecordList){
-            if(!exerciseRecordInfo.any { it.exerciseName == i.info.exercise }){
-                val list : MutableList<ExerciseTimeRecord> = mutableListOf()
-                for(j in exerciseTimeRecordList){
-                    if(j.info.exercise == i.info.exercise){
-                        list.add(j)
-                    }
-                }
-                val exerciseRecord = ExerciseRecord(
-                    i.info.exercise,
-                    list
-                )
-                exerciseRecordInfo.add(exerciseRecord)
-            }
-        }
-    }
-
     fun selectExerciseType(type : String){
         val typeList = exerciseTypeList.find { it.exerciseType == type }
         selectExerciseTypeList.value = typeList?.exerciseList ?: mutableListOf()
@@ -446,41 +337,16 @@ class MainViewModel @Inject constructor(
                 selectExerciseInfo = i.exerciseList.toMutableList()
             }
         }
-        selectExerciseDateSet()
+        selectExerciseDate.value = exerciseRecordRepository.selectExerciseDateSet(selectExerciseInfo)
         when(exerciseType.value){
-            0->selectExerciseInfoRadio(Object.anaerobicExerciseTypeList[0],0)
-            1->selectExerciseInfoRadio(Object.cardioExerciseTypeList[0],1)
+            0-> selectExerciseInfoRadio(Object.anaerobicExerciseTypeList[0],0)
+            1-> selectExerciseInfoRadio(Object.cardioExerciseTypeList[0], 1)
         }
         selectExerciseBoolean.value = true
     }
 
-    fun selectExerciseDateSet(){
-        val list : MutableList<String> = mutableListOf()
-        for(i in selectExerciseInfo){
-            val year = i.timeStamp.toString().substring(0,4)
-            val month = i.timeStamp.toString().substring(4,6)
-            val day = i.timeStamp.toString().substring(6,8)
-            val date = year + "년 " + month + "월 " + day + "일"
-            list.add(date)
-        }
-        selectExerciseDate.value = list
-    }
-
     fun selectExerciseInfoRadio(info : String, type: Int){
-        var index : Int = -1
-        val list : MutableList<Float> = mutableListOf()
-        when(type){
-            0 -> index = Object.anaerobicExerciseTypeList.indexOf(info)
-            1 -> index = Object.cardioExerciseTypeList.indexOf(info)
-        }
-        selectExerciseRadioInt.value = index
-        for(i in selectExerciseInfo){
-            when(index){
-                0 -> list.add(i.info.weight.toFloat())
-                1 -> list.add(i.info.set.toFloat())
-                2 -> list.add(i.info.number.toFloat())
-            }
-        }
-        selectExerciseGraphList.value = list
+        selectExerciseRadioInt.value = exerciseRecordRepository.selectExerciseInfoRadio(info,type)
+        selectExerciseGraphList.value = exerciseRecordRepository.selectExerciseGraphListSet(selectExerciseInfo, selectExerciseRadioInt.value ?:0)
     }
 }

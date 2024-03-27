@@ -32,6 +32,7 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import com.example.healthcare.ExerciseType
 import com.example.healthcare.GraphColor
+import com.example.healthcare.Object
 import com.example.healthcare.UnitList
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.launch
@@ -49,11 +50,18 @@ fun DrawLineGraph(
     val coroutineScope = rememberCoroutineScope()
     val density = LocalDensity.current
     val stepX = with(density) { 100.dp.toPx() }
-    val nearestPointIndex = remember { mutableStateOf(0) }
+    //val nearestPointIndex = remember { mutableStateOf(0) }
+    val nearestPointIndex = remember { mutableStateOf(infoList.lastIndex) }
     val scrollToPosition = remember { mutableStateOf(0f) }
     val value = infoList.getOrNull(nearestPointIndex.value) ?: 0f
     val date = dateList.getOrNull(nearestPointIndex.value) ?: ""
 
+    LaunchedEffect(true) {
+        coroutineScope.launch {
+            val scrollTo = (infoList.size - 1) * stepX
+            scrollState.scrollTo(scrollTo.toInt())
+        }
+    }
     LaunchedEffect(scrollState.value) {
         coroutineScope.launch {
             delay(50)
@@ -64,7 +72,7 @@ fun DrawLineGraph(
         }
     }
 
-    Column {
+    Column() {
         Text(
             modifier = Modifier
                 .fillMaxWidth()
@@ -93,7 +101,7 @@ fun DrawLineGraph(
                     Spacer(modifier = Modifier.width(halfScreenWidth - 16.dp))
                     Canvas(
                         modifier = Modifier
-                            .height(160.dp)
+                            .height(100.dp)
                             .width(canvasWidth)
                             .padding(horizontal = 16.dp)
                             .padding(top = 20.dp),
@@ -125,11 +133,14 @@ fun DrawLineGraph(
                     )
                     Spacer(modifier = Modifier.width(halfScreenWidth + 18.dp))
                 }
+                Spacer(modifier = Modifier.height(150.dp))
             }
         }
 
         Canvas(
-            modifier = Modifier.fillMaxWidth(),
+            modifier = Modifier
+                .fillMaxWidth()
+                .background(Color.Blue),
             onDraw = {
                 drawLine(
                     start = Offset(0f, size.height),
@@ -152,4 +163,15 @@ fun DrawLineGraph(
             }
         )
     }
+}
+
+@Preview
+@Composable
+fun AA(){
+    var exerciseInfoList :List<String> = com.example.healthcare.Object.anaerobicExerciseTypeList
+    var exerciseUnitList :List<String> = Object.anaerobicExerciseUnitList
+    val unitList = UnitList(exerciseInfoList,exerciseUnitList)
+    val infoList: List<Float> = listOf(12f,16f,82f,16f,20f)
+    val dateList: List<String> = listOf()
+    DrawLineGraph(unitList = unitList, infoList = infoList, dateList = dateList, exerciseInfoNum = 0)
 }

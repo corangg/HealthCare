@@ -1,6 +1,5 @@
 package com.example.healthcare.ui.composable.Main.Exercise
 
-import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
 import androidx.compose.foundation.border
 import androidx.compose.foundation.clickable
@@ -11,116 +10,87 @@ import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
-import androidx.compose.foundation.layout.size
-import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.shape.RoundedCornerShape
+import androidx.compose.foundation.text.BasicTextField
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
-import androidx.compose.runtime.livedata.observeAsState
+import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.remember
+import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
-import androidx.compose.ui.graphics.ColorFilter
-import androidx.compose.ui.res.painterResource
+import androidx.compose.ui.graphics.SolidColor
 import androidx.compose.ui.text.TextStyle
-import androidx.compose.ui.text.style.TextAlign
-import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
-import androidx.hilt.navigation.compose.hiltViewModel
-import com.example.healthcare.ExerciseInfo
-import com.example.healthcare.ExerciseItem
-import com.example.healthcare.R
+import androidx.lifecycle.MutableLiveData
 import com.example.healthcare.VIewModel.MainViewModel
 
 @Composable
-fun AddExercise(viewModel: MainViewModel,exerciseItem: ExerciseItem, onAddClicked: (Int)-> Unit, exerciseNumber: Int , list: List<MutableList<ExerciseInfo>>){
-    Box(modifier = Modifier
-        .padding(horizontal = 10.dp)
-        .padding(top = 20.dp)
-        .background(Color(0xFF2D2D2D), RoundedCornerShape(24.dp))
-    ){
-        Column(
+fun AddExerciseView(value : MutableLiveData<*>, editClicked: () -> Unit, viewModel: MainViewModel){
+    var itemValue by remember { mutableStateOf(value.value.toString()) }
+    Column(modifier = Modifier
+        .fillMaxWidth()
+        .padding(16.dp), horizontalAlignment = Alignment.CenterHorizontally) {
+        Box(
             modifier = Modifier
-                .padding(20.dp)
-                .fillMaxWidth(),
-            horizontalAlignment = Alignment.CenterHorizontally
+                .fillMaxWidth()
+                .padding(top = 20.dp)
+                .height(48.dp)
+                .border(2.dp, Color.White, RoundedCornerShape(6.dp))
+                .padding(horizontal = 10.dp)
         ) {
-            Text(
-                text = exerciseItem.name,
-                style = TextStyle(color = Color.White, fontSize = 20.sp),
+            BasicTextField(
+                value = itemValue,
+                onValueChange = {
+                    itemValue = it
+                    value.value = it},
+                singleLine = true,
+                cursorBrush = SolidColor(Color.White),
                 modifier = Modifier
+                    .fillMaxWidth()
+                    .align(Alignment.CenterStart),
+                textStyle = TextStyle(color = Color.White, fontSize = 16.sp)
             )
-            if(exerciseItem.name != "유산소"){
-                Row(
-                    verticalAlignment = Alignment.CenterVertically,
-                    modifier = Modifier
-                        .padding(top = 10.dp)
-                        .padding(start = 60.dp)
-                        .height(20.dp)
-                        .fillMaxWidth()
-                ) {
-                    Box(
-                        modifier = Modifier
-                            .padding(start = 7.dp)
-                            .height(36.dp)
-                            .padding(horizontal = 10.dp)
-                    ){
-                        Text(
-                            text = "무게 : kg",
-                            style = TextStyle(color = Color.White, fontSize = 12.sp, textAlign = TextAlign.Center),
-                            modifier = Modifier
-                                .width(46.dp)
-                        )
-                    }
-                    Spacer(modifier = Modifier.width(13.dp))
-                    Box(
-                        modifier = Modifier
-                            .padding(start = 10.dp)
-                            .height(36.dp)
-                            .padding(horizontal = 10.dp)
-                    ){
-                        Text(
-                            text = "세트",
-                            style = TextStyle(color = Color.White, fontSize = 12.sp, textAlign = TextAlign.Center),
-                            modifier = Modifier
-                                .width(40.dp)
-                        )
-                    }
-                    Spacer(modifier = Modifier.width(16.dp))
-                    Box(
-                        modifier = Modifier
-                            .padding(start = 10.dp)
-                            .height(36.dp)
-                            .padding(horizontal = 10.dp)
-                    ){
-                        Text(
-                            text = "횟수",
-                            style = TextStyle(color = Color.White, fontSize = 12.sp, textAlign = TextAlign.Center),
-                            modifier = Modifier
-                                .width(40.dp)
-                        )
-                    }
-                }
-            }
-
-            list.getOrNull(exerciseNumber)?.forEachIndexed { index, exerciseInfo ->
-                ExerciseRow(viewModel = viewModel, exerciseInfo = exerciseInfo, exerciseNumber = exerciseNumber, index = index)
-            }
-
-            Image(
-                painter = painterResource(id = R.drawable.ic_add),
-                contentDescription = "AddExercise",
-                colorFilter = ColorFilter.tint(Color.White),
-                modifier = Modifier
-                    .padding(8.dp)
-                    .size(30.dp)
-                    .clickable {
-                        onAddClicked(exerciseNumber)
-                    }
-            )
-
         }
+
+        Row(verticalAlignment = Alignment.CenterVertically, modifier = Modifier
+            .fillMaxWidth()
+            .padding(top = 20.dp)) {
+            Box(
+                contentAlignment = Alignment.Center,
+                modifier = Modifier
+                    .weight(1f)
+                    .height(40.dp)
+                    .background(Color.Transparent)
+                    .border(3.dp, Color.White, RoundedCornerShape(12.dp))
+                    .clickable { viewModel.hideAddExerciseView() }
+            ) {
+                Text(
+                    text = "취소",
+                    color = Color.White
+                )
+            }
+
+            Box(
+                contentAlignment = Alignment.Center,
+                modifier = Modifier
+                    .weight(1f)
+                    .height(40.dp)
+                    .background(Color.Transparent)
+                    .border(3.dp, Color.White, RoundedCornerShape(12.dp))
+                    .clickable {
+                        editClicked()
+                    }
+            ) {
+                Text(
+                    text = "저장",
+                    color = Color.White
+                )
+            }
+        }
+        Spacer(modifier = Modifier.height(80.dp))
     }
 }

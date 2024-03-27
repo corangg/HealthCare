@@ -183,9 +183,3 @@ fun ExerciseRow(viewModel: MainViewModel, exerciseInfo: ExerciseInfo, exerciseNu
     }
 
 }
-
-@Preview(showBackground = true)
-@Composable
-fun ExerciseRowPreview() {
-    //ExerciseRow(exerciseInfo = ExerciseInfo("사이드레터럴레이즈"),1,1)
-}
