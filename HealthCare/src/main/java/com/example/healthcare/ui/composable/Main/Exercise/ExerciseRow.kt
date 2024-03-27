@@ -13,6 +13,7 @@ import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.foundation.text.BasicTextField
+import androidx.compose.foundation.text.KeyboardOptions
 import androidx.compose.material3.Text
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.setValue
@@ -28,6 +29,7 @@ import androidx.compose.ui.focus.onFocusChanged
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.SolidColor
 import androidx.compose.ui.text.TextStyle
+import androidx.compose.ui.text.input.KeyboardType
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.tooling.preview.Preview
@@ -46,26 +48,26 @@ import com.example.healthcare.VIewModel.MainViewModel
 fun ExerciseRow(viewModel: MainViewModel, exerciseInfo: ExerciseInfo, exerciseNumber: Int, index:Int){
     var weight by remember {
         mutableStateOf(
-            if(viewModel.todayExerciseList.value!![exerciseNumber][index].weight == 0){ "0" }
+            if(viewModel.todayExerciseList.value!![exerciseNumber][index].weight == 0f){ "0" }
             else{ viewModel.todayExerciseList.value!![exerciseNumber][index].weight.toString() }) }
     var set by remember {
         mutableStateOf(
-            if(viewModel.todayExerciseList.value!![exerciseNumber][index].set == 0){ "0" }
+            if(viewModel.todayExerciseList.value!![exerciseNumber][index].set == 0f){ "0" }
             else{ viewModel.todayExerciseList.value!![exerciseNumber][index].set.toString() }) }
     var number by remember {
         mutableStateOf(
-            if(viewModel.todayExerciseList.value!![exerciseNumber][index].number == 0){ "0" }
+            if(viewModel.todayExerciseList.value!![exerciseNumber][index].number == 0f){ "0" }
             else{ viewModel.todayExerciseList.value!![exerciseNumber][index].number.toString() }) }
     val focusRequester = remember { FocusRequester() }
     var isFocused by remember { mutableStateOf(false) }
 
-    if(exerciseInfo.weight != 0){
+    if(exerciseInfo.weight != 0f){
         weight = exerciseInfo.weight.toString()
     }
-    if(exerciseInfo.set != 0){
+    if(exerciseInfo.set != 0f){
         set = exerciseInfo.set.toString()
     }
-    if(exerciseInfo.number != 0){
+    if(exerciseInfo.number != 0f){
         number = exerciseInfo.number.toString()
     }
 
@@ -97,26 +99,27 @@ fun ExerciseRow(viewModel: MainViewModel, exerciseInfo: ExerciseInfo, exerciseNu
                 value = weight,
                 onValueChange = {
                     weight = it
-                    viewModel.updateExerciseWeight(exerciseNumber, index, it.toIntOrNull() ?: exerciseInfo.weight)
+                    viewModel.updateExerciseWeight(exerciseNumber, index, it.toFloatOrNull() ?: exerciseInfo.weight)
                 },
                 singleLine = true,
                 cursorBrush = SolidColor(Color.White),
                 modifier = Modifier
-                    .width(40.dp)
+                    .width(46.dp)
                     .align(Alignment.CenterStart)
                     .focusRequester(focusRequester)
                     .onFocusChanged {
                         isFocused = it.isFocused
                         if (!it.isFocused && weight.isEmpty()) {
-                            weight = "무게"
-                        } else if (it.isFocused && weight == "무게") {
+                            weight = "0"
+                        } else if (it.isFocused && weight == "0") {
                             weight = ""
                         }
                     },
+                keyboardOptions = KeyboardOptions(keyboardType = KeyboardType.Decimal),
                 textStyle = TextStyle(color = Color.White, fontSize = 16.sp, textAlign = TextAlign.Center)
             )
         }
-        Spacer(modifier = Modifier.width(16.dp))
+        Spacer(modifier = Modifier.width(10.dp))
 
         Box(
             modifier = Modifier
@@ -129,26 +132,27 @@ fun ExerciseRow(viewModel: MainViewModel, exerciseInfo: ExerciseInfo, exerciseNu
                 value = set,
                 onValueChange = {
                     set = it
-                    viewModel.updateExerciseSet(exerciseNumber, index, it.toIntOrNull() ?: exerciseInfo.set)
+                    viewModel.updateExerciseSet(exerciseNumber, index, it.toFloatOrNull() ?: exerciseInfo.set)
                 },
                 singleLine = true,
                 cursorBrush = SolidColor(Color.White),
                 modifier = Modifier
-                    .width(40.dp)
+                    .width(46.dp)
                     .align(Alignment.CenterStart)
                     .focusRequester(focusRequester)
                     .onFocusChanged {
                         isFocused = it.isFocused
                         if (!it.isFocused && set.isEmpty()) {
-                            set = "세트"
-                        } else if (it.isFocused && set == "세트") {
+                            set = "0"
+                        } else if (it.isFocused && set == "0") {
                             set = ""
                         }
                     },
+                keyboardOptions = KeyboardOptions(keyboardType = KeyboardType.Decimal),
                 textStyle = TextStyle(color = Color.White, fontSize = 16.sp, textAlign = TextAlign.Center)
             )
         }
-        Spacer(modifier = Modifier.width(16.dp))
+        Spacer(modifier = Modifier.width(10.dp))
 
         Box(
             modifier = Modifier
@@ -161,22 +165,23 @@ fun ExerciseRow(viewModel: MainViewModel, exerciseInfo: ExerciseInfo, exerciseNu
                 value = number,
                 onValueChange = {
                     number = it
-                    viewModel.updateExerciseNumber(exerciseNumber, index, it.toIntOrNull() ?: exerciseInfo.number)
+                    viewModel.updateExerciseNumber(exerciseNumber, index, it.toFloatOrNull() ?: exerciseInfo.number)
                 },
                 singleLine = true,
                 cursorBrush = SolidColor(Color.White),
                 modifier = Modifier
-                    .width(40.dp)
+                    .width(46.dp)
                     .align(Alignment.CenterStart)
                     .focusRequester(focusRequester)
                     .onFocusChanged {
                         isFocused = it.isFocused
                         if (!it.isFocused && number.isEmpty()) {
-                            number = "횟수"
-                        } else if (it.isFocused && number == "횟수") {
+                            number = "0"
+                        } else if (it.isFocused && number == "0") {
                             number = ""
                         }
                     },
+                keyboardOptions = KeyboardOptions(keyboardType = KeyboardType.Decimal),
                 textStyle = TextStyle(color = Color.White, fontSize = 16.sp, textAlign = TextAlign.Center)
             )
         }

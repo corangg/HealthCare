@@ -138,7 +138,8 @@ class MainViewModel @Inject constructor(
         todayExerciseList.value = mutableListOf()
         list = mutableListOf()
         todayExerciseRoutine = exerciseLists[exerciseRecordRepository.getDayOfWeekNum(previousDate)].value!!
-        todayExerciseList.value = exerciseRecordRepository.bindDateExerciseRecord(calenderData.value ?:"", previousDate, recordExerciseList, todayExerciseRoutine)
+        list = exerciseRecordRepository.setListSpace(todayExerciseRoutine)
+        todayExerciseList.value = exerciseRecordRepository.bindDateExerciseRecord(calenderData.value ?:"", previousDate, recordExerciseList, todayExerciseRoutine,list)
     }
 
     fun editProfile(item : Int){
@@ -229,7 +230,7 @@ class MainViewModel @Inject constructor(
         }
     }
 
-    fun updateExerciseWeight(exerciseNumber: Int, index: Int, newWeight: Int) {
+    fun updateExerciseWeight(exerciseNumber: Int, index: Int, newWeight: Float) {
         list = todayExerciseList.value!!
         val exerciseList = list[exerciseNumber]
         val updatedExerciseInfo = exerciseList[index].copy(weight = newWeight)
@@ -239,7 +240,7 @@ class MainViewModel @Inject constructor(
         todayExerciseList.value = list
     }
 
-    fun updateExerciseSet(exerciseNumber: Int, index: Int, newSet: Int) {
+    fun updateExerciseSet(exerciseNumber: Int, index: Int, newSet: Float) {
         list = todayExerciseList.value!!
         val exerciseList = list[exerciseNumber]
         val updatedExerciseInfo = exerciseList[index].copy(set = newSet)
@@ -249,7 +250,7 @@ class MainViewModel @Inject constructor(
         todayExerciseList.value = list
     }
 
-    fun updateExerciseNumber(exerciseNumber: Int, index: Int, newNumber: Int) {
+    fun updateExerciseNumber(exerciseNumber: Int, index: Int, newNumber: Float) {
         list = todayExerciseList.value!!
         val exerciseList = list[exerciseNumber]
         val updatedExerciseInfo = exerciseList[index].copy(number = newNumber)

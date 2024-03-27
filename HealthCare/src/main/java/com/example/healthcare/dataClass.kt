@@ -43,9 +43,9 @@ data class ExerciseType(
 
 data class ExerciseInfo(
     val exercise : String,
-    val weight : Int = 0,
-    val set : Int = 0,
-    val number : Int = 0
+    val weight : Float = 0f,
+    val set : Float = 0f,
+    val number : Float = 0f
 )
 
 data class ExerciseTypeList(

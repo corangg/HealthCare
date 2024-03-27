@@ -9,6 +9,8 @@ class Object {
         val exerciseTypeList = listOf("유산소", "등", "가슴", "하체", "어깨", "팔", "허리")
         val weightType = listOf("")
         val weightUnit = listOf("kg")
+        val anaerobicExerciseRowString = listOf("무게:kg", "세트:회", "횟수:회")
+        val cardioExerciseRowString = listOf("인클라인 : º", "시간 : 분.초", "거리 : km")
 
     }
 }

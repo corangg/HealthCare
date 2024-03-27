@@ -96,11 +96,20 @@ class ExerciseRecordRepository@Inject constructor(private val exerciseRecordDao:
         return date.toLong()
     }
 
-    fun bindDateExerciseRecord(calenderDate: String, previousDate: Int, recordExerciseList : MutableList<ExerciseDataRecord>, todayExerciseRoutine : MutableList<ExerciseItem>) : MutableList<MutableList<ExerciseInfo>>{
+    fun setListSpace(todayExerciseRoutine : MutableList<ExerciseItem>): MutableList<MutableList<ExerciseInfo>>{
         val list : MutableList<MutableList<ExerciseInfo>> = mutableListOf()
         for(i in 0 until todayExerciseRoutine.size){
             list.add(mutableListOf())
         }
+        return list
+    }
+
+    fun bindDateExerciseRecord(
+        calenderDate: String,
+        previousDate: Int,
+        recordExerciseList : MutableList<ExerciseDataRecord>,
+        todayExerciseRoutine : MutableList<ExerciseItem>,
+        list : MutableList<MutableList<ExerciseInfo>> ) : MutableList<MutableList<ExerciseInfo>>{
         var dateExerciseRecordList = list
         for(i in recordExerciseList){
             if(i.timeStamp == recordDate(calenderDate)){

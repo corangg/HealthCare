@@ -22,15 +22,22 @@ import androidx.compose.ui.graphics.ColorFilter
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.text.style.TextAlign
+import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import com.example.healthcare.ExerciseInfo
 import com.example.healthcare.ExerciseItem
+import com.example.healthcare.Object
 import com.example.healthcare.R
 import com.example.healthcare.VIewModel.MainViewModel
 
 @Composable
-fun AddExercise(viewModel: MainViewModel, unitList: List<String>, exerciseItem: ExerciseItem, onAddClicked: (Int)-> Unit, exerciseNumber: Int , list: List<MutableList<ExerciseInfo>>){
+fun AddExercise(viewModel: MainViewModel,
+                unitList: List<String>,
+                exerciseItem: String,
+                onAddClicked: (Int)-> Unit,
+                exerciseNumber: Int ,
+                list: List<MutableList<ExerciseInfo>>){
     Box(modifier = Modifier
         .padding(horizontal = 10.dp)
         .padding(top = 20.dp)
@@ -43,7 +50,7 @@ fun AddExercise(viewModel: MainViewModel, unitList: List<String>, exerciseItem: 
             horizontalAlignment = Alignment.CenterHorizontally
         ) {
             Text(
-                text = exerciseItem.name,
+                text = exerciseItem,
                 style = TextStyle(color = Color.White, fontSize = 20.sp),
                 modifier = Modifier
             )
@@ -57,43 +64,41 @@ fun AddExercise(viewModel: MainViewModel, unitList: List<String>, exerciseItem: 
             ) {
                 Box(
                     modifier = Modifier
-                        .padding(start = 7.dp)
+                        .padding(start = 10.dp)
                         .height(36.dp)
-                        .padding(horizontal = 10.dp)
                 ){
                     Text(
                         text = unitList[0],
                         style = TextStyle(color = Color.White, fontSize = 12.sp, textAlign = TextAlign.Center),
                         modifier = Modifier
-                            .width(46.dp)
+                            .width(66.dp)
+                            .align(Alignment.Center)
                     )
                 }
-                Spacer(modifier = Modifier.width(13.dp))
+                Spacer(modifier = Modifier.width(10.dp))
                 Box(
                     modifier = Modifier
                         .padding(start = 10.dp)
                         .height(36.dp)
-                        .padding(horizontal = 10.dp)
                 ){
                     Text(
                         text = unitList[1],
                         style = TextStyle(color = Color.White, fontSize = 12.sp, textAlign = TextAlign.Center),
                         modifier = Modifier
-                            .width(40.dp)
+                            .width(66.dp)
                     )
                 }
-                Spacer(modifier = Modifier.width(16.dp))
+                Spacer(modifier = Modifier.width(10.dp))
                 Box(
                     modifier = Modifier
                         .padding(start = 10.dp)
                         .height(36.dp)
-                        .padding(horizontal = 10.dp)
                 ){
                     Text(
                         text = unitList[2],
                         style = TextStyle(color = Color.White, fontSize = 12.sp, textAlign = TextAlign.Center),
                         modifier = Modifier
-                            .width(40.dp)
+                            .width(66.dp)
                     )
                 }
             }

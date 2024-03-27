@@ -154,13 +154,13 @@ fun exerciseView(viewModel: MainViewModel){
 
             for(i in 0 until viewModel.todayExerciseRoutine.size){
                 if(viewModel.todayExerciseRoutine[i].name == "유산소"){
-                    unitList = Object.cardioExerciseTypeList
+                    unitList = Object.cardioExerciseRowString
                 }else{
-                    unitList = Object.anaerobicExerciseTypeList
+                    unitList = Object.anaerobicExerciseRowString
                 }
                 AddExercise(
                     viewModel = viewModel,
-                    exerciseItem = viewModel.todayExerciseRoutine[i],
+                    exerciseItem = viewModel.todayExerciseRoutine[i].name,
                     onAddClicked = viewModel::showAddExerciseView,
                     exerciseNumber = i,
                     list = exerciseList,
