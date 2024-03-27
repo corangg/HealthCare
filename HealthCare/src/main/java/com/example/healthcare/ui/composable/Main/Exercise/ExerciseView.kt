@@ -52,12 +52,11 @@ import com.example.healthcare.R
 import com.example.healthcare.VIewModel.MainViewModel
 
 @Composable
-fun exerciseView(){
-
-    val viewModel: MainViewModel = hiltViewModel()
+fun exerciseView(viewModel: MainViewModel){
     val dayOfTheWeek by viewModel.stringDayOfWeek.observeAsState()
     val scrollState = rememberScrollState()
     val getDate by viewModel.calendarData.observeAsState()
+    val exerciseList by viewModel.todayExerciseList.observeAsState(initial = listOf())
 
     Box(
         modifier = Modifier
@@ -160,8 +159,9 @@ fun exerciseView(){
                 }
             }
 
+
             for(i in 0 until viewModel.todayExerciseRoutine.size){
-                AddExercise(exerciseItem = viewModel.todayExerciseRoutine[i], onAddClicked = viewModel::showAddExerciseView, exerciseNumber = i)
+                AddExercise(viewModel = viewModel, exerciseItem = viewModel.todayExerciseRoutine[i], onAddClicked = viewModel::showAddExerciseView, exerciseNumber = i, list = exerciseList)
             }
 
             Box(
@@ -194,13 +194,10 @@ fun exerciseView(){
             .background(Color(0xFF2D2D2D), RoundedCornerShape(topStart = 24.dp, topEnd = 24.dp))
         ){
             if(viewModel.showAddExerciseView.observeAsState().value == true){
-                AddExerciseView(value = viewModel.exerciseName, editClicked = viewModel::addArrayExercise)
-
+                AddExerciseView(value = viewModel.exerciseName, editClicked = viewModel::addArrayExercise, viewModel)
             }
         }
     }
-
-
 }
 
 
@@ -208,10 +205,8 @@ fun exerciseView(){
 
 
 @Composable
-fun AddExerciseView(value : MutableLiveData<*>, editClicked: () -> Unit){
-    val viewModel: MainViewModel = hiltViewModel()
+fun AddExerciseView(value : MutableLiveData<*>, editClicked: () -> Unit, viewModel: MainViewModel){
     var itemValue by remember { mutableStateOf(value.value.toString()) }
-
     Column(modifier = Modifier
         .fillMaxWidth()
         .padding(16.dp), horizontalAlignment = Alignment.CenterHorizontally) {
@@ -275,11 +270,4 @@ fun AddExerciseView(value : MutableLiveData<*>, editClicked: () -> Unit){
         Spacer(modifier = Modifier.height(80.dp))
     }
 
-}
-
-
-@Preview(showBackground = true)
-@Composable
-fun ExercisePreview() {
-    exerciseView()
 }

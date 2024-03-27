@@ -66,12 +66,18 @@ class MainViewModel @Inject constructor(
     var recordExerciseList : MutableList<ExerciseDataRecord> = mutableListOf()
     var list : MutableList<MutableList<ExerciseInfo>> = mutableListOf()
     var todayExerciseRoutine : MutableList<ExerciseItem> = mutableListOf()
+    var allWeightDataList : MutableList<WeightData> = mutableListOf()
+    var arrayWeightDateList : MutableList<String> = mutableListOf()
+    var arrayWeightList : MutableList<Float> = mutableListOf()
 
     var previousDate : Int = 0
     var exerciseNumber : Int = -1
 
     var lastWeightData = WeightData()
     var profileData = PhsicalInfo()
+    init {
+        initDataSet()
+    }
 
 
     fun initDataSet(){
@@ -90,7 +96,12 @@ class MainViewModel @Inject constructor(
         viewModelScope.launch {
             profileData = phsicalInfoRepository.getAllPhsicalInfos()
             lastWeightData = phsicalInfoRepository.getLastWeightData()
+            allWeightDataList = phsicalInfoRepository.getAllWeightData().toMutableList()
+            arrayWeightDateList = exerciseRecordRepository.arrayWeightDateList(allWeightDataList)
+            arrayWeightList = exerciseRecordRepository.arrayWeightList(allWeightDataList)
+            true
         }
+        true
     }
 
     fun setData(){
@@ -302,7 +313,7 @@ class MainViewModel @Inject constructor(
 
     fun getCurrentTimeOld(): Long {
         val calendar = Calendar.getInstance()
-        val formatter = SimpleDateFormat("yyyyMMddHHmmss")
+        val formatter = SimpleDateFormat("yyyyMMdd")
         return formatter.format(calendar.time).toLong()
     }
 

@@ -6,10 +6,12 @@ import com.example.healthcare.Dao.ExerciseDao
 import com.example.healthcare.Dao.ExerciseRecordDao
 import com.example.healthcare.ExerciseDataRecord
 import com.example.healthcare.ExerciseInfo
+import com.example.healthcare.WeightData
 import java.util.Calendar
 import javax.inject.Inject
 
 class ExerciseRecordRepository@Inject constructor(private val exerciseRecordDao: ExerciseRecordDao)  {
+
 
     suspend fun getAllExerciseRecord(): List<ExerciseDataRecord>{
         return exerciseRecordDao.getAllExerciseRecords()
@@ -24,6 +26,28 @@ class ExerciseRecordRepository@Inject constructor(private val exerciseRecordDao:
 
     suspend fun deleteAllExerciseReord(){
         exerciseRecordDao.deleteAllExerciseReord()
+    }
+
+    fun arrayWeightDateList(list : List<WeightData>): MutableList<String>{
+        val weightDateList : MutableList<String> = mutableListOf()
+
+        for(i in list){
+            val year = i.timeStamp.toString().substring(0,4)
+            val month = i.timeStamp.toString().substring(4,6)
+            val day = i.timeStamp.toString().substring(6,8)
+            val date = year + "년 " + month + "월 " + day + "일"
+            weightDateList.add(date)
+        }
+        return weightDateList
+    }
+
+    fun arrayWeightList(list : List<WeightData>): MutableList<Float>{
+        val weightList : MutableList<Float> = mutableListOf()
+
+        for(i in list){
+            weightList.add(i.weight)
+        }
+        return weightList
     }
 
     fun getCurrentDayOfWeek(previousDate: Int): String{

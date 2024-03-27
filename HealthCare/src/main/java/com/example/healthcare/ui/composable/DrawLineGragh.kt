@@ -51,7 +51,7 @@ fun DrawLineGraph(
     val stepX = with(density) { 100.dp.toPx() }
     val nearestPointIndex = remember { mutableStateOf(0) }
     val scrollToPosition = remember { mutableStateOf(0f) }
-    val value = infoList.getOrNull(nearestPointIndex.value)?.toInt() ?: 0f
+    val value = infoList.getOrNull(nearestPointIndex.value) ?: 0f
     val date = dateList.getOrNull(nearestPointIndex.value) ?: ""
 
     LaunchedEffect(scrollState.value) {
@@ -80,7 +80,7 @@ fun DrawLineGraph(
                 .padding(bottom = 20.dp)
                 .background(Color.Black, RoundedCornerShape(bottomStart = 16.dp, bottomEnd = 16.dp))
                 .padding(16.dp),
-            text = "${unitList.info[exerciseInfoNum]} : $value ${unitList.unit[exerciseInfoNum]}",
+            text = "${unitList.info[exerciseInfoNum]} $value ${unitList.unit[exerciseInfoNum]}",
             style = TextStyle(color = Color.White, textAlign = TextAlign.Center, fontSize = 16.sp)
         )
 

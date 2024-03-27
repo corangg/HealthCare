@@ -30,8 +30,7 @@ import androidx.hilt.navigation.compose.hiltViewModel
 import com.example.healthcare.VIewModel.MainViewModel
 
 @Composable
-fun editGenderInfoView(item : String, editClicked: () -> Unit){
-    val viewModel: MainViewModel = hiltViewModel()
+fun editGenderInfoView(item : String, editClicked: () -> Unit, viewModel: MainViewModel){
     val genderInfo by viewModel.profileGender.observeAsState()
     val maleButtonBackgroundColor = if (genderInfo == true){
         Color.LightGray

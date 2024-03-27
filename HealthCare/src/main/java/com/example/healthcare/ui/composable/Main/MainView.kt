@@ -15,7 +15,6 @@ import androidx.compose.material.Scaffold
 import androidx.compose.material3.Icon
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
-import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
@@ -42,11 +41,10 @@ import com.example.healthcare.ui.composable.Main.Record.RecordView
 
 @Composable
 fun MyAppPreview() {
-    val viewModel: MainViewModel = hiltViewModel()
     Column(
         modifier = Modifier
             .fillMaxSize()
-            .background(color = viewModel.backgroundColor.value),
+            .background(color = Color(0xFF121212)),
         verticalArrangement = Arrangement.Center,
         horizontalAlignment = Alignment.CenterHorizontally
     ) {
@@ -104,24 +102,20 @@ fun BottomNavigationBar(navController: NavController){
 
 @Composable
 fun NavigationGraph(navController: NavHostController, innerPadding: PaddingValues) {
-
+    val viewModel: MainViewModel = hiltViewModel()
     NavHost(navController, startDestination = "운동") {
-        composable("운동") { aa(0)/*exerciseView()*/ }
-        composable("기록") {aa(1) /*Icon(painterResource(id = R.drawable.ic_graph), contentDescription = null, modifier = Modifier.size(36.dp).padding(bottom = 4.dp, top = 8.dp))*/ }
-        composable("프로필") {aa(2) /*ProfileView()*/ }
+        composable("운동") { showView(0, viewModel) }
+        composable("기록") {showView(1, viewModel) }
+        composable("프로필") {showView(2, viewModel)  }
     }
 }
 
 @Composable
-fun aa(a: Int){
-    val viewModel: MainViewModel = hiltViewModel()
-    LaunchedEffect(true) {
-        viewModel.initDataSet()
-    }
-    when(a){
-        0->exerciseView()
-        1-> RecordView()
-        2->ProfileView()
+fun showView(index: Int, viewModel: MainViewModel){
+    when(index){
+        0-> exerciseView(viewModel)
+        1-> RecordView(viewModel)
+        2-> ProfileView(viewModel)
     }
 }
 

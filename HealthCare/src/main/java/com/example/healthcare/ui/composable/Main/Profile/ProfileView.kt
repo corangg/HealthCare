@@ -51,9 +51,7 @@ import com.example.healthcare.ui.composable.HorizontalScrollView
 
 
 @Composable
-fun ProfileView() {
-    val viewModel: MainViewModel = hiltViewModel()
-
+fun ProfileView(viewModel: MainViewModel) {
     val name = viewModel.profileName.observeAsState().value ?:""
     val gender = viewModel.profileGender.observeAsState().value ?:true
     val age = viewModel.profileAge.observeAsState().value ?:""
@@ -152,18 +150,12 @@ fun ProfileView() {
             .background(Color(0xFF2D2D2D), RoundedCornerShape(topStart = 24.dp, topEnd = 24.dp))
         ){
             when(viewModel.viewEditCompsable.observeAsState().value){
-                1-> editPhsicalInfoView("이름",viewModel.profileName,{viewModel.editName()})
-                2-> editGenderInfoView("성별",{viewModel.editGender()})
-                3-> editPhsicalInfoView("나이",viewModel.profileAge,{viewModel.editAge()})
-                4-> editPhsicalInfoView("키",viewModel.profileHeight,{viewModel.editHeight()})
-                5-> editPhsicalInfoView("몸무게",viewModel.profileWeight,{viewModel.editWeight()})
+                1-> editPhsicalInfoView(viewModel = viewModel,"이름",viewModel.profileName,{viewModel.editName()})
+                2-> editGenderInfoView(item = "성별", editClicked = {viewModel.editGender()}, viewModel = viewModel)
+                3-> editPhsicalInfoView(viewModel = viewModel,"나이",viewModel.profileAge,{viewModel.editAge()})
+                4-> editPhsicalInfoView(viewModel = viewModel,"키",viewModel.profileHeight,{viewModel.editHeight()})
+                5-> editPhsicalInfoView(viewModel = viewModel,"몸무게",viewModel.profileWeight,{viewModel.editWeight()})
             }
         }
     }
-}
-
-@Preview(showBackground = true)
-@Composable
-fun ProfilePreview() {
-    ProfileView()
 }

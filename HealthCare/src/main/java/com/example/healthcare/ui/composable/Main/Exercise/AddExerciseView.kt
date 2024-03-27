@@ -29,15 +29,13 @@ import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.hilt.navigation.compose.hiltViewModel
+import com.example.healthcare.ExerciseInfo
 import com.example.healthcare.ExerciseItem
 import com.example.healthcare.R
 import com.example.healthcare.VIewModel.MainViewModel
 
 @Composable
-fun AddExercise(exerciseItem: ExerciseItem, onAddClicked: (Int)-> Unit, exerciseNumber: Int){
-    val viewModel : MainViewModel = hiltViewModel()
-    val exerciseList by viewModel.todayExerciseList.observeAsState(initial = listOf())
-    var exerciseSize : Int = 0
+fun AddExercise(viewModel: MainViewModel,exerciseItem: ExerciseItem, onAddClicked: (Int)-> Unit, exerciseNumber: Int , list: List<MutableList<ExerciseInfo>>){
     Box(modifier = Modifier
         .padding(horizontal = 10.dp)
         .padding(top = 20.dp)
@@ -107,9 +105,8 @@ fun AddExercise(exerciseItem: ExerciseItem, onAddClicked: (Int)-> Unit, exercise
                 }
             }
 
-            exerciseList.getOrNull(exerciseNumber)?.forEachIndexed { index, exerciseInfo ->
-                exerciseSize = index
-                ExerciseRow(exerciseInfo,exerciseNumber,index)
+            list.getOrNull(exerciseNumber)?.forEachIndexed { index, exerciseInfo ->
+                ExerciseRow(viewModel = viewModel, exerciseInfo = exerciseInfo, exerciseNumber = exerciseNumber, index = index)
             }
 
             Image(

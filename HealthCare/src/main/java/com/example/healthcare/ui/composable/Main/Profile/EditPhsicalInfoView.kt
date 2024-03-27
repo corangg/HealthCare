@@ -31,8 +31,7 @@ import androidx.lifecycle.MutableLiveData
 import com.example.healthcare.VIewModel.MainViewModel
 
 @Composable
-fun editPhsicalInfoView(item : String, value : MutableLiveData<*>, editClicked: () -> Unit){
-    val viewModel: MainViewModel = hiltViewModel()
+fun editPhsicalInfoView(viewModel: MainViewModel,item : String, value : MutableLiveData<*>, editClicked: () -> Unit){
     var itemValue by remember { mutableStateOf(value.value.toString()) }
 
     Column(modifier = Modifier

@@ -18,6 +18,11 @@ class PhsicalInfoRepository @Inject constructor(
     suspend fun getWeightData(): WeightData{
         return weightDataDao.getWeightData()
     }
+
+    suspend fun getAllWeightData():List<WeightData>{
+        return weightDataDao.getAllWeightData()
+    }
+
     suspend fun getLastWeightData():WeightData{
         return weightDataDao.getLastWeightValue()
     }

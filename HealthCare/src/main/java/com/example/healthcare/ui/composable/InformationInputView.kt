@@ -57,7 +57,6 @@ import com.example.healthcare.ui.theme.HealthCareTheme
 
 @Composable
 fun InformationInputView(viewModel: InformationInputViewModel) {
-    //val viewModel: InformationInputViewModel = hiltViewModel()
     val context = LocalContext.current
     val focusRequester = remember { FocusRequester() }
     val focusManager = LocalFocusManager.current

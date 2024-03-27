@@ -5,6 +5,7 @@ import androidx.room.Delete
 import androidx.room.Insert
 import androidx.room.OnConflictStrategy
 import androidx.room.Query
+import com.example.healthcare.ExerciseDataRecord
 import com.example.healthcare.WeightData
 
 @Dao
@@ -15,6 +16,10 @@ interface WeightDataDao {
 
     @Query("SELECT * FROM weight_data")
     suspend fun getWeightData(): WeightData
+
+    @Query("SELECT * FROM weight_data")
+    suspend fun getAllWeightData(): List<WeightData>
+
 
     @Delete
     suspend fun deleteWeightData(data: WeightData)

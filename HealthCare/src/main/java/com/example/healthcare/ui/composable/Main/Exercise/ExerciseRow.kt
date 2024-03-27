@@ -43,8 +43,7 @@ import com.example.healthcare.Repository.PhsicalInfoRepository
 import com.example.healthcare.VIewModel.MainViewModel
 
 @Composable
-fun ExerciseRow(exerciseInfo: ExerciseInfo, exerciseNumber: Int, index:Int){
-    val viewModel : MainViewModel = hiltViewModel()
+fun ExerciseRow(viewModel: MainViewModel, exerciseInfo: ExerciseInfo, exerciseNumber: Int, index:Int){
     var weight by remember {
         mutableStateOf(
             if(viewModel.todayExerciseList.value!![exerciseNumber][index].weight == 0){ "0" }
@@ -188,5 +187,5 @@ fun ExerciseRow(exerciseInfo: ExerciseInfo, exerciseNumber: Int, index:Int){
 @Preview(showBackground = true)
 @Composable
 fun ExerciseRowPreview() {
-    ExerciseRow(exerciseInfo = ExerciseInfo("사이드레터럴레이즈"),1,1)
+    //ExerciseRow(exerciseInfo = ExerciseInfo("사이드레터럴레이즈"),1,1)
 }
