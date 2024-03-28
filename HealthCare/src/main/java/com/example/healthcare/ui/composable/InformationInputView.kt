@@ -300,15 +300,17 @@ fun InformationInputView(viewModel: InformationInputViewModel) {
         Spacer(modifier = Modifier.height(16.dp))
 
 
-        /*HorizontalScrollView(modifier = Modifier.widthIn(86.dp)) {
-            *//*AddExerciseColumn(day = 0, viewModel.sunExerciseList)
-            AddExerciseColumn(day = 1, viewModel.monExerciseList)
-            AddExerciseColumn(day = 2, viewModel.tuesExerciseList)
-            AddExerciseColumn(day = 3, viewModel.wednesExerciseList)
-            AddExerciseColumn(day = 4, viewModel.thursExerciseList)
-            AddExerciseColumn(day = 5, viewModel.friExerciseList)
-            AddExerciseColumn(day = 6, viewModel.saturExerciseList)*//*
-        }*/
+        HorizontalScrollView(modifier = Modifier.widthIn(86.dp)) {
+            for(i in 0 until 7){
+                AddExerciseColumn(
+                    day = i,
+                    list = viewModel.exerciseLists[i],
+                    onDeleteClicked = viewModel::deleteExercise,
+                    onAddClicked = viewModel::addExercise,
+                    onUpdate = viewModel::updateExerciseAt,
+                    edit = true)
+            }
+        }
 
 
         Spacer(modifier = Modifier.height(48.dp))
@@ -321,16 +323,13 @@ fun InformationInputView(viewModel: InformationInputViewModel) {
                 .clip(CircleShape)
                 .background(Color.Transparent)
                 .border(3.dp, Color.White, CircleShape)
-                .clickable { viewModel.saveData(context) }
+                .clickable { viewModel.saveData(context)}
         ) {
             Text(
                 text = "저장",
                 color = Color.White
             )
         }
-
-
-
     }
 }
 

@@ -40,12 +40,15 @@ import com.example.healthcare.ui.theme.HealthCareTheme
 import java.util.UUID
 
 @Composable
-fun AddExerciseColumn( day : Int, list : MutableLiveData<MutableList<ExerciseItem>>, edit : MutableLiveData<Boolean>,
-    onDeleteClicked : (String, Int) -> Unit, onAddClicked: (String, Int)-> Unit, onUpdate: (String,String,Int)->Unit) {
+fun AddExerciseColumn(
+    day : Int,
+    list : MutableLiveData<MutableList<ExerciseItem>>,
+    edit : Boolean,
+    onDeleteClicked : (String, Int) -> Unit,
+    onAddClicked: (String, Int)-> Unit,
+    onUpdate: (String,String,Int)->Unit) {
     val dayOfTheWeek = arrayOf("일","월","화","수","목","금","토")
     val exerciseList by list.observeAsState(initial = listOf())
-    val editValue by edit.observeAsState(initial = false)
-
 
     Column(
         horizontalAlignment = Alignment.CenterHorizontally,
@@ -70,13 +73,13 @@ fun AddExerciseColumn( day : Int, list : MutableLiveData<MutableList<ExerciseIte
                         onDeleteClicked(exercise.id,day)
                     },
                     list = listOf("유산소", "등", "가슴", "하체", "어깨", "팔", "허리"),
-                    edit = editValue,
-                    select = editValue
+                    edit = edit,
+                    select = edit
                 )
                 Spacer(modifier = Modifier.height(4.dp))
             }
         }
-        if(editValue){
+        if(edit){
             Image(
                 painter = painterResource(id = R.drawable.ic_add),
                 contentDescription = "AddExercise",

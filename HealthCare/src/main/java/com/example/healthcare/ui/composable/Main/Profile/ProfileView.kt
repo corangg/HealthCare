@@ -57,6 +57,7 @@ fun ProfileView(viewModel: MainViewModel) {
     val age = viewModel.profileAge.observeAsState().value ?:""
     val height = viewModel.profileHeight.observeAsState().value ?:""
     val weight = viewModel.profileWeight.observeAsState().value ?:""
+    val edit = viewModel.editExerciseItem.observeAsState().value ?:false
 
     Box(
         modifier = Modifier
@@ -64,7 +65,9 @@ fun ProfileView(viewModel: MainViewModel) {
             .background(color = viewModel.backgroundColor.value),
     ){
         val scrollState = rememberScrollState()
-        Column(modifier = Modifier.fillMaxWidth().verticalScroll(scrollState), horizontalAlignment = Alignment.CenterHorizontally) {
+        Column(modifier = Modifier
+            .fillMaxWidth()
+            .verticalScroll(scrollState), horizontalAlignment = Alignment.CenterHorizontally) {
             Spacer(modifier = Modifier.height(20.dp))
 
             Box(modifier = Modifier
@@ -101,7 +104,7 @@ fun ProfileView(viewModel: MainViewModel) {
                 modifier = Modifier
                     .fillMaxWidth()
                     .padding(20.dp)
-                    .background(Color(0xFF2D2D2D),RoundedCornerShape(24.dp))
+                    .background(Color(0xFF2D2D2D), RoundedCornerShape(24.dp))
                 , horizontalAlignment = Alignment.CenterHorizontally)
             {
                 Row(modifier = Modifier.padding(top = 20.dp)) {
@@ -136,7 +139,7 @@ fun ProfileView(viewModel: MainViewModel) {
                                 onDeleteClicked = viewModel::deleteExerciseRoutine,
                                 onAddClicked = viewModel::addExerciseRoutine,
                                 onUpdate = viewModel::updateExerciseRoutine,
-                                edit = viewModel.editExerciseItem)
+                                edit = edit)
                         }
                     }
                 }
