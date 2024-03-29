@@ -7,6 +7,7 @@ import androidx.compose.foundation.border
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxSize
@@ -44,14 +45,19 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.lifecycle.MutableLiveData
+import com.example.healthcare.Dao.PhsicalInfoDao
+import com.example.healthcare.Dao.WeightDataDao
 import com.example.healthcare.R
+import com.example.healthcare.Repository.ExerciseRecordRepository
+import com.example.healthcare.Repository.ExerciseRoutineRepository
+import com.example.healthcare.Repository.PhsicalInfoRepository
 import com.example.healthcare.VIewModel.MainViewModel
 import com.example.healthcare.ui.composable.AddExerciseColumn
 import com.example.healthcare.ui.composable.HorizontalScrollView
 
 
 @Composable
-fun ProfileView(viewModel: MainViewModel) {
+fun ProfileView(viewModel: MainViewModel, innerPadding: PaddingValues) {
     val name = viewModel.profileName.observeAsState().value ?:""
     val gender = viewModel.profileGender.observeAsState().value ?:true
     val age = viewModel.profileAge.observeAsState().value ?:""
@@ -62,7 +68,8 @@ fun ProfileView(viewModel: MainViewModel) {
     Box(
         modifier = Modifier
             .fillMaxSize()
-            .background(color = viewModel.backgroundColor.value),
+            .background(color = viewModel.backgroundColor.value)
+            .padding(innerPadding),
     ){
         val scrollState = rememberScrollState()
         Column(modifier = Modifier
@@ -144,7 +151,6 @@ fun ProfileView(viewModel: MainViewModel) {
                     }
                 }
             }
-            Spacer(modifier = Modifier.height(60.dp))
         }
 
         Box(modifier = Modifier

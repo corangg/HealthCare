@@ -6,6 +6,7 @@ import androidx.compose.foundation.border
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxSize
@@ -43,7 +44,7 @@ import com.example.healthcare.R
 import com.example.healthcare.VIewModel.MainViewModel
 
 @Composable
-fun exerciseView(viewModel: MainViewModel){
+fun exerciseView(viewModel: MainViewModel,innerPadding: PaddingValues){
     val dayOfTheWeek by viewModel.stringDayOfWeek.observeAsState()
     val scrollState = rememberScrollState()
     val getDate by viewModel.calenderData.observeAsState()
@@ -53,7 +54,8 @@ fun exerciseView(viewModel: MainViewModel){
     Box(
         modifier = Modifier
             .fillMaxSize()
-            .background(color = viewModel.backgroundColor.value),
+            .background(color = viewModel.backgroundColor.value)
+            .padding(innerPadding),
     ){
         Column(modifier = Modifier
             .fillMaxSize()
@@ -185,8 +187,7 @@ fun exerciseView(viewModel: MainViewModel){
                         .align(Alignment.Center)
                 )
             }
-
-            Spacer(modifier = Modifier.height(80.dp))
+            Spacer(modifier = Modifier.height(20.dp))
         }
 
         Box(modifier = Modifier

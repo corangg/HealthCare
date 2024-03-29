@@ -1,4 +1,5 @@
 <resources>
-    <string name="app_name">HealthCare</string>
+    <string name="app_name">운동메모</string>
     <string name="title_activity_information_input">InformationInputActivity</string>
+    <string name="title_activity_splash">SplashActivity</string>
 </resources>

@@ -110,8 +110,7 @@ fun InformationInputView(viewModel: InformationInputViewModel) {
         modifier = Modifier
             .fillMaxSize()
             .background(color = viewModel.backgroundColor.value),
-        horizontalAlignment = Alignment.CenterHorizontally,
-    ) {
+        horizontalAlignment = Alignment.CenterHorizontally,) {
         Text(
             text = "신체 정보 입력",
             style = TextStyle(color = Color.White, fontSize = 20.sp, fontWeight = FontWeight.Bold),
@@ -119,7 +118,6 @@ fun InformationInputView(viewModel: InformationInputViewModel) {
         )
 
         Spacer(modifier = Modifier.height(24.dp))
-
 
         Row(verticalAlignment = Alignment.CenterVertically) {
             Image(
@@ -157,12 +155,10 @@ fun InformationInputView(viewModel: InformationInputViewModel) {
                             nameText = ""
                         }
                     })
-
             Spacer(modifier = Modifier.width(44.dp))
         }
 
         Spacer(modifier = Modifier.height(16.dp))
-
 
         Row(verticalAlignment = Alignment.CenterVertically){
             Image(
@@ -212,7 +208,6 @@ fun InformationInputView(viewModel: InformationInputViewModel) {
             Spacer(modifier = Modifier.width(78.dp))
 
         }
-
         Spacer(modifier = Modifier.height(16.dp))
 
         SliderInputRow(
@@ -296,9 +291,7 @@ fun InformationInputView(viewModel: InformationInputViewModel) {
             style = TextStyle(color = Color.White, fontSize = 20.sp, fontWeight = FontWeight.Bold),
         )
 
-
         Spacer(modifier = Modifier.height(16.dp))
-
 
         HorizontalScrollView(modifier = Modifier.widthIn(86.dp)) {
             for(i in 0 until 7){
@@ -312,9 +305,7 @@ fun InformationInputView(viewModel: InformationInputViewModel) {
             }
         }
 
-
         Spacer(modifier = Modifier.height(48.dp))
-
 
         Box(
             contentAlignment = Alignment.Center,
@@ -332,10 +323,6 @@ fun InformationInputView(viewModel: InformationInputViewModel) {
         }
     }
 }
-
-
-
-
 
 @Preview(showBackground = true)
 @Composable

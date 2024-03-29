@@ -6,6 +6,7 @@ import androidx.compose.foundation.background
 import androidx.compose.foundation.border
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxSize
@@ -44,7 +45,7 @@ import com.example.healthcare.ui.composable.SelectExerciseSpinner
 import com.example.healthcare.ui.composable.exerciseRadioButtonRow
 
 @Composable
-fun RecordView(viewModel: MainViewModel){
+fun RecordView(viewModel: MainViewModel, innerPadding: PaddingValues){
     val scrollState = rememberScrollState()
     val selectExerciseTypeList by viewModel.selectExerciseTypeList.observeAsState(initial = listOf())
     val selectExerciseTypeBoolean by viewModel.selectExerciseTypeBoolean.observeAsState(initial = false)
@@ -57,7 +58,8 @@ fun RecordView(viewModel: MainViewModel){
     Box(
         modifier = Modifier
             .fillMaxSize()
-            .background(color = viewModel.backgroundColor.value),
+            .background(color = viewModel.backgroundColor.value)
+            .padding(innerPadding),
     ){
         Column(modifier = Modifier
             .fillMaxSize()
@@ -191,7 +193,6 @@ fun RecordView(viewModel: MainViewModel){
                     Spacer(modifier = Modifier.height(20.dp))
                 }
             }
-            Spacer(modifier = Modifier.height(60.dp))
         }
     }
 }

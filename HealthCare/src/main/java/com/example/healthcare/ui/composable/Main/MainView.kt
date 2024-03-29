@@ -16,9 +16,7 @@ import androidx.compose.material3.Icon
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
-import androidx.compose.runtime.mutableStateOf
-import androidx.compose.runtime.remember
-import androidx.compose.runtime.setValue
+import androidx.compose.runtime.livedata.observeAsState
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
@@ -38,30 +36,35 @@ import com.example.healthcare.VIewModel.MainViewModel
 import com.example.healthcare.ui.composable.Main.Exercise.exerciseView
 import com.example.healthcare.ui.composable.Main.Profile.ProfileView
 import com.example.healthcare.ui.composable.Main.Record.RecordView
+import com.example.healthcare.ui.splash.SplashView
 
 @Composable
 fun MyAppPreview() {
-    Column(
-        modifier = Modifier
-            .fillMaxSize()
-            .background(color = Color(0xFF121212)),
-        verticalArrangement = Arrangement.Center,
-        horizontalAlignment = Alignment.CenterHorizontally
-    ) {
-        val navController = rememberNavController()
-        Scaffold(
-            bottomBar = { BottomNavigationBar(navController) }
-        ) {innerPadding ->
-            NavigationGraph(navController = navController,innerPadding)
+    val viewModel: MainViewModel = hiltViewModel()
+    val isLoading by viewModel.isLoading.observeAsState(false)
+    if(isLoading){
+        Column(
+            modifier = Modifier
+                .fillMaxSize()
+                .background(color = Color(0xFF121212)),
+            verticalArrangement = Arrangement.Center,
+            horizontalAlignment = Alignment.CenterHorizontally
+        ) {
+            val navController = rememberNavController()
+            Scaffold(
+                backgroundColor = Color(0xFF121212),bottomBar = { BottomNavigationBar(navController)}
+            ) {innerPadding ->
+                NavigationGraph(viewModel = viewModel, navController = navController,innerPadding)
+            }
         }
+    }else{
+        SplashView()
     }
 }
 
 @Composable
 fun BottomNavigationBar(navController: NavController){
-    var selectedItem by remember { mutableStateOf(0) }
     val items = listOf("운동", "기록", "프로필")
-
 
     BottomNavigation(modifier = Modifier
         .height(60.dp)
@@ -101,21 +104,20 @@ fun BottomNavigationBar(navController: NavController){
 
 
 @Composable
-fun NavigationGraph(navController: NavHostController, innerPadding: PaddingValues) {
-    val viewModel: MainViewModel = hiltViewModel()
+fun NavigationGraph(viewModel :MainViewModel,navController: NavHostController, innerPadding: PaddingValues) {
     NavHost(navController, startDestination = "운동") {
-        composable("운동") { showView(0, viewModel) }
-        composable("기록") {showView(1, viewModel) }
-        composable("프로필") {showView(2, viewModel)  }
+        composable("운동") { showView(0, viewModel, innerPadding) }
+        composable("기록") {showView(1, viewModel, innerPadding) }
+        composable("프로필") {showView(2, viewModel, innerPadding)  }
     }
 }
 
 @Composable
-fun showView(index: Int, viewModel: MainViewModel){
+fun showView(index: Int, viewModel: MainViewModel, innerPadding: PaddingValues){
     when(index){
-        0-> exerciseView(viewModel)
-        1-> RecordView(viewModel)
-        2-> ProfileView(viewModel)
+        0-> exerciseView(viewModel, innerPadding)
+        1-> RecordView(viewModel, innerPadding)
+        2-> ProfileView(viewModel, innerPadding)
     }
 }
 

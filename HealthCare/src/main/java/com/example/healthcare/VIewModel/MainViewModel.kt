@@ -58,6 +58,7 @@ class MainViewModel @Inject constructor(
     val selectExerciseRadioInt : MutableLiveData<Int> = MutableLiveData(0)
     val exerciseType : MutableLiveData<Int> = MutableLiveData(-1)
 
+    val isLoading : MutableLiveData<Boolean> = MutableLiveData(false)
     val profileGender : MutableLiveData<Boolean> = MutableLiveData()
     val editExerciseItem : MutableLiveData<Boolean> = MutableLiveData(false)
     val showAddExerciseView : MutableLiveData<Boolean> = MutableLiveData(false)
@@ -90,15 +91,18 @@ class MainViewModel @Inject constructor(
         initDataSet()
     }
 
+
     fun initDataSet(){
-        setProfileData()
+
         viewModelScope.launch{
+            setProfileData()
             recordExerciseList = exerciseRecordRepository.getAllExerciseRecord().toMutableList()
             getAllExerciseRoutine()
             setDayOfWeekData()
             setData()
             exerciseTypeList = exerciseRecordRepository.setExerciseTypeList(recordExerciseList)
             exerciseRecordInfo = exerciseRecordRepository.exerciseRecordOrganize(recordExerciseList)
+            isLoading.value = true
         }
     }
 

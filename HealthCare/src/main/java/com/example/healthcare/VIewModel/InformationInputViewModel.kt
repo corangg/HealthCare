@@ -27,7 +27,7 @@ class InformationInputViewModel @Inject constructor(): ViewModel() {
     val name : MutableLiveData<String> = MutableLiveData("")
     val dataSaveFail : MutableLiveData<Int> = MutableLiveData(-1)
     val dataSaveSuccess : MutableLiveData<Unit> = MutableLiveData()
-    val checkProfile : MutableLiveData<Boolean> = MutableLiveData(false)
+    val checkProfile : MutableLiveData<Boolean> = MutableLiveData()
 
     val sunExerciseList : MutableLiveData<MutableList<ExerciseItem>> = MutableLiveData(mutableListOf())
     val monExerciseList : MutableLiveData<MutableList<ExerciseItem>> = MutableLiveData(mutableListOf())
@@ -42,15 +42,17 @@ class InformationInputViewModel @Inject constructor(): ViewModel() {
         wednesExerciseList, thursExerciseList, friExerciseList, saturExerciseList
     )
 
-
     fun checkProfileData(context: Context){
-        val Phsicaldb = Room.databaseBuilder(
-            context,
-            PhsicalInfoDB::class.java, "phsical-database"
-        ).build()
         viewModelScope.launch {
-            if(Phsicaldb.phsicalDao().getPhsicalInfo().name != ""){
+            val Phsicaldb = Room.databaseBuilder(
+                context,
+                PhsicalInfoDB::class.java, "phsical-database"
+            ).build()
+            val check = Phsicaldb.phsicalDao().getPhsicalInfo().name != ""
+            if(check){
                 checkProfile.value = true
+            }else{
+                checkProfile.value = false
             }
         }
     }
@@ -139,6 +141,5 @@ class InformationInputViewModel @Inject constructor(): ViewModel() {
         }else{
             dataSaveFail.value = checkData()
         }
-
     }
 }

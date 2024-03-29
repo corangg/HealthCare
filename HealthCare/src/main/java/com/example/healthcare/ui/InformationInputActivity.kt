@@ -94,7 +94,6 @@ class InformationInputActivity : ComponentActivity() {
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        viewModel.checkProfileData(this)
         setContent {
             HealthCareTheme {
                 Surface(
@@ -121,12 +120,7 @@ class InformationInputActivity : ComponentActivity() {
 
         viewModel.dataSaveSuccess.observe(this){
             finish()
-        }
-        viewModel.checkProfile.observe(this){
-            if(it){
-                finish()
-                startActivity(Intent(this, MainActivity::class.java))
-            }
+            startActivity(Intent(this, MainActivity::class.java))
         }
     }
 }
