@@ -1,6 +1,7 @@
 package com.example.healthcare.VIewModel
 
 import android.content.Context
+import android.icu.text.SimpleDateFormat
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.ui.graphics.Color
 import androidx.lifecycle.MutableLiveData
@@ -11,13 +12,20 @@ import com.example.healthcare.DB.ExerciseRoutineDB
 import com.example.healthcare.DB.PhsicalInfoDB
 import com.example.healthcare.ExerciseItem
 import com.example.healthcare.PhsicalInfo
+import com.example.healthcare.Repository.ExerciseRecordRepository
 import com.example.healthcare.Repository.InformationInputRepository
+import com.example.healthcare.Repository.PhsicalInfoRepository
+import com.example.healthcare.WeightData
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.launch
+import java.util.Calendar
 import javax.inject.Inject
 
 @HiltViewModel
-class InformationInputViewModel @Inject constructor(): ViewModel() {
+class InformationInputViewModel @Inject constructor(
+    private val phsicalInfoRepository: PhsicalInfoRepository,
+    private val exerciseRecordRepository: ExerciseRecordRepository
+): ViewModel() {
     var backgroundColor = mutableStateOf(Color(0xFF121212))
         private set
     val ageValue : MutableLiveData<Float> = MutableLiveData(0f)
@@ -135,7 +143,11 @@ class InformationInputViewModel @Inject constructor(): ViewModel() {
                     }
                 }
                 Phsicaldb.phsicalDao().insertPhsicalInfo(phsicalInfo)
+                val weightData = WeightData(timeStamp = exerciseRecordRepository.getCurrentTimeOld(), weight = weightValue.value?:0f)
+
+                phsicalInfoRepository.insertWeightData(weightData)
             }
+
 
             dataSaveSuccess.value = Unit
         }else{

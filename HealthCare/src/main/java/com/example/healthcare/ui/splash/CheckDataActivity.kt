@@ -19,7 +19,9 @@ import com.example.healthcare.VIewModel.InformationInputViewModel
 import com.example.healthcare.ui.InformationInputActivity
 import com.example.healthcare.ui.MainActivity
 import com.example.healthcare.ui.theme.HealthCareTheme
+import dagger.hilt.android.AndroidEntryPoint
 
+@AndroidEntryPoint
 class SplashActivity : ComponentActivity() {
     private val viewModel : InformationInputViewModel by viewModels()
 

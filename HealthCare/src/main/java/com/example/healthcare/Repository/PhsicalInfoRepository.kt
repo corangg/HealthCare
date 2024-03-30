@@ -15,6 +15,10 @@ class PhsicalInfoRepository @Inject constructor(
         return phsicalInfoDao.getPhsicalInfo()
     }
 
+    suspend fun deleteAllWeightData(){
+        weightDataDao.deleteAllWeightData()
+    }
+
     suspend fun getWeightData(): WeightData{
         return weightDataDao.getWeightData()
     }

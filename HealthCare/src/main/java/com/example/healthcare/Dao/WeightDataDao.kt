@@ -20,6 +20,8 @@ interface WeightDataDao {
     @Query("SELECT * FROM weight_data")
     suspend fun getAllWeightData(): List<WeightData>
 
+    @Query("DELETE FROM weight_data")
+    suspend fun deleteAllWeightData()
 
     @Delete
     suspend fun deleteWeightData(data: WeightData)

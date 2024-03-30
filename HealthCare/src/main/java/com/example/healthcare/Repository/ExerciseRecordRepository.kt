@@ -233,4 +233,10 @@ class ExerciseRecordRepository@Inject constructor(private val exerciseRecordDao:
         }
         return list
     }
+
+    fun getCurrentTimeOld(): Long {
+        val calendar = Calendar.getInstance()
+        val formatter = SimpleDateFormat("yyyyMMdd")
+        return formatter.format(calendar.time).toLong()
+    }
 }

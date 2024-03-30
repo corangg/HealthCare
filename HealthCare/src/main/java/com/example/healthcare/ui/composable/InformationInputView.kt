@@ -324,6 +324,7 @@ fun InformationInputView(viewModel: InformationInputViewModel) {
     }
 }
 
+/*
 @Preview(showBackground = true)
 @Composable
 fun GreetingPreview() {
@@ -331,3 +332,4 @@ fun GreetingPreview() {
         InformationInputView(InformationInputViewModel())
     }
 }
+*/

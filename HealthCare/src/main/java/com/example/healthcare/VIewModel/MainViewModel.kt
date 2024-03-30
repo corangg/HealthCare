@@ -21,6 +21,7 @@ import com.example.healthcare.Repository.PhsicalInfoRepository
 import com.example.healthcare.WeightData
 
 import dagger.hilt.android.lifecycle.HiltViewModel
+import kotlinx.coroutines.delay
 import kotlinx.coroutines.launch
 import java.util.Calendar
 import javax.inject.Inject
@@ -65,6 +66,8 @@ class MainViewModel @Inject constructor(
     val selectExerciseTypeBoolean : MutableLiveData<Boolean> = MutableLiveData(false)
     val selectExerciseBoolean : MutableLiveData<Boolean> = MutableLiveData(false)
 
+    val showSaveCheckMessage : MutableLiveData<Boolean> = MutableLiveData(false)
+
     val todayExerciseList : MutableLiveData<MutableList<MutableList<ExerciseInfo>>> = MutableLiveData(mutableListOf())
     val selectExerciseTypeList : MutableLiveData<MutableList<String>> = MutableLiveData(mutableListOf())
     val selectExerciseDate : MutableLiveData<MutableList<String>> = MutableLiveData(mutableListOf())
@@ -93,7 +96,6 @@ class MainViewModel @Inject constructor(
 
 
     fun initDataSet(){
-
         viewModelScope.launch{
             setProfileData()
             recordExerciseList = exerciseRecordRepository.getAllExerciseRecord().toMutableList()
@@ -278,14 +280,8 @@ class MainViewModel @Inject constructor(
         lastWeight.value = weight
     }
 
-    fun getCurrentTimeOld(): Long {
-        val calendar = Calendar.getInstance()
-        val formatter = SimpleDateFormat("yyyyMMdd")
-        return formatter.format(calendar.time).toLong()
-    }
-
     fun addArrayExercise(){
-        val exerciseInfo = ExerciseInfo(exercise = exerciseName.value!!)
+        val exerciseInfo = ExerciseInfo(exercise = exerciseName.value!!.replace(" ",""))
         todayExerciseList.value = mutableListOf()
         list[exerciseNumber].add(exerciseInfo)
         todayExerciseList.value = list
@@ -293,11 +289,18 @@ class MainViewModel @Inject constructor(
     }
 
     fun saveExercise(){
-        val weightData = WeightData(timeStamp = getCurrentTimeOld(), weight = lastWeight.value!!.toFloat())
+        val weightData = WeightData(timeStamp = exerciseRecordRepository.getCurrentTimeOld(), weight = lastWeight.value!!.toFloat())
         viewModelScope.launch {
             phsicalInfoRepository.insertWeightData(weightData)
             exerciseRecordRepository.insertExerciseRecord(exerciseRecord())
+            showToast()
         }
+    }
+
+    suspend fun showToast(){
+        showSaveCheckMessage.value = true
+        delay(1600)
+        showSaveCheckMessage.value = false
     }
 
     fun exerciseRecord():ExerciseDataRecord{
@@ -311,7 +314,7 @@ class MainViewModel @Inject constructor(
         var list : MutableList<ExerciseType> = mutableListOf()
         for(i in 0 until todayExerciseRoutine.size ){
             val exerciseType = ExerciseType(
-                exerciseType = todayExerciseRoutine[i].name,
+                exerciseType = todayExerciseRoutine[i].name.replace(" ",""),
                 exerciseInfo = todayExerciseList.value!![i]
             )
             list.add(exerciseType)

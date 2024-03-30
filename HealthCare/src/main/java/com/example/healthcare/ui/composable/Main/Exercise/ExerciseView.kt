@@ -42,6 +42,7 @@ import androidx.compose.ui.unit.sp
 import com.example.healthcare.Object
 import com.example.healthcare.R
 import com.example.healthcare.VIewModel.MainViewModel
+import com.example.healthcare.ui.composable.ShowToastMessage
 
 @Composable
 fun exerciseView(viewModel: MainViewModel,innerPadding: PaddingValues){
@@ -50,6 +51,7 @@ fun exerciseView(viewModel: MainViewModel,innerPadding: PaddingValues){
     val getDate by viewModel.calenderData.observeAsState()
     val exerciseList by viewModel.todayExerciseList.observeAsState(initial = listOf())
     var unitList : List<String> = mutableListOf()
+    val showSaveToastMessage by viewModel.showSaveCheckMessage.observeAsState(initial = false)
 
     Box(
         modifier = Modifier
@@ -153,7 +155,6 @@ fun exerciseView(viewModel: MainViewModel,innerPadding: PaddingValues){
                 }
             }
 
-
             for(i in 0 until viewModel.todayExerciseRoutine.size){
                 if(viewModel.todayExerciseRoutine[i].name == "유산소"){
                     unitList = Object.cardioExerciseRowString
@@ -200,6 +201,17 @@ fun exerciseView(viewModel: MainViewModel,innerPadding: PaddingValues){
             if(viewModel.showAddExerciseView.observeAsState().value == true){
                 AddExerciseView(value = viewModel.exerciseName, editClicked = viewModel::addArrayExercise, viewModel)
             }
+        }
+
+        if(showSaveToastMessage){
+            ShowToastMessage(
+                message = "저장 완료",
+                modifier = Modifier
+                    .align(Alignment.BottomCenter)
+                    .padding(bottom = 40.dp)
+                    .background(Color.Black)
+                    .border(3.dp, Color.White, RoundedCornerShape(24.dp))
+                    .padding(horizontal = 32.dp, vertical = 16.dp))
         }
     }
 }
