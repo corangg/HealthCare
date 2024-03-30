@@ -1,11 +1,10 @@
-package com.example.healthcare.ui.composable
+package com.example.healthcare.ui.composable.Common
 
 import androidx.compose.foundation.horizontalScroll
 import androidx.compose.foundation.rememberScrollState
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.layout.Layout
-import kotlin.math.min
 
 
 @Composable

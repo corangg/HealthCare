@@ -46,31 +46,7 @@ import com.example.healthcare.VIewModel.MainViewModel
 
 @Composable
 fun ExerciseRow(viewModel: MainViewModel, exerciseInfo: ExerciseInfo, exerciseNumber: Int, index:Int){
-    var weight by remember {
-        mutableStateOf(
-            if(viewModel.todayExerciseList.value!![exerciseNumber][index].weight == 0f){ "0" }
-            else{ viewModel.todayExerciseList.value!![exerciseNumber][index].weight.toString() }) }
-    var set by remember {
-        mutableStateOf(
-            if(viewModel.todayExerciseList.value!![exerciseNumber][index].set == 0f){ "0" }
-            else{ viewModel.todayExerciseList.value!![exerciseNumber][index].set.toString() }) }
-    var number by remember {
-        mutableStateOf(
-            if(viewModel.todayExerciseList.value!![exerciseNumber][index].number == 0f){ "0" }
-            else{ viewModel.todayExerciseList.value!![exerciseNumber][index].number.toString() }) }
     val focusRequester = remember { FocusRequester() }
-    var isFocused by remember { mutableStateOf(false) }
-
-    if(exerciseInfo.weight != 0f){
-        weight = exerciseInfo.weight.toString()
-    }
-    if(exerciseInfo.set != 0f){
-        set = exerciseInfo.set.toString()
-    }
-    if(exerciseInfo.number != 0f){
-        number = exerciseInfo.number.toString()
-    }
-
 
     Row(
         verticalAlignment = CenterVertically,
@@ -88,103 +64,74 @@ fun ExerciseRow(viewModel: MainViewModel, exerciseInfo: ExerciseInfo, exerciseNu
 
         )
 
-        Box(
-            modifier = Modifier
-                .padding(start = 10.dp)
-                .height(36.dp)
-                .border(2.dp, Color.White, RoundedCornerShape(6.dp))
-                .padding(horizontal = 10.dp)
-        ) {
-            BasicTextField(
-                value = weight,
-                onValueChange = {
-                    weight = it
-                    viewModel.updateExerciseWeight(exerciseNumber, index, it.toFloatOrNull() ?: exerciseInfo.weight)
-                },
-                singleLine = true,
-                cursorBrush = SolidColor(Color.White),
-                modifier = Modifier
-                    .width(46.dp)
-                    .align(Alignment.CenterStart)
-                    .focusRequester(focusRequester)
-                    .onFocusChanged {
-                        isFocused = it.isFocused
-                        if (!it.isFocused && weight.isEmpty()) {
-                            weight = "0"
-                        } else if (it.isFocused && weight == "0") {
-                            weight = ""
-                        }
-                    },
-                keyboardOptions = KeyboardOptions(keyboardType = KeyboardType.Decimal),
-                textStyle = TextStyle(color = Color.White, fontSize = 16.sp, textAlign = TextAlign.Center)
-            )
-        }
+        exerciseRowTextField(
+            value = viewModel.todayExerciseList.value!![exerciseNumber][index].weight,
+            valueChange = viewModel::updateExerciseWeight,
+            exerciseNumber = exerciseNumber,
+            index = index,
+            focusRequester = focusRequester)
+
         Spacer(modifier = Modifier.width(10.dp))
 
-        Box(
-            modifier = Modifier
-                .padding(start = 10.dp)
-                .height(36.dp)
-                .border(2.dp, Color.White, RoundedCornerShape(6.dp))
-                .padding(horizontal = 10.dp)
-        ) {
-            BasicTextField(
-                value = set,
-                onValueChange = {
-                    set = it
-                    viewModel.updateExerciseSet(exerciseNumber, index, it.toFloatOrNull() ?: exerciseInfo.set)
-                },
-                singleLine = true,
-                cursorBrush = SolidColor(Color.White),
-                modifier = Modifier
-                    .width(46.dp)
-                    .align(Alignment.CenterStart)
-                    .focusRequester(focusRequester)
-                    .onFocusChanged {
-                        isFocused = it.isFocused
-                        if (!it.isFocused && set.isEmpty()) {
-                            set = "0"
-                        } else if (it.isFocused && set == "0") {
-                            set = ""
-                        }
-                    },
-                keyboardOptions = KeyboardOptions(keyboardType = KeyboardType.Decimal),
-                textStyle = TextStyle(color = Color.White, fontSize = 16.sp, textAlign = TextAlign.Center)
-            )
-        }
+        exerciseRowTextField(
+            value = viewModel.todayExerciseList.value!![exerciseNumber][index].set,
+            valueChange = viewModel::updateExerciseSet,
+            exerciseNumber = exerciseNumber,
+            index = index,
+            focusRequester = focusRequester)
+
         Spacer(modifier = Modifier.width(10.dp))
 
-        Box(
-            modifier = Modifier
-                .padding(start = 10.dp)
-                .height(36.dp)
-                .border(2.dp, Color.White, RoundedCornerShape(6.dp))
-                .padding(horizontal = 10.dp)
-        ) {
-            BasicTextField(
-                value = number,
-                onValueChange = {
-                    number = it
-                    viewModel.updateExerciseNumber(exerciseNumber, index, it.toFloatOrNull() ?: exerciseInfo.number)
-                },
-                singleLine = true,
-                cursorBrush = SolidColor(Color.White),
-                modifier = Modifier
-                    .width(46.dp)
-                    .align(Alignment.CenterStart)
-                    .focusRequester(focusRequester)
-                    .onFocusChanged {
-                        isFocused = it.isFocused
-                        if (!it.isFocused && number.isEmpty()) {
-                            number = "0"
-                        } else if (it.isFocused && number == "0") {
-                            number = ""
-                        }
-                    },
-                keyboardOptions = KeyboardOptions(keyboardType = KeyboardType.Decimal),
-                textStyle = TextStyle(color = Color.White, fontSize = 16.sp, textAlign = TextAlign.Center)
-            )
-        }
+        exerciseRowTextField(
+            value = viewModel.todayExerciseList.value!![exerciseNumber][index].number,
+            valueChange = viewModel::updateExerciseNumber,
+            exerciseNumber = exerciseNumber,
+            index = index,
+            focusRequester = focusRequester)
     }
+}
 
+@Composable
+fun exerciseRowTextField(
+    value : Float,
+    valueChange : (Int, Int, Float)->Unit,
+    exerciseNumber: Int,
+    index: Int,
+    focusRequester: FocusRequester){
+    var isFocused by remember { mutableStateOf(false) }
+    var textValue by remember {
+        mutableStateOf(
+            if(value == 0f){ "0" }
+            else{ value.toString() }) }
+    Box(
+        modifier = Modifier
+            .padding(start = 10.dp)
+            .height(36.dp)
+            .border(2.dp, Color.White, RoundedCornerShape(6.dp))
+            .padding(horizontal = 10.dp)
+    ) {
+        BasicTextField(
+            value = textValue,
+            onValueChange = {
+                textValue = it
+                valueChange(exerciseNumber,index,it.toFloatOrNull() ?:value)
+            },
+            singleLine = true,
+            cursorBrush = SolidColor(Color.White),
+            modifier = Modifier
+                .width(46.dp)
+                .align(Alignment.CenterStart)
+                .focusRequester(focusRequester)
+                .onFocusChanged {
+                    isFocused = it.isFocused
+                    if (!it.isFocused && textValue.isEmpty()) {
+                        textValue = "0"
+                    } else if (it.isFocused && textValue == "0") {
+                        textValue = ""
+                    }
+                },
+            keyboardOptions = KeyboardOptions(keyboardType = KeyboardType.Decimal),
+            textStyle = TextStyle(color = Color.White, fontSize = 16.sp, textAlign = TextAlign.Center)
+        )
+    }
 }

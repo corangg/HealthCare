@@ -36,7 +36,7 @@ import com.example.healthcare.VIewModel.MainViewModel
 import com.example.healthcare.ui.composable.Main.Exercise.exerciseView
 import com.example.healthcare.ui.composable.Main.Profile.ProfileView
 import com.example.healthcare.ui.composable.Main.Record.RecordView
-import com.example.healthcare.ui.splash.SplashView
+import com.example.healthcare.ui.composable.Common.SplashView
 
 @Composable
 fun MyAppPreview() {

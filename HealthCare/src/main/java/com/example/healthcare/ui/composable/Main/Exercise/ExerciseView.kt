@@ -42,16 +42,17 @@ import androidx.compose.ui.unit.sp
 import com.example.healthcare.Object
 import com.example.healthcare.R
 import com.example.healthcare.VIewModel.MainViewModel
-import com.example.healthcare.ui.composable.ShowToastMessage
+import com.example.healthcare.ui.composable.Common.ShowToastMessage
 
 @Composable
 fun exerciseView(viewModel: MainViewModel,innerPadding: PaddingValues){
     val dayOfTheWeek by viewModel.stringDayOfWeek.observeAsState()
     val scrollState = rememberScrollState()
-    val getDate by viewModel.calenderData.observeAsState()
+    val getDate by viewModel.calenderData.observeAsState(initial = "")
     val exerciseList by viewModel.todayExerciseList.observeAsState(initial = listOf())
     var unitList : List<String> = mutableListOf()
     val showSaveToastMessage by viewModel.showSaveCheckMessage.observeAsState(initial = false)
+    val weight = viewModel.lastWeight.observeAsState().value ?:""//이거 마지막이 아니라 날짜 맞춰야 할꺼같은데??
 
     Box(
         modifier = Modifier
@@ -62,97 +63,24 @@ fun exerciseView(viewModel: MainViewModel,innerPadding: PaddingValues){
         Column(modifier = Modifier
             .fillMaxSize()
             .verticalScroll(scrollState)
-            .background(color = viewModel.backgroundColor.value), horizontalAlignment = Alignment.CenterHorizontally)
-        {
-
-            Row(modifier = Modifier.padding(top = 20.dp), verticalAlignment = Alignment.CenterVertically) {
-                Image(
-                    painter = painterResource(id = R.drawable.ic_left),
-                    contentDescription = "",
-                    colorFilter = ColorFilter.tint(Color.White),
-                    modifier = Modifier
-                        .size(16.dp)
-                        .clickable { viewModel.minusDate() }
-                )
-
-                Text(
-                    text = getDate!!,
-                    style = TextStyle(color = Color.White, fontSize = 16.sp),
-                    modifier = Modifier
-                        .padding(horizontal = 10.dp)
-                )
-
-                Image(
-                    painter = painterResource(id = R.drawable.ic_right),
-
-                    contentDescription = "",
-                    colorFilter = ColorFilter.tint(Color.White),
-                    modifier = Modifier
-                        .size(16.dp)
-                        .clickable { viewModel.plusDate() }
-                )
-            }
+            .background(color = viewModel.backgroundColor.value), horizontalAlignment = Alignment.CenterHorizontally) {
+            SelectDayOfTheWeek(data = getDate, clickMinus = { viewModel.minusDate() } , clickPlus = {viewModel.plusDate()})
 
             Text(
                 text = dayOfTheWeek + "요일",
                 style = TextStyle(color = Color.White, fontSize = 24.sp, fontWeight = FontWeight.Bold),
                 modifier = Modifier
                     .padding(top = 20.dp)
-
             )
 
-            Box(modifier = Modifier
+            WeightView(modifier = Modifier
                 .fillMaxWidth()
                 .padding(horizontal = 10.dp)
                 .padding(top = 20.dp)
                 .background(Color(0xFF2D2D2D), RoundedCornerShape(24.dp))
-                .align(Alignment.CenterHorizontally)
-            ){
+                .align(Alignment.CenterHorizontally),
+                weight = weight) {
 
-                Row {
-                    Text(
-                        text = "몸무게",
-                        style = TextStyle(color = Color.White, fontSize = 20.sp),
-                        modifier = Modifier
-                            .padding(20.dp)
-                    )
-
-                    val weight = viewModel.lastWeight.observeAsState().value ?:""
-
-                    Box(
-                        modifier = Modifier
-                            .padding(top = 20.dp)
-                            .height(48.dp)
-                            .padding(start = 10.dp)
-                    ) {
-                        BasicTextField(
-                            value = weight,
-                            onValueChange = {
-                                viewModel.bindTextFieldWeight(it) },
-                            singleLine = true,
-                            keyboardOptions = KeyboardOptions(keyboardType = KeyboardType.Number),
-                            cursorBrush = SolidColor(Color.White),
-                            modifier = Modifier
-                                .drawBehind {
-                                    drawLine(
-                                        color = Color.White,
-                                        start = Offset(0f, size.height + 8.dp.toPx()),
-                                        end = Offset(size.width, size.height + 8.dp.toPx()),
-                                        strokeWidth = 1.dp.toPx()
-                                    )
-                                }
-                                .padding(end = 12.dp),
-                            textStyle = TextStyle(color = Color.White, fontSize = 20.sp, textAlign = TextAlign.End),
-                        )
-                    }
-
-                    Text(
-                        text = "kg",
-                        style = TextStyle(color = Color.White, fontSize = 20.sp),
-                        modifier = Modifier
-                            .padding(20.dp)
-                    )
-                }
             }
 
             for(i in 0 until viewModel.todayExerciseRoutine.size){
@@ -161,7 +89,7 @@ fun exerciseView(viewModel: MainViewModel,innerPadding: PaddingValues){
                 }else{
                     unitList = Object.anaerobicExerciseRowString
                 }
-                AddExercise(
+                ExerciseTypeView(
                     viewModel = viewModel,
                     exerciseItem = viewModel.todayExerciseRoutine[i].name,
                     onAddClicked = viewModel::showAddExerciseView,
@@ -180,7 +108,6 @@ fun exerciseView(viewModel: MainViewModel,innerPadding: PaddingValues){
                     .border(3.dp, Color.White, CircleShape)
                     .clickable { viewModel.saveExercise() }
             ) {
-
                 Text(
                     text = "저장",
                     color = Color.White,
@@ -209,9 +136,88 @@ fun exerciseView(viewModel: MainViewModel,innerPadding: PaddingValues){
                 modifier = Modifier
                     .align(Alignment.BottomCenter)
                     .padding(bottom = 40.dp)
+                    .clip(RoundedCornerShape(24.dp))
                     .background(Color.Black)
                     .border(3.dp, Color.White, RoundedCornerShape(24.dp))
                     .padding(horizontal = 32.dp, vertical = 16.dp))
+        }
+    }
+}
+
+@Composable
+fun SelectDayOfTheWeek(data : String, clickMinus : () -> Unit, clickPlus : () -> Unit){
+    Row(modifier = Modifier.padding(top = 20.dp), verticalAlignment = Alignment.CenterVertically) {
+        Image(
+            painter = painterResource(id = R.drawable.ic_left),
+            contentDescription = null,
+            colorFilter = ColorFilter.tint(Color.White),
+            modifier = Modifier
+                .size(16.dp)
+                .clickable(onClick = { clickMinus() })
+        )
+
+        Text(
+            text = data,
+            style = TextStyle(color = Color.White, fontSize = 16.sp),
+            modifier = Modifier
+                .padding(horizontal = 10.dp)
+        )
+
+        Image(
+            painter = painterResource(id = R.drawable.ic_right),
+            contentDescription = null,
+            colorFilter = ColorFilter.tint(Color.White),
+            modifier = Modifier
+                .size(16.dp)
+                .clickable(onClick = { clickPlus() })
+        )
+    }
+}
+
+@Composable
+fun WeightView(modifier: Modifier, weight: String, valueChange: (String)->Unit){
+    Box(modifier = modifier){
+
+        Row {
+            Text(
+                text = "몸무게",
+                style = TextStyle(color = Color.White, fontSize = 20.sp),
+                modifier = Modifier
+                    .padding(20.dp)
+            )
+
+            Box(
+                modifier = Modifier
+                    .padding(top = 20.dp)
+                    .height(48.dp)
+                    .padding(start = 10.dp)
+            ) {
+                BasicTextField(
+                    value = weight,
+                    onValueChange = { valueChange(it) },
+                    singleLine = true,
+                    keyboardOptions = KeyboardOptions(keyboardType = KeyboardType.Number),
+                    cursorBrush = SolidColor(Color.White),
+                    modifier = Modifier
+                        .drawBehind {
+                            drawLine(
+                                color = Color.White,
+                                start = Offset(0f, size.height + 8.dp.toPx()),
+                                end = Offset(size.width, size.height + 8.dp.toPx()),
+                                strokeWidth = 1.dp.toPx()
+                            )
+                        }
+                        .padding(end = 12.dp),
+                    textStyle = TextStyle(color = Color.White, fontSize = 20.sp, textAlign = TextAlign.End),
+                )
+            }
+
+            Text(
+                text = "kg",
+                style = TextStyle(color = Color.White, fontSize = 20.sp),
+                modifier = Modifier
+                    .padding(20.dp)
+            )
         }
     }
 }

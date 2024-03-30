@@ -1,4 +1,4 @@
-package com.example.healthcare.ui.composable
+package com.example.healthcare.ui.composable.Common
 
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
@@ -9,13 +9,8 @@ import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.width
-import androidx.compose.foundation.layout.wrapContentSize
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
-import androidx.compose.runtime.MutableState
-import androidx.compose.runtime.mutableStateOf
-import androidx.compose.runtime.remember
-import androidx.compose.runtime.setValue
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.key
 import androidx.compose.runtime.livedata.observeAsState
@@ -26,18 +21,12 @@ import androidx.compose.ui.graphics.ColorFilter
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.text.font.FontWeight
-import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
-import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.lifecycle.MutableLiveData
-import com.example.healthcare.DB.ExerciseRoutineDB
 import com.example.healthcare.ExerciseItem
 
 import com.example.healthcare.R
-import com.example.healthcare.VIewModel.InformationInputViewModel
-import com.example.healthcare.ui.theme.HealthCareTheme
-import java.util.UUID
 
 @Composable
 fun AddExerciseColumn(

@@ -1,4 +1,4 @@
-package com.example.healthcare.ui.composable
+package com.example.healthcare.ui.composable.Common
 
 import androidx.compose.animation.AnimatedVisibility
 import androidx.compose.animation.core.animateFloatAsState

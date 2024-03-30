@@ -1,4 +1,4 @@
-package com.example.healthcare.ui.composable
+package com.example.healthcare.ui.composable.Common
 
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row

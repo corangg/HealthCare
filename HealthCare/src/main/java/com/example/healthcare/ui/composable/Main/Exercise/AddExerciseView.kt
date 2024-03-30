@@ -10,6 +10,7 @@ import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.foundation.text.BasicTextField
 import androidx.compose.material3.Text
@@ -39,7 +40,7 @@ fun AddExerciseView(value : MutableLiveData<*>, editClicked: () -> Unit, viewMod
                 .fillMaxWidth()
                 .padding(top = 20.dp)
                 .height(48.dp)
-                .border(2.dp, Color.White, RoundedCornerShape(6.dp))
+                .border(2.dp, Color.White, RoundedCornerShape(12.dp))
                 .padding(horizontal = 10.dp)
         ) {
             BasicTextField(
@@ -59,38 +60,36 @@ fun AddExerciseView(value : MutableLiveData<*>, editClicked: () -> Unit, viewMod
         Row(verticalAlignment = Alignment.CenterVertically, modifier = Modifier
             .fillMaxWidth()
             .padding(top = 20.dp)) {
-            Box(
-                contentAlignment = Alignment.Center,
+            ExerciseViewButton(
                 modifier = Modifier
                     .weight(1f)
-                    .height(40.dp)
-                    .background(Color.Transparent)
-                    .border(3.dp, Color.White, RoundedCornerShape(12.dp))
-                    .clickable { viewModel.hideAddExerciseView() }
-            ) {
-                Text(
-                    text = "취소",
-                    color = Color.White
-                )
-            }
+                    .clickable { viewModel.hideAddExerciseView() },
+                text = "취소")
+            
+            Spacer(modifier = Modifier.width(10.dp))
 
-            Box(
-                contentAlignment = Alignment.Center,
+            ExerciseViewButton(
                 modifier = Modifier
                     .weight(1f)
-                    .height(40.dp)
-                    .background(Color.Transparent)
-                    .border(3.dp, Color.White, RoundedCornerShape(12.dp))
-                    .clickable {
-                        editClicked()
-                    }
-            ) {
-                Text(
-                    text = "저장",
-                    color = Color.White
-                )
-            }
+                    .clickable { editClicked() },
+                text = "저장")
         }
         Spacer(modifier = Modifier.height(20.dp))
+    }
+}
+
+@Composable
+fun ExerciseViewButton(modifier: Modifier, text: String){
+    Box(
+        contentAlignment = Alignment.Center,
+        modifier = modifier
+            .height(40.dp)
+            .background(Color.Transparent)
+            .border(3.dp, Color.White, RoundedCornerShape(12.dp))
+    ) {
+        Text(
+            text = text,
+            color = Color.White
+        )
     }
 }

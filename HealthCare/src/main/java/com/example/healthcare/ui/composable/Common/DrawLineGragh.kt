@@ -1,4 +1,4 @@
-package com.example.healthcare.ui.composable
+package com.example.healthcare.ui.composable.Common
 
 import androidx.compose.foundation.Canvas
 import androidx.compose.foundation.background
@@ -30,7 +30,6 @@ import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
-import com.example.healthcare.ExerciseType
 import com.example.healthcare.GraphColor
 import com.example.healthcare.Object
 import com.example.healthcare.UnitList
