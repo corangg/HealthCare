@@ -109,12 +109,3 @@ fun SelectExerciseSpinner(
         }
     }
 }
-
-/*
-@Preview(showBackground = true)
-@Composable
-fun  SelectExerciseSpinnerPreview() {
-    HealthCareTheme {
-        SelectExerciseSpinner(onDeleteClicked: () -> Unit)
-    }
-}*/

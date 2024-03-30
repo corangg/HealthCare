@@ -10,6 +10,7 @@ import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxSize
+import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
@@ -45,21 +46,15 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import com.example.healthcare.R
 import com.example.healthcare.VIewModel.InformationInputViewModel
+import com.example.healthcare.VIewModel.MainViewModel
 import com.example.healthcare.ui.composable.Common.AddExerciseColumn
 import com.example.healthcare.ui.composable.Common.HorizontalScrollView
 
 
 @Composable
 fun InformationInputView(viewModel: InformationInputViewModel) {
-    val context = LocalContext.current
+    val context = LocalContext.current//뷰모델 수정하면 필요없을거임
     val focusRequester = remember { FocusRequester() }
-    val focusManager = LocalFocusManager.current
-    val backgroundClickAction = Modifier.clickable {
-        focusManager.clearFocus()
-    }
-
-    var nameText by remember { mutableStateOf("이름") }
-    var isFocused by remember { mutableStateOf(false) }
 
     val ageSliderValue by viewModel.ageValue.observeAsState(0f)
     val ageText = remember { mutableStateOf(ageSliderValue.toString()) }
@@ -75,22 +70,6 @@ fun InformationInputView(viewModel: InformationInputViewModel) {
     val weightText = remember { mutableStateOf(weightSliderValue.toString()) }
     val weightSliderMaxValue = 200f
 
-    val genderInfo by viewModel.genderInfo.observeAsState()
-
-    val maleButtonBackgroundColor = if (genderInfo == true){
-        Color.LightGray
-    } else Color.Transparent
-
-    val femaleButtonBackgroundColor = if (genderInfo == false){
-        Color.LightGray
-    } else Color.Transparent
-
-    Box(
-        modifier = Modifier
-            .fillMaxSize()
-            .then(backgroundClickAction)
-            .background(MaterialTheme.colorScheme.background)
-    )
 
     LaunchedEffect(heightSliderValue) {
         heightText.value = String.format("%.1f", heightSliderValue)
@@ -103,105 +82,11 @@ fun InformationInputView(viewModel: InformationInputViewModel) {
     Column(
         modifier = Modifier
             .fillMaxSize()
-            .background(color = viewModel.backgroundColor.value),
-        horizontalAlignment = Alignment.CenterHorizontally,) {
-        Text(
-            text = "신체 정보 입력",
-            style = TextStyle(color = Color.White, fontSize = 20.sp, fontWeight = FontWeight.Bold),
-        modifier = Modifier.padding(top = 40.dp)
-        )
+            .background(color = Color(0xFF121212)),
+        horizontalAlignment = Alignment.CenterHorizontally) {
 
-        Spacer(modifier = Modifier.height(24.dp))
+        ProfileInputView(viewModel = viewModel, focusRequester = focusRequester)
 
-        Row(verticalAlignment = Alignment.CenterVertically) {
-            Image(
-                painter = painterResource(id = R.drawable.ic_name),
-                contentDescription = "name",
-                modifier = Modifier
-                    .size(40.dp)
-                    .clip(CircleShape)
-                    .border(border = BorderStroke(3.dp, Color.White), shape = CircleShape)
-                    .padding(8.dp),
-                colorFilter = ColorFilter.tint(Color.White)
-            )
-            Spacer(modifier = Modifier.width(130.dp))
-
-            BasicTextField(
-                value = nameText/*if (isFocused) "" else nameText*/,
-                onValueChange = {
-                    nameText = it
-                    viewModel.name.value= it
-                },
-                textStyle = TextStyle(color = Color.White, fontSize = 16.sp),
-                singleLine = true,
-                cursorBrush = SolidColor(Color.White),
-                modifier = Modifier
-                    .padding(start = 10.dp)
-                    .background(Color(0xFF2D2D2D), RoundedCornerShape(8.dp))
-                    .padding(horizontal = 10.dp, vertical = 8.dp)
-                    .width(80.dp)
-                    .focusRequester(focusRequester)
-                    .onFocusChanged {
-                        isFocused = it.isFocused
-                        if (!it.isFocused && nameText.isEmpty()) {
-                            nameText = "이름"
-                        } else if (it.isFocused && nameText == "이름") {
-                            nameText = ""
-                        }
-                    })
-            Spacer(modifier = Modifier.width(44.dp))
-        }
-
-        Spacer(modifier = Modifier.height(16.dp))
-
-        Row(verticalAlignment = Alignment.CenterVertically){
-            Image(
-                painter = painterResource(id = R.drawable.ic_gender),
-                contentDescription = "Gender",
-                modifier = Modifier
-                    .size(40.dp)
-                    .clip(CircleShape)
-                    .border(border = BorderStroke(3.dp, Color.White), shape = CircleShape)
-                    .padding(8.dp),
-                colorFilter = ColorFilter.tint(Color.White)
-            )
-
-            Spacer(modifier = Modifier.width(44.dp))
-
-            Box(
-                contentAlignment = Alignment.Center,
-                modifier = Modifier
-                    .size(70.dp, 40.dp)
-                    .clip(CircleShape)
-                    .background(maleButtonBackgroundColor)
-                    .border(3.dp, Color.White, CircleShape)
-                    .clickable { viewModel.selectGender(true) }
-            ) {
-                Text(
-                    text = "남성",
-                    color = Color.White
-                )
-            }
-
-            Spacer(modifier = Modifier.width(24.dp))
-
-            Box(
-                contentAlignment = Alignment.Center,
-                modifier = Modifier
-                    .size(70.dp, 40.dp)
-                    .clip(CircleShape)
-                    .background(femaleButtonBackgroundColor)
-                    .border(3.dp, Color.White, CircleShape)
-                    .clickable { viewModel.selectGender(false) }
-            ) {
-                Text(
-                    text = "여성",
-                    color = Color.White
-                )
-            }
-            Spacer(modifier = Modifier.width(78.dp))
-
-        }
         Spacer(modifier = Modifier.height(16.dp))
 
         SliderInputRow(
@@ -308,7 +193,7 @@ fun InformationInputView(viewModel: InformationInputViewModel) {
                 .clip(CircleShape)
                 .background(Color.Transparent)
                 .border(3.dp, Color.White, CircleShape)
-                .clickable { viewModel.saveData(context)}
+                .clickable { viewModel.saveData(context) }
         ) {
             Text(
                 text = "저장",
@@ -318,12 +203,98 @@ fun InformationInputView(viewModel: InformationInputViewModel) {
     }
 }
 
-/*
-@Preview(showBackground = true)
 @Composable
-fun GreetingPreview() {
-    HealthCareTheme {
-        InformationInputView(InformationInputViewModel())
+fun ProfileInputView(viewModel: InformationInputViewModel, focusRequester: FocusRequester){
+    val genderInfo by viewModel.genderInfo.observeAsState()
+
+    Column(
+        horizontalAlignment = Alignment.CenterHorizontally) {
+        Text(
+            text = "신체 정보 입력",
+            style = TextStyle(color = Color.White, fontSize = 20.sp, fontWeight = FontWeight.Bold),
+            modifier = Modifier.padding(top = 40.dp))
+
+        InformationInputNameRow(viewModel::setNameValue, focusRequester)
+
+        Spacer(modifier = Modifier.height(16.dp))
+
+        InformationInputGenderRow(genderInfo = genderInfo, selectGender = viewModel::selectGender)
+
+
     }
 }
-*/
+
+@Composable
+fun InformationInputNameRow(valueChange: (String)->Unit, focusRequester: FocusRequester){
+    var nameText by remember { mutableStateOf("이름") }
+
+    Row(verticalAlignment = Alignment.CenterVertically,
+        modifier = Modifier
+            .padding(top = 24.dp)) {
+        Image(
+            painter = painterResource(id = R.drawable.ic_name),
+            contentDescription = "name",
+            modifier = Modifier
+                .size(40.dp)
+                .clip(CircleShape)
+                .border(border = BorderStroke(3.dp, Color.White), shape = CircleShape)
+                .padding(8.dp),
+            colorFilter = ColorFilter.tint(Color.White)
+        )
+        Spacer(modifier = Modifier.width(130.dp))
+
+        InformationInputTextField(value = nameText, modifier = Modifier.width(80.dp), valueChange = valueChange, focusRequester = focusRequester)
+    }
+}
+
+@Composable
+fun InformationInputGenderRow(genderInfo: Boolean?, selectGender: (Boolean)->Unit){
+    Row(verticalAlignment = Alignment.CenterVertically){
+        Image(
+            painter = painterResource(id = R.drawable.ic_gender),
+            contentDescription = "Gender",
+            modifier = Modifier
+                .size(40.dp)
+                .clip(CircleShape)
+                .border(border = BorderStroke(3.dp, Color.White), shape = CircleShape)
+                .padding(8.dp),
+            colorFilter = ColorFilter.tint(Color.White)
+        )
+
+        Spacer(modifier = Modifier.width(44.dp))
+
+        Box(
+            contentAlignment = Alignment.Center,
+            modifier = Modifier
+                .size(70.dp, 40.dp)
+                .clip(CircleShape)
+                .background(if(genderInfo==true)Color.LightGray else Color.Transparent)
+                .border(3.dp, Color.White, CircleShape)
+                .clickable { selectGender(true) }
+        ) {
+            Text(
+                text = "남성",
+                color = Color.White
+            )
+        }
+
+        Spacer(modifier = Modifier.width(24.dp))
+
+        Box(
+            contentAlignment = Alignment.Center,
+            modifier = Modifier
+                .size(70.dp, 40.dp)
+                .clip(CircleShape)
+                .background(if(genderInfo==false)Color.LightGray else Color.Transparent)
+                .border(3.dp, Color.White, CircleShape)
+                .clickable { selectGender(false) }
+        ) {
+            Text(
+                text = "여성",
+                color = Color.White
+            )
+        }
+        Spacer(modifier = Modifier.width(78.dp))
+
+    }
+}

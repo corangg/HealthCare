@@ -10,6 +10,7 @@ import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.foundation.text.BasicTextField
 import androidx.compose.material3.Text
@@ -37,19 +38,15 @@ fun editPhsicalInfoView(viewModel: MainViewModel,item : String, value : MutableL
     Column(modifier = Modifier
         .fillMaxWidth()
         .padding(16.dp), horizontalAlignment = Alignment.CenterHorizontally) {
-        Text(
-            text = item,
-            style = TextStyle(color = Color.White, fontSize = 20.sp, fontWeight = FontWeight.Bold)
-        )
+        Text(text = item,
+            style = TextStyle(color = Color.White, fontSize = 20.sp, fontWeight = FontWeight.Bold))
 
-        Box(
-            modifier = Modifier
-                .fillMaxWidth()
-                .padding(top = 20.dp)
-                .height(48.dp)
-                .border(2.dp, Color.White, RoundedCornerShape(6.dp))
-                .padding(horizontal = 10.dp)
-        ) {
+        Box(modifier = Modifier
+            .fillMaxWidth()
+            .padding(top = 20.dp)
+            .height(48.dp)
+            .border(2.dp, Color.White, RoundedCornerShape(6.dp))
+            .padding(horizontal = 10.dp)) {
             BasicTextField(
                 value = itemValue,
                 onValueChange = {
@@ -82,6 +79,8 @@ fun editPhsicalInfoView(viewModel: MainViewModel,item : String, value : MutableL
                 )
             }
 
+            Spacer(modifier = Modifier.width(10.dp))
+
             Box(
                 contentAlignment = Alignment.Center,
                 modifier = Modifier
@@ -99,6 +98,6 @@ fun editPhsicalInfoView(viewModel: MainViewModel,item : String, value : MutableL
                 )
             }
         }
-        Spacer(modifier = Modifier.height(80.dp))
+        Spacer(modifier = Modifier.height(20.dp))
     }
 }

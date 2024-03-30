@@ -31,9 +31,7 @@ fun profileRow(
     itemDetail : String,
     unit : String,
     editClicked : ()-> Unit) {
-
     Row(modifier = Modifier.padding(top = 20.dp), verticalAlignment = Alignment.CenterVertically) {
-
         Image(
             painter = painterResource(id = itemImg),
             contentDescription = null,
@@ -42,16 +40,14 @@ fun profileRow(
                 .clip(CircleShape)
                 .border(border = BorderStroke(3.dp, Color.White), shape = CircleShape)
                 .padding(8.dp),
-            colorFilter = ColorFilter.tint(Color.White)
-        )
+            colorFilter = ColorFilter.tint(Color.White))
 
         Text(
             text = itemText,
             style = TextStyle(color = Color.White, fontSize = 20.sp, fontWeight = FontWeight.Bold),
             modifier = Modifier
                 .padding(start = 16.dp)
-                .width(64.dp)
-        )
+                .width(64.dp))
 
         Text(
             text = itemDetail,
@@ -59,8 +55,7 @@ fun profileRow(
             modifier = Modifier
                 .padding(start = 10.dp)
                 .width(80.dp),
-            textAlign = TextAlign.End
-        )
+            textAlign = TextAlign.End)
 
         Text(
             text = unit,
@@ -68,8 +63,7 @@ fun profileRow(
             modifier = Modifier
                 .padding(start = 6.dp)
                 .width(32.dp),
-            textAlign = TextAlign.End
-        )
+            textAlign = TextAlign.End)
 
         Image(
             painter = painterResource(id = R.drawable.ic_right),
@@ -78,6 +72,5 @@ fun profileRow(
             modifier = Modifier
                 .size(32.dp)
                 .padding(start = 18.dp)
-                .clickable(onClick = editClicked))
-    }
+                .clickable(onClick = editClicked)) }
 }

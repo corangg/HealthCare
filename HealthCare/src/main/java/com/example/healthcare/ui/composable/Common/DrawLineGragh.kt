@@ -49,7 +49,6 @@ fun DrawLineGraph(
     val coroutineScope = rememberCoroutineScope()
     val density = LocalDensity.current
     val stepX = with(density) { 100.dp.toPx() }
-    //val nearestPointIndex = remember { mutableStateOf(0) }
     val nearestPointIndex = remember { mutableStateOf(infoList.lastIndex) }
     val scrollToPosition = remember { mutableStateOf(0f) }
     val value = infoList.getOrNull(nearestPointIndex.value) ?: 0f
@@ -162,15 +161,4 @@ fun DrawLineGraph(
             }
         )
     }
-}
-
-@Preview
-@Composable
-fun AA(){
-    var exerciseInfoList :List<String> = com.example.healthcare.Object.anaerobicExerciseTypeList
-    var exerciseUnitList :List<String> = Object.anaerobicExerciseUnitList
-    val unitList = UnitList(exerciseInfoList,exerciseUnitList)
-    val infoList: List<Float> = listOf(12f,16f,82f,16f,20f)
-    val dateList: List<String> = listOf()
-    DrawLineGraph(unitList = unitList, infoList = infoList, dateList = dateList, exerciseInfoNum = 0)
 }

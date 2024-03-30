@@ -100,6 +100,8 @@ fun editGenderInfoView(item : String, editClicked: () -> Unit, viewModel: MainVi
                 )
             }
 
+            Spacer(modifier = Modifier.width(10.dp))
+
             Box(
                 contentAlignment = Alignment.Center,
                 modifier = Modifier
@@ -117,6 +119,6 @@ fun editGenderInfoView(item : String, editClicked: () -> Unit, viewModel: MainVi
                 )
             }
         }
-        Spacer(modifier = Modifier.height(80.dp))
+        Spacer(modifier = Modifier.height(20.dp))
     }
 }

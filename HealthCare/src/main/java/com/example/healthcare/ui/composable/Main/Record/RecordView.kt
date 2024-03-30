@@ -35,6 +35,7 @@ import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import com.example.healthcare.ExerciseRecord
 import com.example.healthcare.Object
 import com.example.healthcare.R
 import com.example.healthcare.UnitList
@@ -46,13 +47,8 @@ import com.example.healthcare.ui.composable.Common.exerciseRadioButtonRow
 @Composable
 fun RecordView(viewModel: MainViewModel, innerPadding: PaddingValues){
     val scrollState = rememberScrollState()
-    val selectExerciseTypeList by viewModel.selectExerciseTypeList.observeAsState(initial = listOf())
-    val selectExerciseTypeBoolean by viewModel.selectExerciseTypeBoolean.observeAsState(initial = false)
-    val selectExerciseBoolean by viewModel.selectExerciseBoolean.observeAsState(initial = false)
-    val selectExerciseRadioInt by viewModel.selectExerciseRadioInt.observeAsState(initial = 0)
-    val selectExerciseDateList by viewModel.selectExerciseDate.observeAsState(initial = listOf())
-    val selectExerciseGraphList by viewModel.selectExerciseGraphList.observeAsState(initial = listOf())
-    val selectExerciseType by viewModel.exerciseType.observeAsState(initial = -1)
+    val infoList  = viewModel.arrayWeightList
+    val dataList  = viewModel.arrayWeightDateList
 
     Box(
         modifier = Modifier
@@ -63,135 +59,149 @@ fun RecordView(viewModel: MainViewModel, innerPadding: PaddingValues){
         Column(modifier = Modifier
             .fillMaxSize()
             .verticalScroll(scrollState)
-            .background(color = viewModel.backgroundColor.value), horizontalAlignment = Alignment.CenterHorizontally)
-        {
-            Spacer(modifier = Modifier.height(20.dp))
+            .background(color = viewModel.backgroundColor.value), horizontalAlignment = Alignment.CenterHorizontally) {
+            WeightRecordView(infoList, dataList)
+            
+            ExerciseRecordView(viewModel = viewModel)
+        }
+    }
+}
 
-            Column(
+@Composable
+fun WeightRecordView(infoList : List<Float>, dataList : List<String>){
+    Column(
+        modifier = Modifier
+            .fillMaxWidth()
+            .padding(20.dp)
+            .padding(top = 20.dp)
+            .background(Color(0xFF2D2D2D), RoundedCornerShape(24.dp))
+            .padding(20.dp),
+        horizontalAlignment = Alignment.CenterHorizontally) {
+        val unitList = UnitList(Object.weightType,Object.weightUnit)
+
+        Row(verticalAlignment = Alignment.CenterVertically) {
+            Image(
+                painter = painterResource(R.drawable.ic_weight),
+                contentDescription = null,
                 modifier = Modifier
-                    .fillMaxWidth()
-                    .padding(20.dp)
-                    .background(Color(0xFF2D2D2D), RoundedCornerShape(24.dp))
-                    .padding(20.dp)
-                , horizontalAlignment = Alignment.CenterHorizontally)
-            {
-                val unitList = UnitList(Object.weightType,Object.weightUnit)
+                    .size(42.dp)
+                    .clip(CircleShape)
+                    .border(border = BorderStroke(3.dp, Color.White), shape = CircleShape)
+                    .padding(8.dp),
+                colorFilter = ColorFilter.tint(Color.White)
+            )
 
-                Row(verticalAlignment = Alignment.CenterVertically) {
-                    Image(
-                        painter = painterResource(R.drawable.ic_weight),
-                        contentDescription = null,
-                        modifier = Modifier
-                            .size(42.dp)
-                            .clip(CircleShape)
-                            .border(border = BorderStroke(3.dp, Color.White), shape = CircleShape)
-                            .padding(8.dp),
-                        colorFilter = ColorFilter.tint(Color.White)
-                    )
+            Text(
+                text = "체중",
+                style = TextStyle(color = Color.White, fontSize = 32.sp, fontWeight = FontWeight.Bold),
+                modifier = Modifier
+                    .padding(start = 16.dp)
+                    .width(64.dp)
+            )
+        }
+        Spacer(modifier = Modifier.height(10.dp))
 
-                    Text(
-                        text = "체중",
-                        style = TextStyle(color = Color.White, fontSize = 32.sp, fontWeight = FontWeight.Bold),
-                        modifier = Modifier
-                            .padding(start = 16.dp)
-                            .width(64.dp)
-                    )
+        DrawLineGraph(
+            infoList = infoList ,
+            dateList = dataList,
+            exerciseInfoNum = 0,
+            unitList = unitList)
+    }
+}
+
+@Composable
+fun ExerciseRecordView(viewModel: MainViewModel){
+    val selectExerciseTypeList by viewModel.selectExerciseTypeList.observeAsState(initial = listOf())
+    val selectExerciseTypeBoolean by viewModel.selectExerciseTypeBoolean.observeAsState(initial = false)
+    val selectExerciseBoolean by viewModel.selectExerciseBoolean.observeAsState(initial = false)
+    val selectExerciseRadioInt by viewModel.selectExerciseRadioInt.observeAsState(initial = 0)
+    val selectExerciseDateList by viewModel.selectExerciseDate.observeAsState(initial = listOf())
+    val selectExerciseGraphList by viewModel.selectExerciseGraphList.observeAsState(initial = listOf())
+    val selectExerciseType by viewModel.exerciseType.observeAsState(initial = -1)
+    
+    Row {
+        SelectExerciseSpinner(
+            exercise = "선택",
+            onExerciseSelected = {viewModel.selectExerciseType(it) },
+            onDeleteClicked = {  },
+            modifier = Modifier
+                .padding(horizontal = 12.dp)
+                .padding(top = 20.dp),
+            textModifier = Modifier
+                .width(96.dp)
+                .padding(vertical = 10.dp)
+                .wrapContentSize(Alignment.Center),
+            dropDownModifier = Modifier
+                .width(96.dp)
+                .heightIn(max = 240.dp)
+                .background(Color(0xFF2D2D2D), RoundedCornerShape(8.dp))
+                .padding(vertical = 1.dp),
+            list = Object.exerciseTypeList,
+            edit = false,
+            select = true
+        )
+
+        SelectExerciseSpinner(
+            exercise = "선택",
+            onExerciseSelected = {viewModel.selectExercise(it) },
+            onDeleteClicked = {  },
+            modifier = Modifier
+                .padding(horizontal = 12.dp)
+                .padding(top = 20.dp),
+            textModifier = Modifier
+                .width(96.dp)
+                .padding(vertical = 10.dp)
+                .wrapContentSize(Alignment.Center),
+            dropDownModifier = Modifier
+                .width(96.dp)
+                .heightIn(max = 240.dp)
+                .background(Color(0xFF2D2D2D), RoundedCornerShape(8.dp))
+                .padding(vertical = 1.dp),
+            list = selectExerciseTypeList,
+            edit = false,
+            select = selectExerciseTypeBoolean
+        )
+    }
+
+    Spacer(modifier = Modifier.height(20.dp))
+
+    Column(
+        modifier = Modifier
+            .fillMaxWidth()
+            .padding(20.dp)
+            .background(Color(0xFF2D2D2D), RoundedCornerShape(24.dp))
+        , horizontalAlignment = Alignment.CenterHorizontally)
+    {
+
+        if(selectExerciseBoolean){
+            var exerciseInfoList = listOf("")
+            var exerciseUnitList = listOf("")
+            when(selectExerciseType){
+                0->{
+                    exerciseInfoList = Object.anaerobicExerciseTypeList
+                    exerciseUnitList = Object.anaerobicExerciseUnitList
                 }
-                Spacer(modifier = Modifier.height(10.dp))
+                1->{
+                    exerciseInfoList = Object.cardioExerciseTypeList
+                    exerciseUnitList = Object.cardioExerciseUnitList
+                }
+            }
+            val unitList = UnitList(exerciseInfoList,exerciseUnitList)
 
+            Box(modifier = Modifier
+                .fillMaxWidth()
+                .padding(20.dp)
+
+            ){
                 DrawLineGraph(
-                    infoList = viewModel.arrayWeightList ,
-                    dateList = viewModel.arrayWeightDateList,
-                    exerciseInfoNum = 0,
+                    infoList = selectExerciseGraphList,
+                    exerciseInfoNum = selectExerciseRadioInt,
+                    dateList = selectExerciseDateList,
                     unitList = unitList)
             }
 
-            Row {
-                SelectExerciseSpinner(
-                    exercise = "선택",
-                    onExerciseSelected = {viewModel.selectExerciseType(it) },
-                    onDeleteClicked = {  },
-                    modifier = Modifier
-                        .padding(horizontal = 12.dp)
-                        .padding(top = 20.dp),
-                    textModifier = Modifier
-                        .width(96.dp)
-                        .padding(vertical = 10.dp)
-                        .wrapContentSize(Alignment.Center),
-                    dropDownModifier = Modifier
-                        .width(96.dp)
-                        .heightIn(max = 240.dp)
-                        .background(Color(0xFF2D2D2D), RoundedCornerShape(8.dp))
-                        .padding(vertical = 1.dp),
-                    list = Object.exerciseTypeList,
-                    edit = false,
-                    select = true
-                )
-
-                SelectExerciseSpinner(
-                    exercise = "선택",
-                    onExerciseSelected = {viewModel.selectExercise(it) },
-                    onDeleteClicked = {  },
-                    modifier = Modifier
-                        .padding(horizontal = 12.dp)
-                        .padding(top = 20.dp),
-                    textModifier = Modifier
-                        .width(96.dp)
-                        .padding(vertical = 10.dp)
-                        .wrapContentSize(Alignment.Center),
-                    dropDownModifier = Modifier
-                        .width(96.dp)
-                        .heightIn(max = 240.dp)
-                        .background(Color(0xFF2D2D2D), RoundedCornerShape(8.dp))
-                        .padding(vertical = 1.dp),
-                    list = selectExerciseTypeList,
-                    edit = false,
-                    select = selectExerciseTypeBoolean
-                )
-            }
-
-
+            exerciseRadioButtonRow(onSelect = viewModel::selectExerciseInfoRadio, exerciseType = exerciseInfoList, type = selectExerciseType)
             Spacer(modifier = Modifier.height(20.dp))
-
-            Column(
-                modifier = Modifier
-                    .fillMaxWidth()
-                    .padding(20.dp)
-                    .background(Color(0xFF2D2D2D), RoundedCornerShape(24.dp))
-                , horizontalAlignment = Alignment.CenterHorizontally)
-            {
-
-                if(selectExerciseBoolean){
-                    var exerciseInfoList = listOf("")
-                    var exerciseUnitList = listOf("")
-                    when(selectExerciseType){
-                        0->{
-                            exerciseInfoList = Object.anaerobicExerciseTypeList
-                            exerciseUnitList = Object.anaerobicExerciseUnitList
-                        }
-                        1->{
-                            exerciseInfoList = Object.cardioExerciseTypeList
-                            exerciseUnitList = Object.cardioExerciseUnitList
-                        }
-                    }
-                    val unitList = UnitList(exerciseInfoList,exerciseUnitList)
-
-                    Box(modifier = Modifier
-                        .fillMaxWidth()
-                        .padding(20.dp)
-
-                    ){
-                        DrawLineGraph(
-                            infoList = selectExerciseGraphList,
-                            exerciseInfoNum = selectExerciseRadioInt,
-                            dateList = selectExerciseDateList,
-                            unitList = unitList)
-                    }
-
-                    exerciseRadioButtonRow(onSelect = viewModel::selectExerciseInfoRadio, exerciseType = exerciseInfoList, type = selectExerciseType)
-                    Spacer(modifier = Modifier.height(20.dp))
-                }
-            }
         }
     }
 }

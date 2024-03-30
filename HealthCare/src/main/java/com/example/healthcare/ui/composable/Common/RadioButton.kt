@@ -18,7 +18,7 @@ import androidx.compose.ui.unit.dp
 @Composable
 fun exerciseRadioButtonRow(onSelect: (String, Int) -> Unit, exerciseType : List<String>, type : Int){
     var selectedOption = remember { mutableStateOf(exerciseType[0]) }
-    Row() {
+    Row {
         exerciseType.forEach { option ->
             exerciseRadioButton(
                 label = option,

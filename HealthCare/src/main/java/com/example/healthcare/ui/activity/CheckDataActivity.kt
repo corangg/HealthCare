@@ -33,7 +33,8 @@ class SplashActivity : ComponentActivity() {
     fun setObserve(){
         viewModel.checkProfile.observe(this){
             if(it){
-                startActivity(Intent(this, MainActivity::class.java))
+                //startActivity(Intent(this, MainActivity::class.java))
+                startActivity(Intent(this, InformationInputActivity::class.java))
                 finish()
             }else{
                 startActivity(Intent(this, InformationInputActivity::class.java))

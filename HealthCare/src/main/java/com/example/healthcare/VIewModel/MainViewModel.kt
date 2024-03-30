@@ -155,6 +155,7 @@ class MainViewModel @Inject constructor(
     fun editCancel(){
         viewEditCompsable.value = 0
     }
+    //val profileGenderString : MutableLiveData<String> = MutableLiveData("남성")
 
     fun selectGender(gender : Boolean){
         profileGender.value = gender

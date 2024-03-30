@@ -26,8 +26,6 @@ class InformationInputViewModel @Inject constructor(
     private val phsicalInfoRepository: PhsicalInfoRepository,
     private val exerciseRecordRepository: ExerciseRecordRepository
 ): ViewModel() {
-    var backgroundColor = mutableStateOf(Color(0xFF121212))
-        private set
     val ageValue : MutableLiveData<Float> = MutableLiveData(0f)
     val heightValue : MutableLiveData<Float> = MutableLiveData(0f)
     val weightValue : MutableLiveData<Float> = MutableLiveData(0f)
@@ -64,6 +62,11 @@ class InformationInputViewModel @Inject constructor(
             }
         }
     }
+
+    fun setNameValue(value: String){
+        name.value = value
+    }
+
 
     fun setAgeValue(value : Float){
         ageValue.value = value

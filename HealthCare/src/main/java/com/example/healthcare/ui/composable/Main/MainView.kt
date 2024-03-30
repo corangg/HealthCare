@@ -101,8 +101,6 @@ fun BottomNavigationBar(navController: NavController){
     }
 }
 
-
-
 @Composable
 fun NavigationGraph(viewModel :MainViewModel,navController: NavHostController, innerPadding: PaddingValues) {
     NavHost(navController, startDestination = "운동") {
@@ -125,10 +123,4 @@ fun showView(index: Int, viewModel: MainViewModel, innerPadding: PaddingValues){
 fun currentRoute(navController: NavController): String? {
     val navBackStackEntry by navController.currentBackStackEntryAsState()
     return navBackStackEntry?.destination?.route
-}
-
-@Preview(showBackground = true)
-@Composable
-fun DefaultPreview() {
-    MyAppPreview()
 }
