@@ -54,7 +54,6 @@ import com.example.healthcare.ui.composable.Common.HorizontalScrollView
 
 @Composable
 fun InformationInputView(viewModel: InformationInputViewModel) {
-    val context = LocalContext.current//뷰모델 수정하면 필요없을거임
     val focusRequester = remember { FocusRequester() }
 
     Column(
@@ -78,7 +77,7 @@ fun InformationInputView(viewModel: InformationInputViewModel) {
                 .clip(CircleShape)
                 .background(Color.Transparent)
                 .border(3.dp, Color.White, CircleShape)
-                .clickable { viewModel.saveData(context) }
+                .clickable { viewModel.saveData() }
         ) {
             Text(
                 text = "저장",

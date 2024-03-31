@@ -11,7 +11,6 @@ import com.example.healthcare.ExerciseDataRecord
 import com.example.healthcare.ExerciseInfoTypeConverter
 import com.example.healthcare.PhsicalInfo
 
-//@Database(entities = [ExerciseRecord::class], version = 2, exportSchema = false)
 @Database(entities = [ExerciseDataRecord::class], version = 1, exportSchema = false)
 @TypeConverters(ExerciseInfoTypeConverter::class)
 abstract class ExerciseRecordDB : RoomDatabase() {
@@ -28,7 +27,7 @@ abstract class ExerciseRecordDB : RoomDatabase() {
                     context.applicationContext,
                     ExerciseRecordDB::class.java,
                     "exercise-records-database"
-                )/*.fallbackToDestructiveMigration()*/.build()
+                ).build()
                 INSTANCE = instance
                 instance
             }

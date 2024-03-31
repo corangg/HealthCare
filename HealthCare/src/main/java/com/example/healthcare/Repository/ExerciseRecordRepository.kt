@@ -1,39 +1,18 @@
 package com.example.healthcare.Repository
 
 import android.icu.text.SimpleDateFormat
-import androidx.lifecycle.MutableLiveData
-import com.example.healthcare.Dao.ExerciseDao
-import com.example.healthcare.Dao.ExerciseRecordDao
 import com.example.healthcare.ExerciseDataRecord
 import com.example.healthcare.ExerciseInfo
 import com.example.healthcare.ExerciseItem
 import com.example.healthcare.ExerciseRecord
 import com.example.healthcare.ExerciseTimeRecord
 import com.example.healthcare.ExerciseTypeList
-import com.example.healthcare.Object
-import com.example.healthcare.Object.Companion.exerciseTypeList
+import com.example.healthcare.StringList
 import com.example.healthcare.WeightData
 import java.util.Calendar
 import javax.inject.Inject
 
-class ExerciseRecordRepository@Inject constructor(private val exerciseRecordDao: ExerciseRecordDao)  {
-
-
-
-    suspend fun getAllExerciseRecord(): List<ExerciseDataRecord>{
-        return exerciseRecordDao.getAllExerciseRecords()
-    }
-    suspend fun getExerciseRecord(): ExerciseDataRecord{
-        return exerciseRecordDao.getExerciseRecord()
-    }
-
-    suspend fun insertExerciseRecord(exerciseRecord: ExerciseDataRecord){
-        exerciseRecordDao.insertExerciseRecord(exerciseRecord)
-    }
-
-    suspend fun deleteAllExerciseReord(){
-        exerciseRecordDao.deleteAllExerciseReord()
-    }
+class ExerciseRecordRepository@Inject constructor() {
 
     fun arrayWeightDateList(list : List<WeightData>): MutableList<String>{
         val weightDateList : MutableList<String> = mutableListOf()
@@ -216,8 +195,8 @@ class ExerciseRecordRepository@Inject constructor(private val exerciseRecordDao:
     fun selectExerciseInfoRadio(info : String, type: Int) : Int{
         var index : Int = -1
         when(type){
-            0 -> index = Object.anaerobicExerciseTypeList.indexOf(info)
-            1 -> index = Object.cardioExerciseTypeList.indexOf(info)
+            0 -> index = StringList.anaerobicExerciseTypeList.indexOf(info)
+            1 -> index = StringList.cardioExerciseTypeList.indexOf(info)
         }
         return index
     }
@@ -238,5 +217,16 @@ class ExerciseRecordRepository@Inject constructor(private val exerciseRecordDao:
         val calendar = Calendar.getInstance()
         val formatter = SimpleDateFormat("yyyyMMdd")
         return formatter.format(calendar.time).toLong()
+    }
+
+    fun weightDataSet(list:MutableList<WeightData>, calenderData: String): Float{
+        val dayWeight = recordDate(calenderData)
+        var weightValue = 0f
+        for(i in list){
+            if(i.timeStamp == dayWeight && i.weight != 0f){
+                weightValue = i.weight
+            }
+        }
+        return weightValue
     }
 }

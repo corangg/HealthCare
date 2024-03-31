@@ -10,7 +10,6 @@ import com.example.healthcare.PhsicalInfo
 
 @Dao
 interface PhsicalInfoDao {
-
     @Insert(onConflict = OnConflictStrategy.REPLACE)
     suspend fun insertPhsicalInfo(info: PhsicalInfo)
 
@@ -34,10 +33,4 @@ interface PhsicalInfoDao {
 
     @Query("UPDATE phsical_info SET weight = :newWeight WHERE weight = :oldWeight")
     suspend fun updateWeight(oldWeight: Float, newWeight: Float)
-
-
-
-
-
-
 }

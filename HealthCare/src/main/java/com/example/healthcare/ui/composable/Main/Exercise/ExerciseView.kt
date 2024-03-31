@@ -39,7 +39,7 @@ import androidx.compose.ui.text.input.KeyboardType
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
-import com.example.healthcare.Object
+import com.example.healthcare.StringList
 import com.example.healthcare.R
 import com.example.healthcare.VIewModel.MainViewModel
 import com.example.healthcare.ui.composable.Common.ShowToastMessage
@@ -52,7 +52,8 @@ fun exerciseView(viewModel: MainViewModel,innerPadding: PaddingValues){
     val exerciseList by viewModel.todayExerciseList.observeAsState(initial = listOf())
     var unitList : List<String> = mutableListOf()
     val showSaveToastMessage by viewModel.showSaveCheckMessage.observeAsState(initial = false)
-    val weight = viewModel.lastWeight.observeAsState().value ?:""//이거 마지막이 아니라 날짜 맞춰야 할꺼같은데??
+    //val weight = viewModel.lastWeight.observeAsState().value ?:""//이거 마지막이 아니라 날짜 맞춰야 할꺼같은데??
+    val weight = viewModel.recordWeight.observeAsState().value ?:""//이거 마지막이 아니라 날짜 맞춰야 할꺼같은데??
 
     Box(
         modifier = Modifier
@@ -79,15 +80,14 @@ fun exerciseView(viewModel: MainViewModel,innerPadding: PaddingValues){
                 .padding(top = 20.dp)
                 .background(Color(0xFF2D2D2D), RoundedCornerShape(24.dp))
                 .align(Alignment.CenterHorizontally),
-                weight = weight) {
-
-            }
+                weight = weight,
+                valueChange = viewModel::bindTextFieldWeight)
 
             for(i in 0 until viewModel.todayExerciseRoutine.size){
                 if(viewModel.todayExerciseRoutine[i].name == "유산소"){
-                    unitList = Object.cardioExerciseRowString
+                    unitList = StringList.cardioExerciseRowString
                 }else{
-                    unitList = Object.anaerobicExerciseRowString
+                    unitList = StringList.anaerobicExerciseRowString
                 }
                 ExerciseTypeView(
                     viewModel = viewModel,
@@ -194,7 +194,8 @@ fun WeightView(modifier: Modifier, weight: String, valueChange: (String)->Unit){
             ) {
                 BasicTextField(
                     value = weight,
-                    onValueChange = { valueChange(it) },
+                    onValueChange = {
+                        valueChange(it) },
                     singleLine = true,
                     keyboardOptions = KeyboardOptions(keyboardType = KeyboardType.Number),
                     cursorBrush = SolidColor(Color.White),

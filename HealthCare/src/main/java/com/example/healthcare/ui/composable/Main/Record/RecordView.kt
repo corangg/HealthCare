@@ -35,8 +35,7 @@ import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
-import com.example.healthcare.ExerciseRecord
-import com.example.healthcare.Object
+import com.example.healthcare.StringList
 import com.example.healthcare.R
 import com.example.healthcare.UnitList
 import com.example.healthcare.VIewModel.MainViewModel
@@ -77,7 +76,7 @@ fun WeightRecordView(infoList : List<Float>, dataList : List<String>){
             .background(Color(0xFF2D2D2D), RoundedCornerShape(24.dp))
             .padding(20.dp),
         horizontalAlignment = Alignment.CenterHorizontally) {
-        val unitList = UnitList(Object.weightType,Object.weightUnit)
+        val unitList = UnitList(StringList.weightType,StringList.weightUnit)
 
         Row(verticalAlignment = Alignment.CenterVertically) {
             Image(
@@ -136,7 +135,7 @@ fun ExerciseRecordView(viewModel: MainViewModel){
                 .heightIn(max = 240.dp)
                 .background(Color(0xFF2D2D2D), RoundedCornerShape(8.dp))
                 .padding(vertical = 1.dp),
-            list = Object.exerciseTypeList,
+            list = StringList.exerciseTypeList,
             edit = false,
             select = true
         )
@@ -178,12 +177,12 @@ fun ExerciseRecordView(viewModel: MainViewModel){
             var exerciseUnitList = listOf("")
             when(selectExerciseType){
                 0->{
-                    exerciseInfoList = Object.anaerobicExerciseTypeList
-                    exerciseUnitList = Object.anaerobicExerciseUnitList
+                    exerciseInfoList = StringList.anaerobicExerciseTypeList
+                    exerciseUnitList = StringList.anaerobicExerciseUnitList
                 }
                 1->{
-                    exerciseInfoList = Object.cardioExerciseTypeList
-                    exerciseUnitList = Object.cardioExerciseUnitList
+                    exerciseInfoList = StringList.cardioExerciseTypeList
+                    exerciseUnitList = StringList.cardioExerciseUnitList
                 }
             }
             val unitList = UnitList(exerciseInfoList,exerciseUnitList)

@@ -1,29 +1,23 @@
 package com.example.healthcare.VIewModel
 
 import android.content.Context
-import android.icu.text.SimpleDateFormat
-import androidx.compose.runtime.mutableStateOf
-import androidx.compose.ui.graphics.Color
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import androidx.room.Room
-import com.example.healthcare.DB.ExerciseRoutineDB
 import com.example.healthcare.DB.PhsicalInfoDB
 import com.example.healthcare.ExerciseItem
 import com.example.healthcare.PhsicalInfo
 import com.example.healthcare.Repository.ExerciseRecordRepository
-import com.example.healthcare.Repository.InformationInputRepository
-import com.example.healthcare.Repository.PhsicalInfoRepository
+import com.example.healthcare.Repository.EditDBRepository
 import com.example.healthcare.WeightData
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.launch
-import java.util.Calendar
 import javax.inject.Inject
 
 @HiltViewModel
 class InformationInputViewModel @Inject constructor(
-    private val phsicalInfoRepository: PhsicalInfoRepository,
+    private val editDBRepository: EditDBRepository,
     private val exerciseRecordRepository: ExerciseRecordRepository
 ): ViewModel() {
     val ageValue : MutableLiveData<Float> = MutableLiveData(0f)
@@ -33,7 +27,7 @@ class InformationInputViewModel @Inject constructor(
     val name : MutableLiveData<String> = MutableLiveData("")
     val dataSaveFail : MutableLiveData<Int> = MutableLiveData(-1)
     val dataSaveSuccess : MutableLiveData<Unit> = MutableLiveData()
-    val checkProfile : MutableLiveData<Boolean> = MutableLiveData()
+
 
     val sunExerciseList : MutableLiveData<MutableList<ExerciseItem>> = MutableLiveData(mutableListOf())
     val monExerciseList : MutableLiveData<MutableList<ExerciseItem>> = MutableLiveData(mutableListOf())
@@ -47,21 +41,6 @@ class InformationInputViewModel @Inject constructor(
         sunExerciseList, monExerciseList, tuesExerciseList,
         wednesExerciseList, thursExerciseList, friExerciseList, saturExerciseList
     )
-
-    fun checkProfileData(context: Context){
-        viewModelScope.launch {
-            val Phsicaldb = Room.databaseBuilder(
-                context,
-                PhsicalInfoDB::class.java, "phsical-database"
-            ).build()
-            val check = Phsicaldb.phsicalDao().getPhsicalInfo().name != ""
-            if(check){
-                checkProfile.value = true
-            }else{
-                checkProfile.value = false
-            }
-        }
-    }
 
     fun setNameValue(value: String){
         name.value = value
@@ -120,18 +99,9 @@ class InformationInputViewModel @Inject constructor(
         }
     }
 
-    fun saveData(context : Context){
+    fun saveData(){
         if(checkData() == 0){
-            val Exercisedb = Room.databaseBuilder(
-                context,
-                ExerciseRoutineDB::class.java, "exercise-database"
-            ).build()
-
-            val Phsicaldb = Room.databaseBuilder(
-                context,
-                PhsicalInfoDB::class.java, "phsical-database"
-            ).build()
-
+            val weightData = WeightData(timeStamp = exerciseRecordRepository.getCurrentTimeOld(), weight = weightValue.value?:0f)
             val phsicalInfo = PhsicalInfo(
                 name.value!!,
                 genderInfo.value!!,
@@ -140,17 +110,10 @@ class InformationInputViewModel @Inject constructor(
                 weightValue.value!!)
 
             viewModelScope.launch {
-                for(day in 0 .. 6){
-                    for(i in exerciseLists[day].value.orEmpty()){
-                        Exercisedb.exerciseDao().insertExerciseItem(i)
-                    }
-                }
-                Phsicaldb.phsicalDao().insertPhsicalInfo(phsicalInfo)
-                val weightData = WeightData(timeStamp = exerciseRecordRepository.getCurrentTimeOld(), weight = weightValue.value?:0f)
-
-                phsicalInfoRepository.insertWeightData(weightData)
+                editDBRepository.saveExerciseRoutine(exerciseLists)
+                editDBRepository.insertPhsicalInfo(phsicalInfo)
+                editDBRepository.insertWeightData(weightData)
             }
-
 
             dataSaveSuccess.value = Unit
         }else{

@@ -9,7 +9,6 @@ import com.example.healthcare.Dao.ExerciseDao
 import com.example.healthcare.Dao.ExerciseRecordDao
 import com.example.healthcare.Dao.PhsicalInfoDao
 import com.example.healthcare.Dao.WeightDataDao
-import com.example.healthcare.Repository.InformationInputRepository
 import dagger.Module
 import dagger.Provides
 import dagger.hilt.InstallIn
@@ -20,12 +19,6 @@ import javax.inject.Singleton
 @Module
 @InstallIn(SingletonComponent::class)
 object Module {
-    @Singleton
-    @Provides
-    fun provideInformationInput(): InformationInputRepository {
-        return InformationInputRepository()
-    }
-
     @Singleton
     @Provides
     fun providePhsicalInfoDb(@ApplicationContext context: Context): PhsicalInfoDB {

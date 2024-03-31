@@ -1,6 +1,5 @@
 package com.example.healthcare.VIewModel
 
-import android.icu.text.SimpleDateFormat
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.ui.graphics.Color
 import androidx.lifecycle.MutableLiveData
@@ -13,23 +12,20 @@ import com.example.healthcare.ExerciseRecord
 import com.example.healthcare.ExerciseTimeRecord
 import com.example.healthcare.ExerciseType
 import com.example.healthcare.ExerciseTypeList
-import com.example.healthcare.Object
+import com.example.healthcare.StringList
 import com.example.healthcare.PhsicalInfo
 import com.example.healthcare.Repository.ExerciseRecordRepository
-import com.example.healthcare.Repository.ExerciseRoutineRepository
-import com.example.healthcare.Repository.PhsicalInfoRepository
+import com.example.healthcare.Repository.EditDBRepository
 import com.example.healthcare.WeightData
 
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.launch
-import java.util.Calendar
 import javax.inject.Inject
 
 @HiltViewModel
 class MainViewModel @Inject constructor(
-    private val phsicalInfoRepository: PhsicalInfoRepository,
-    private val exerciseRoutineRepository: ExerciseRoutineRepository,
+    private val editDBRepository: EditDBRepository,
     private val exerciseRecordRepository: ExerciseRecordRepository): ViewModel() {
     var backgroundColor = mutableStateOf(Color(0xFF121212))
         private set
@@ -52,7 +48,7 @@ class MainViewModel @Inject constructor(
     val profileWeight : MutableLiveData<String> = MutableLiveData("")
     val stringDayOfWeek : MutableLiveData<String> = MutableLiveData("")
     val exerciseName : MutableLiveData<String> = MutableLiveData("")
-    val lastWeight : MutableLiveData<String> = MutableLiveData()
+    val recordWeight : MutableLiveData<String> = MutableLiveData("")
     val calenderData : MutableLiveData<String> = MutableLiveData("")
 
     val viewEditCompsable : MutableLiveData<Int> = MutableLiveData(0)
@@ -98,7 +94,7 @@ class MainViewModel @Inject constructor(
     fun initDataSet(){
         viewModelScope.launch{
             setProfileData()
-            recordExerciseList = exerciseRecordRepository.getAllExerciseRecord().toMutableList()
+            recordExerciseList = editDBRepository.getAllExerciseRecord().toMutableList()
             getAllExerciseRoutine()
             setDayOfWeekData()
             setData()
@@ -110,17 +106,16 @@ class MainViewModel @Inject constructor(
 
     fun setProfileData(){
         viewModelScope.launch {
-            profileData = phsicalInfoRepository.getAllPhsicalInfos()
-            lastWeightData = phsicalInfoRepository.getLastWeightData()
-            allWeightDataList = phsicalInfoRepository.getAllWeightData().toMutableList()
+            profileData = editDBRepository.getAllPhsicalInfos()
+            lastWeightData = editDBRepository.getLastWeightData()
+            allWeightDataList = editDBRepository.getAllWeightData().toMutableList()
             arrayWeightDateList = exerciseRecordRepository.arrayWeightDateList(allWeightDataList)
             arrayWeightList = exerciseRecordRepository.arrayWeightList(allWeightDataList)
         }
     }
 
     fun setData(){
-        lastWeight.value = lastWeightData.weight.toString()
-
+        recordWeight.value = lastWeightData.weight.toString()
         profileName.value = profileData.name
         profileGender.value = profileData.gender
         profileAge.value = profileData.age.toString()
@@ -130,13 +125,14 @@ class MainViewModel @Inject constructor(
 
     suspend fun getAllExerciseRoutine(){
         for (i in 0 until 7){
-            exerciseLists[i].value = exerciseRoutineRepository.getExerciseRoutine(i).toMutableList()
+            exerciseLists[i].value = editDBRepository.getExerciseRoutine(i).toMutableList()
         }
     }
 
     fun setDayOfWeekData(){
         stringDayOfWeek.value = exerciseRecordRepository.getCurrentDayOfWeek(previousDate)
         calenderData.value = exerciseRecordRepository.getCalendar(previousDate)
+        recordWeight.value = exerciseRecordRepository.weightDataSet(allWeightDataList,calenderData.value?:"").toString()
         setExerciseList()
     }
 
@@ -155,7 +151,6 @@ class MainViewModel @Inject constructor(
     fun editCancel(){
         viewEditCompsable.value = 0
     }
-    //val profileGenderString : MutableLiveData<String> = MutableLiveData("남성")
 
     fun selectGender(gender : Boolean){
         profileGender.value = gender
@@ -163,35 +158,35 @@ class MainViewModel @Inject constructor(
 
     fun editName(){
         viewModelScope.launch {
-            phsicalInfoRepository.updateName(profileName.value!!,profileData.name)
+            editDBRepository.updateName(profileName.value!!,profileData.name)
             setProfileData()
         }
     }
 
     fun editGender(){
         viewModelScope.launch {
-            phsicalInfoRepository.updateGender(profileGender.value!!,profileData.gender)
+            editDBRepository.updateGender(profileGender.value!!,profileData.gender)
             setProfileData()
         }
     }
 
     fun editAge(){
         viewModelScope.launch {
-            phsicalInfoRepository.updateAge(profileAge.value!!.toInt(),profileData.age)
+            editDBRepository.updateAge(profileAge.value!!.toInt(),profileData.age)
             setProfileData()
         }
     }
 
     fun editHeight(){
         viewModelScope.launch {
-            phsicalInfoRepository.updateHeight(profileHeight.value!!.toFloat(),profileData.height)
+            editDBRepository.updateHeight(profileHeight.value!!.toFloat(),profileData.height)
             setProfileData()
         }
     }
 
     fun editWeight(){
         viewModelScope.launch {
-            phsicalInfoRepository.updateWeight(profileWeight.value!!.toFloat(),profileData.weight)
+            editDBRepository.updateWeight(profileWeight.value!!.toFloat(),profileData.weight)
             setProfileData()
         }
     }
@@ -216,7 +211,7 @@ class MainViewModel @Inject constructor(
     fun editExerciseItem(){
         if(editExerciseItem.value == true){
             viewModelScope.launch {
-                exerciseRoutineRepository.saveExerciseRoutine(exerciseLists)
+                editDBRepository.saveExerciseRoutine(exerciseLists)
                 editExerciseItem.value = !editExerciseItem.value!!
             }
         }else if(editExerciseItem.value == false){
@@ -278,7 +273,7 @@ class MainViewModel @Inject constructor(
     }
 
     fun bindTextFieldWeight(weight : String){
-        lastWeight.value = weight
+        recordWeight.value = weight
     }
 
     fun addArrayExercise(){
@@ -290,10 +285,10 @@ class MainViewModel @Inject constructor(
     }
 
     fun saveExercise(){
-        val weightData = WeightData(timeStamp = exerciseRecordRepository.getCurrentTimeOld(), weight = lastWeight.value!!.toFloat())
+        val weightData = WeightData(timeStamp = exerciseRecordRepository.getCurrentTimeOld(), weight = recordWeight.value!!.toFloat())
         viewModelScope.launch {
-            phsicalInfoRepository.insertWeightData(weightData)
-            exerciseRecordRepository.insertExerciseRecord(exerciseRecord())
+            editDBRepository.insertWeightData(weightData)
+            editDBRepository.insertExerciseRecord(exerciseRecord())
             showToast()
         }
     }
@@ -348,8 +343,8 @@ class MainViewModel @Inject constructor(
         }
         selectExerciseDate.value = exerciseRecordRepository.selectExerciseDateSet(selectExerciseInfo)
         when(exerciseType.value){
-            0-> selectExerciseInfoRadio(Object.anaerobicExerciseTypeList[0],0)
-            1-> selectExerciseInfoRadio(Object.cardioExerciseTypeList[0], 1)
+            0-> selectExerciseInfoRadio(StringList.anaerobicExerciseTypeList[0],0)
+            1-> selectExerciseInfoRadio(StringList.cardioExerciseTypeList[0], 1)
         }
         selectExerciseBoolean.value = true
     }
