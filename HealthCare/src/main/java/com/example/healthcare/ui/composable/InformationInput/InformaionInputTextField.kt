@@ -48,7 +48,6 @@ fun InformationInputTextField(
             .padding(start = 10.dp)
             .background(Color(0xFF2D2D2D), RoundedCornerShape(8.dp))
             .padding(horizontal = 10.dp, vertical = 8.dp)
-            //.width(80.dp)
             .focusRequester(focusRequester)
             .onFocusChanged {
                 isFocused.value = it.isFocused

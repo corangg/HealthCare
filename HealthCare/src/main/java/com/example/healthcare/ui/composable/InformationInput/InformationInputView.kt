@@ -42,6 +42,8 @@ import androidx.compose.ui.platform.LocalFocusManager
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.text.font.FontWeight
+import androidx.compose.ui.tooling.preview.Preview
+import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import com.example.healthcare.R
@@ -50,34 +52,10 @@ import com.example.healthcare.VIewModel.MainViewModel
 import com.example.healthcare.ui.composable.Common.AddExerciseColumn
 import com.example.healthcare.ui.composable.Common.HorizontalScrollView
 
-
 @Composable
 fun InformationInputView(viewModel: InformationInputViewModel) {
     val context = LocalContext.current//뷰모델 수정하면 필요없을거임
     val focusRequester = remember { FocusRequester() }
-
-    val ageSliderValue by viewModel.ageValue.observeAsState(0f)
-    val ageText = remember { mutableStateOf(ageSliderValue.toString()) }
-    val ageSliderMaxValue = 100f
-    val ageIntValue = ageSliderValue.toInt()
-    val ageIntTextValue = ageIntValue.toString()
-
-    val heightSliderValue by viewModel.heightValue.observeAsState(0f)
-    val heightText = remember { mutableStateOf(heightSliderValue.toString()) }
-    val heightSliderMaxValue = 300f
-
-    val weightSliderValue by viewModel.weightValue.observeAsState(0f)
-    val weightText = remember { mutableStateOf(weightSliderValue.toString()) }
-    val weightSliderMaxValue = 200f
-
-
-    LaunchedEffect(heightSliderValue) {
-        heightText.value = String.format("%.1f", heightSliderValue)
-    }
-
-    LaunchedEffect(weightSliderValue){
-        weightText.value = String.format("%.2f", weightSliderValue)
-    }
 
     Column(
         modifier = Modifier
@@ -87,102 +65,9 @@ fun InformationInputView(viewModel: InformationInputViewModel) {
 
         ProfileInputView(viewModel = viewModel, focusRequester = focusRequester)
 
-        Spacer(modifier = Modifier.height(16.dp))
-
-        SliderInputRow(
-            iconId = R.drawable.ic_age,
-            iconDescription = "Age Slider",
-            sliderValue = ageIntValue.toFloat(),
-            onSliderValueChange = {viewModel.setAgeValue(it.toInt().toFloat())},
-            sliderMaxValue = ageSliderMaxValue,
-            textValue = ageIntTextValue,
-            onTextValueChange =
-            {val intValue = it.toIntOrNull()
-                if(intValue == null){
-                    if(it.isEmpty()){
-                        ageText.value = ""
-                    }
-                }else{
-                    if(intValue <= ageSliderMaxValue){
-                        viewModel.setAgeValue(it.toFloat())
-                    }
-                }
-            },
-            unitText = "세",
-            focusRequester = focusRequester
-        )
-
-        Spacer(modifier = Modifier.height(16.dp))
-
-        SliderInputRow(
-            iconId = R.drawable.ic_height,
-            iconDescription = "Height Slider",
-            sliderValue = heightSliderValue,
-            onSliderValueChange = {viewModel.setHeightValue(it)},
-            sliderMaxValue = heightSliderMaxValue,
-            textValue = heightText.value,
-            onTextValueChange =
-            { val floatValue = it.toFloatOrNull()
-                if (floatValue == null){
-                    if(it.isEmpty()) {
-                        heightText.value = ""
-                    }
-                }else{
-                    if (floatValue <= heightSliderMaxValue){
-                        heightText.value = String.format("%.1f",floatValue)
-                        viewModel.setHeightValue(floatValue)
-                    }
-                }
-            },
-            unitText = "cm",
-            focusRequester = focusRequester
-        )
-
-        Spacer(modifier = Modifier.height(16.dp))
-
-        SliderInputRow(
-            iconId = R.drawable.ic_weight,
-            iconDescription = "Weight Slider",
-            sliderValue = weightSliderValue,
-            onSliderValueChange = {viewModel.setWeightValue(it)},
-            sliderMaxValue = weightSliderMaxValue,
-            textValue = weightText.value,
-            onTextValueChange = { val floatValue = it.toFloatOrNull()
-                if (floatValue == null){
-                    if(it.isEmpty()) {
-                        weightText.value = ""
-                    }
-                }else{
-                    if (floatValue <= weightSliderMaxValue){
-                        weightText.value = String.format("%.1f",floatValue)
-                        viewModel.setWeightValue(floatValue)
-                    }
-                }
-            },
-            unitText = "kg",
-            focusRequester = focusRequester
-        )
-
         Spacer(modifier = Modifier.height(32.dp))
 
-        Text(
-            text = "주간 운동 루틴",
-            style = TextStyle(color = Color.White, fontSize = 20.sp, fontWeight = FontWeight.Bold),
-        )
-
-        Spacer(modifier = Modifier.height(16.dp))
-
-        HorizontalScrollView(modifier = Modifier.widthIn(86.dp)) {
-            for(i in 0 until 7){
-                AddExerciseColumn(
-                    day = i,
-                    list = viewModel.exerciseLists[i],
-                    onDeleteClicked = viewModel::deleteExercise,
-                    onAddClicked = viewModel::addExercise,
-                    onUpdate = viewModel::updateExerciseAt,
-                    edit = true)
-            }
-        }
+        ExerciseRoutineInputView(viewModel)
 
         Spacer(modifier = Modifier.height(48.dp))
 
@@ -206,6 +91,10 @@ fun InformationInputView(viewModel: InformationInputViewModel) {
 @Composable
 fun ProfileInputView(viewModel: InformationInputViewModel, focusRequester: FocusRequester){
     val genderInfo by viewModel.genderInfo.observeAsState()
+    val ageSliderValue by viewModel.ageValue.observeAsState(0f)
+    val heightSliderValue by viewModel.heightValue.observeAsState(0f)
+    val weightSliderValue by viewModel.weightValue.observeAsState(0f)
+
 
     Column(
         horizontalAlignment = Alignment.CenterHorizontally) {
@@ -214,13 +103,76 @@ fun ProfileInputView(viewModel: InformationInputViewModel, focusRequester: Focus
             style = TextStyle(color = Color.White, fontSize = 20.sp, fontWeight = FontWeight.Bold),
             modifier = Modifier.padding(top = 40.dp))
 
+        Spacer(modifier = Modifier.height(24.dp))
+
         InformationInputNameRow(viewModel::setNameValue, focusRequester)
 
         Spacer(modifier = Modifier.height(16.dp))
 
         InformationInputGenderRow(genderInfo = genderInfo, selectGender = viewModel::selectGender)
 
+        Spacer(modifier = Modifier.height(16.dp))
 
+        SliderInputRow(
+            iconId = R.drawable.ic_age,
+            sliderValue = ageSliderValue,
+            onSliderValueChange = viewModel::setAgeValue,
+            sliderMaxValue = 100f,
+            onTextValueChange = viewModel::setAgeValue,
+            unitText = "세",
+            textFiledvariable = Int,
+            focusRequester = focusRequester
+        )
+
+        Spacer(modifier = Modifier.height(16.dp))
+
+        SliderInputRow(
+            iconId = R.drawable.ic_height,
+            sliderValue = heightSliderValue,
+            onSliderValueChange = {viewModel.setHeightValue(it)},
+            sliderMaxValue = 300f,
+            onTextValueChange = viewModel::setHeightValue,
+            unitText = "cm",
+            textFiledvariable = Float,
+            focusRequester = focusRequester
+        )
+
+        Spacer(modifier = Modifier.height(16.dp))
+
+        SliderInputRow(
+            iconId = R.drawable.ic_weight,
+            sliderValue = weightSliderValue,
+            onSliderValueChange = {viewModel.setWeightValue(it)},
+            sliderMaxValue = 200f,
+            onTextValueChange = viewModel::setWeightValue,
+            unitText = "kg",
+            textFiledvariable = Float,
+            focusRequester = focusRequester
+        )
+    }
+}
+
+@Composable
+fun ExerciseRoutineInputView(viewModel: InformationInputViewModel){
+    Column(horizontalAlignment = Alignment.CenterHorizontally) {
+        Text(
+            text = "주간 운동 루틴",
+            style = TextStyle(color = Color.White, fontSize = 20.sp, fontWeight = FontWeight.Bold),
+        )
+
+        Spacer(modifier = Modifier.height(16.dp))
+
+        HorizontalScrollView(modifier = Modifier.widthIn(86.dp)) {
+            for(i in 0 until 7){
+                AddExerciseColumn(
+                    day = i,
+                    list = viewModel.exerciseLists[i],
+                    onDeleteClicked = viewModel::deleteExercise,
+                    onAddClicked = viewModel::addExercise,
+                    onUpdate = viewModel::updateExerciseAt,
+                    edit = true)
+            }
+        }
     }
 }
 
@@ -228,12 +180,10 @@ fun ProfileInputView(viewModel: InformationInputViewModel, focusRequester: Focus
 fun InformationInputNameRow(valueChange: (String)->Unit, focusRequester: FocusRequester){
     var nameText by remember { mutableStateOf("이름") }
 
-    Row(verticalAlignment = Alignment.CenterVertically,
-        modifier = Modifier
-            .padding(top = 24.dp)) {
+    Row(verticalAlignment = Alignment.CenterVertically) {
         Image(
             painter = painterResource(id = R.drawable.ic_name),
-            contentDescription = "name",
+            contentDescription = null,
             modifier = Modifier
                 .size(40.dp)
                 .clip(CircleShape)
@@ -241,9 +191,10 @@ fun InformationInputNameRow(valueChange: (String)->Unit, focusRequester: FocusRe
                 .padding(8.dp),
             colorFilter = ColorFilter.tint(Color.White)
         )
-        Spacer(modifier = Modifier.width(130.dp))
-
+        Spacer(modifier = Modifier.width(160.dp))
         InformationInputTextField(value = nameText, modifier = Modifier.width(80.dp), valueChange = valueChange, focusRequester = focusRequester)
+
+        Spacer(modifier = Modifier.width(46.dp))
     }
 }
 
@@ -252,7 +203,7 @@ fun InformationInputGenderRow(genderInfo: Boolean?, selectGender: (Boolean)->Uni
     Row(verticalAlignment = Alignment.CenterVertically){
         Image(
             painter = painterResource(id = R.drawable.ic_gender),
-            contentDescription = "Gender",
+            contentDescription = null,
             modifier = Modifier
                 .size(40.dp)
                 .clip(CircleShape)
@@ -268,7 +219,7 @@ fun InformationInputGenderRow(genderInfo: Boolean?, selectGender: (Boolean)->Uni
             modifier = Modifier
                 .size(70.dp, 40.dp)
                 .clip(CircleShape)
-                .background(if(genderInfo==true)Color.LightGray else Color.Transparent)
+                .background(if (genderInfo == true) Color.LightGray else Color.Transparent)
                 .border(3.dp, Color.White, CircleShape)
                 .clickable { selectGender(true) }
         ) {
@@ -285,7 +236,7 @@ fun InformationInputGenderRow(genderInfo: Boolean?, selectGender: (Boolean)->Uni
             modifier = Modifier
                 .size(70.dp, 40.dp)
                 .clip(CircleShape)
-                .background(if(genderInfo==false)Color.LightGray else Color.Transparent)
+                .background(if (genderInfo == false) Color.LightGray else Color.Transparent)
                 .border(3.dp, Color.White, CircleShape)
                 .clickable { selectGender(false) }
         ) {
@@ -295,6 +246,5 @@ fun InformationInputGenderRow(genderInfo: Boolean?, selectGender: (Boolean)->Uni
             )
         }
         Spacer(modifier = Modifier.width(78.dp))
-
     }
 }

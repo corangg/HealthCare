@@ -36,28 +36,27 @@ import androidx.compose.ui.unit.sp
 @Composable
 fun SliderInputRow(
     iconId: Int,
-    iconDescription: String,
     sliderValue: Float,
     onSliderValueChange: (Float) -> Unit,
     sliderMaxValue: Float,
-    textValue: String,
-    onTextValueChange: (String) -> Unit,
+    onTextValueChange: (Float) -> Unit,
     unitText: String,
+    textFiledvariable: Any,
     focusRequester: FocusRequester
 ) {
     val isFocused = remember { mutableStateOf(false) }
-    val textFieldValue = remember { mutableStateOf(textValue) }
+    val textFieldValue = remember { mutableStateOf(sliderValue.toString()) }
 
-    LaunchedEffect(textValue) {
+    LaunchedEffect(sliderValue.toString()) {
         if (!isFocused.value) {
-            textFieldValue.value = textValue
+            textFieldValue.value = sliderValue.toString()
         }
     }
 
     Row(verticalAlignment = androidx.compose.ui.Alignment.CenterVertically) {
         Image(
             painter = painterResource(id = iconId),
-            contentDescription = iconDescription,
+            contentDescription = null,
             modifier = Modifier
                 .size(40.dp)
                 .clip(CircleShape)
@@ -67,7 +66,7 @@ fun SliderInputRow(
         )
         Slider(
             value = sliderValue,
-            onValueChange = onSliderValueChange,
+            onValueChange = {onSliderValueChange(it)},
             valueRange = 0f..sliderMaxValue,
             colors = SliderDefaults.colors(
                 activeTrackColor = Color.White,
@@ -80,10 +79,17 @@ fun SliderInputRow(
         )
         BasicTextField(
             value = textFieldValue.value,
-            onValueChange =
-            {
+            onValueChange = {
                 textFieldValue.value = it
-                onTextValueChange(it)},
+                val value = if(textFiledvariable==Int)it.toIntOrNull() else it.toFloatOrNull()
+
+                if(value == null){
+                    if(it.isEmpty()){
+                        textFieldValue.value = ""
+                    }
+                }else{
+                    onTextValueChange(it.toFloat())
+                } },
             textStyle = TextStyle(color = Color.White, fontSize = 16.sp),
             singleLine = true,
             cursorBrush = SolidColor(Color.White),
@@ -99,7 +105,7 @@ fun SliderInputRow(
                     if(it.isFocused){
                         textFieldValue.value = ""
                     } else if(!it.isFocused && textFieldValue.value.isEmpty()){
-                        textFieldValue.value = textValue
+                        textFieldValue.value = sliderValue.toString()
                     }
                 },
             keyboardOptions = KeyboardOptions(keyboardType = KeyboardType.Decimal)
