@@ -289,6 +289,7 @@ class MainViewModel @Inject constructor(
         viewModelScope.launch {
             editDBRepository.insertWeightData(weightData)
             editDBRepository.insertExerciseRecord(exerciseRecord())
+            initDataSet()
             showToast()
         }
     }
